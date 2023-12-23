@@ -1,0 +1,148 @@
+﻿@model xilopro2.Models.ParentViewModel
+@{
+    var path = "/Content/Parents/";
+    var path2 = "/Content/Files/";
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="ID" />
+<input type="hidden" asp-for="Countries" />
+<input type="hidden" asp-for="States" />
+<input type="hidden" asp-for="Cities" />
+<input type="hidden" asp-for="PlayerId" />
+<input type="hidden" asp-for="PlayerName" />
+
+<div class="col-md-3">
+    <div class="form-group mb-2 text-center">
+        <label asp-for="FotoFile" class="control-label d-block text-start"></label>
+        <img src="@(!string.IsNullOrEmpty(Model.Parent_Image) ? Url.Content(path+Model.Parent_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="imgpreviewForm" />
+    </div>
+
+    <div class="input-group">
+        <input asp-for="FotoFile" class="form-control" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
+        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearInput()">Limpiar</button>
+    </div>
+    <span asp-validation-for="FotoFile" class="text-danger"></span>
+</div>
+
+<div class="col-md-3">
+
+    <div class="form-group mb-2">
+        <label asp-for="Parent_FirstName" class="control-label"></label>
+        <input asp-for="Parent_FirstName" class="form-control" placeholder="Primer Nombre" />
+        <span asp-validation-for="Parent_FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="Parent_LastName" class="control-label"></label>
+        <input asp-for="Parent_LastName" class="form-control" placeholder="Segundo Nombre" />
+        <span asp-validation-for="Parent_LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" placeholder="0000-0000" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+</div>
+
+
+<div class="col-md-3">
+
+    <div class="form-group mb-2">
+        <label asp-for="Parent_Cedula" class="control-label"></label>
+        <input asp-for="Parent_Cedula" id="txtcedula" class="form-control" placeholder="XXX-XXXXXX-XXXXXX" />
+        <span asp-validation-for="Parent_Cedula" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="CountryID" class="control-label"></label>
+        <select asp-for="CountryID" asp-items="Model.Countries" class="form-select"></select>
+        <span asp-validation-for="CountryID" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="StateID" class="control-label"></label>
+        <select asp-for="StateID" asp-items="Model.States" class="form-select" id="stateDropdown" onclick="loquito()"></select>
+        <span asp-validation-for="StateID" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="CityID" class="control-label"></label>
+        <select asp-for="CityID" asp-items="Model.Cities" class="form-select" id="cityDropdown"></select>
+        <span asp-validation-for="CityID" class="text-danger"></span>
+    </div>
+
+</div>
+
+
+
+<div class="col-md-3">
+    <div class="form-group mb-2 text-center">
+        <label asp-for="FotoFileCedula" class="control-label d-block text-start"></label>
+        <!--<img src="@(!string.IsNullOrEmpty(Model.Parent_ImageCedula) ? Url.Content(path2 + Model.Parent_ImageCedula) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg2" class="imgpreviewForm" />-->
+        <iframe id="pdfPreview" width="600" height="400" style="border: 1px solid #888;" class="imgpreviewForm"></iframe>
+    </div>
+
+    <div class="input-group">
+        <input asp-for="FotoFileCedula" class="form-control" type="file" id="pdfInput" accept=".pdf" onchange="showimagepreview2(this)" />
+        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04" onclick="clearInput2()">Limpiar</button>
+    </div>
+    <span asp-validation-for="FotoFileCedula" class="text-danger"></span>
+</div>
+
+
+
+
+<div class="col">
+    <div class="form-group mb-2">
+        <label asp-for="Parent_Address" class="control-label"></label>
+        <textarea class="form-control" asp-for="Parent_Address" cols="20" id="Parent_Address" name="Parent_Address" rows="2" placeholder="Ingrese Dirección..."></textarea>
+        <span asp-validation-for="Parent_Address" class="text-danger"></span>
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    function showimagepreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+
+    }
+
+
+
+    function showimagepreview2(input) {
+      //  document.getElementById('pdfInput').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('pdfPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+       // });
+
+    }
+
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
+        document.getElementById("inputGroupFile03").value = "";
+    }
+    function clearInput2() {
+        var imgframe = document.getElementById("pdfPreview");
+        imgframe.setAttribute("src", "../../images/noimage.png");
+
+        document.getElementById("inputGroupFile04").value = "";
+    }
+
+</script>

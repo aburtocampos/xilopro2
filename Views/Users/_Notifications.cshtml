@@ -1,0 +1,46 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+@if (TempData["successUser"] != null)
+{
+    <script type="text/javascript">
+           toastr.success('@TempData["successUser"]');
+    </script>
+}
+
+@if (TempData["warningUser"] != null)
+{
+    <script type="text/javascript">
+        toastr.warning('@TempData["warningUser"]');
+    </script>
+}
+
+@if (TempData["errorUser"] != null)
+{
+    <script type="text/javascript">
+           toastr.error('@TempData["errorUser"]');
+    </script>
+}
+
+@if (TempData["sw-errorUser"] != null)
+{
+    <script type="text/javascript">
+        Swal.fire({
+            title: 'Confirme la eliminacion del Usuario?',
+            text: "@TempData["sw-errorUser"]",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Eliminado!',
+                    '@TempData["sw-errorUser"]',
+                    'success'
+                )
+            }
+        })
+    </script>
+}

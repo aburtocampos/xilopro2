@@ -1,0 +1,32 @@
+﻿@model xilopro2.Data.Entities.Category
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> |
+<hr />
+
+<div class="container">
+    <div class="card border-secondary anchoForm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group mt-4">
+                        <p><span class="fw-bold">Nombre:</span> @Model.Category_Name</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="form-group d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model?.Category_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                    <a asp-action="Delete" asp-route-id="@Model?.Category_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

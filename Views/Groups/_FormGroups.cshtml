@@ -1,0 +1,20 @@
+﻿@model xilopro2.Data.Entities.Groups
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="Torneos" />
+<div class="col-md-6">
+    <div class="form-group">
+        <label asp-for="Group_Name" class="control-label"></label>
+        <input asp-for="Group_Name" class="form-control" />
+        <span asp-validation-for="Group_Name" class="text-danger"></span>
+    </div>
+
+</div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label asp-for="Group_Type" class="control-label"></label>
+        <input asp-for="Group_Type" class="form-control" />
+        <span asp-validation-for="Group_Type" class="text-danger"></span>
+    </div>
+</div>
+

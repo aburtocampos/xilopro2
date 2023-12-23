@@ -1,0 +1,121 @@
+﻿@model xilopro2.Models.UserViewModel
+
+@{
+    ViewData["Title"] = "Pérfil";
+    var path = "/Content/Users/";
+}
+<link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true" />
+
+<div class="container pt-2">
+    <div class="d-flex justify-content-between align-items-center">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-default fs-4"><i class="fa-solid fa-arrow-left"></i> Atras | Mi Usuario:</a>
+        <span class="badge bg-dark fs-4">@Model.Email</span>
+    </div>
+
+    <hr />
+    <input type="hidden" asp-for="Id" />
+
+        <div class="d-flex justify-content-start gap-4">
+            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Detalles de Perfil</button>
+                <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Cambio de Contraseña</button>
+                <button class="nav-link" id="v-pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#v-pills-disabled" type="button" role="tab" aria-controls="v-pills-disabled" aria-selected="false" disabled>Disabled</button>
+                <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
+                <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+            </div>
+            <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active flex-fill" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
+                <div class="card border-primary" style="width: 1079px;margin:0 auto;">
+                        <form class="profile">
+                            <div class="card-body">
+                                <div class="row">
+
+
+                                    <div class="col-md-4">
+                                        <figure>
+                                            <img src="@(!string.IsNullOrEmpty(Model.User_Image) ? Url.Content(path+Model.User_Image) : Url.Content("~/images/noimage.png"))" class="rounded" alt="Image" style="width:300px;height:300px;max-width: 100%; height: auto;" />
+                                        </figure>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-2">
+                                            <label asp-for="User_FirstName" class="control-label"></label>
+                                            <h3 class="text-warning">@Model.User_FirstName</h3>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label asp-for="User_LastName" class="control-label"></label>
+                                            <h3 class="text-warning">@Model.User_LastName</h3>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label asp-for="PhoneNumber" class="control-label"></label>
+                                            <h3 class="text-warning">@Model.PhoneNumber</h3>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label asp-for="User_Address" class="control-label"></label>
+                                            <h3 class="text-warning">@Model.User_Address</h3>
+                                        </div>
+
+                                    </div>
+
+
+
+
+                                    <div class="col-md-4">
+
+                                        <div class="form-group mb-2">
+                                            <label asp-for="Status" class="form-check-label"></label>
+                                            @if (Model.Status)
+                                            {
+                                                <h3 class="text-warning">Activo</h3>
+                                            }
+                                            else
+                                            {
+                                                <h3 class="text-red">Inactivo</h3>
+                                            }
+
+                                        </div>
+
+                                        <div class="form-group mb-2">
+                                            <label asp-for="Email" class="control-label"></label>
+                                            <h3 class="text-warning">@Model.Email</h3>
+                                        </div>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <div class="form-group mb-2">
+                                                <label asp-for="UserTypeof" class="control-label"></label>
+                                                <select asp-for="UserTypeof" asp-items="Model.UserType" class="form-select" disabled></select>
+                                                <span asp-validation-for="UserTypeof" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="form-group d-flex justify-content-between">
+                                    <a asp-action="Index" asp-controller="Home" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                                    <a asp-action="EditProfile" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-disabled" role="tabpanel" aria-labelledby="v-pills-disabled-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
+            </div>
+        </div>
+
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

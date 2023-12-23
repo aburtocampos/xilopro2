@@ -1,0 +1,36 @@
+﻿@model xilopro2.Models.UserViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<link rel="stylesheet" href="~/css/User.css" asp-append-version="true" />
+
+<div class="container pt-2">
+    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Creando Nuevo Usuario</h2>
+    <hr />
+    <div class="card anchoFormUser border-success">
+        <form asp-action="CreateUser" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="row">
+
+                    <partial name="_FormUser" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-success">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+}

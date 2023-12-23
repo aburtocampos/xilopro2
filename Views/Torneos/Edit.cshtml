@@ -1,0 +1,31 @@
+﻿@model xilopro2.Models.TorneoViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Editando Torneo: <span class="badge bg-warning text-dark">@Model.Torneo_Name</span></h2>
+    <hr />
+    <div class="card border-warning" style="width: 80%;margin:0 auto;">
+        <form asp-action="Create">
+            <div class="card-body">
+                <div class="row">
+                    <partial name="_FormTorneo" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-warning">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,66 @@
+﻿.logo img{
+    width:260px;
+}
+
+.loginContainer{
+
+}
+
+.bglogin {
+    background: radial-gradient(circle, rgba(0,164,255,0.8) 0%, rgba(2,0,36,0.75) 85%),url(../../../../images/bg1.jpg);
+}
+
+.centrarLogin {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+}
+
+.logologin {
+    height: 120px;
+}
+
+.card {
+    background-color: transparent;
+    border:0px;
+}
+
+.card-header {
+    background-color: transparent;
+    border: 0px;
+}
+
+.logintitle {
+    text-align: right;
+    color: white;
+}
+.card-title {
+color:white;
+text-align:center;
+}
+.centrarLoginFixed {
+    display: flex;
+    height: calc(100vh - 76px);
+    align-items: center;
+    justify-content: center;
+}
+.inlogin{
+    border-radius:0px;
+    padding:0.85rem 0.5rem;
+}
+.btn-primary.inlogin {
+    background-color:#000;
+    font-weight:bold;
+    font-size:1.3rem;
+}
+    .btn-primary.inlogin:hover {
+        background: #ffa600;
+        color: #000;
+    }
+
+.menser{
+   
+}
+.alert.alert-danger.fw-bold.menser ul {
+    margin-bottom: 0rem !important;
+}

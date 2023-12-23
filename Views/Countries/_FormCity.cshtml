@@ -1,0 +1,12 @@
+﻿@model xilopro2.Models.CityViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="City_ID" />
+<input type="hidden" asp-for="StateId" />
+<input type="hidden" asp-for="StateName" />
+
+<div class="form-group my-2">
+    <label asp-for="City_Name" class="control-label">Municipio:</label>
+    <input asp-for="City_Name" class="form-control text-uppercase" />
+    <span asp-validation-for="City_Name" class="text-danger"></span>
+</div>

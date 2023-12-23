@@ -1,0 +1,59 @@
+﻿@model xilopro2.Data.Entities.State
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <a asp-action="Details" asp-route-id="@Model.Country.Country_ID" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> |
+    <hr />
+
+    <partial name="_Notifications">
+        <div class="card border-dark row" style="width: 60%;margin:0 auto;">
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="form-group my-2">
+                        <h2>Departamento: @Model.State_Name</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer card-footer-dark">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model.Country.Country_ID" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div>
+                        <a asp-action="AddCity" asp-route-id="@Model?.State_ID" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Agregar Municipio</a>
+                        <!-- |
+                            <a asp-action="EditState" asp-route-id="@Model?.State_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> |
+                        <a asp-action="DeleteState" asp-route-id="@Model?.State_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <hr />
+
+        <partial name="_CitiesList" />
+
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#TablaDepartamentos').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                        },
+                        "aLengthMenu": [
+                            [5, 25, 50, 100, 200, -1],
+                            [5, 25, 50, 100, 200, "Todos"]
+                        ]
+                    })
+                })
+            </script>
+        }
+</div>
+

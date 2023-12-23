@@ -1,0 +1,69 @@
+﻿@model xilopro2.Models.TeamViewModel
+   @{
+
+ var path = "/Content/Teams/";
+   }
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<!--<input type="hidden" asp-for="Players" />-->
+<input type="hidden" asp-for="Matches" />
+<input type="hidden" asp-for="LogoFile"  />
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="Team_Name" class="control-label"></label>
+        <input asp-for="Team_Name" class="form-control lowerinput" placeholder="Ingrese Equipo..." />
+        <span asp-validation-for="Team_Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Team_Estadio" class="control-label"></label>
+        <input asp-for="Team_Estadio" class="form-control" />
+        <span asp-validation-for="Team_Estadio" class="text-danger"></span>
+    </div>
+
+</div>
+<div class="col-md-6">
+    <div class="form-group mb-2 text-center">
+        <label asp-for="LogoFile" class="control-label d-block text-start"></label>
+        <img src="@(!string.IsNullOrEmpty(Model.Team_Image) ? Url.Content(path+Model.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="" style="width:200px;height:200px;max-width: 100%; height: auto;" />
+    </div>
+
+    <div class="input-group">
+        <input asp-for="LogoFile" class="form-control" type="file" id="inputGroupFile04" onchange="showimagepreview(this)" />
+        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04" onclick="clearInput()">Limpiar</button>
+    </div>
+        <span asp-validation-for="LogoFile" class="text-danger"></span>
+</div>
+
+
+
+<script type="text/javascript">
+
+        function showimagepreview(input)
+        {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+           /* if (input.files && input.files[0])
+            {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+
+                    document.getElementsByTagName("img")[0].setAttribute("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }*/
+        }
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "/images/noimage.png");
+        document.getElementById("inputGroupFile04").value = "";
+       // input.files.removeAttribute("required");
+    }
+    
+</script>
+       

@@ -1,0 +1,158 @@
+:root {
+    --azul: #0d6efd;
+    --amarillo: #ffc107;
+    --verde: #198754;
+    --rojo: #dc3545;
+    --celeste: #0dcaf0;
+    --dark: #212529;
+    --darkblue: #011c42;
+}
+
+.form-check-input.alrevescheck {
+    float: right !important;
+    margin-right: 1.5em !important;
+}
+
+footer div.container {
+    padding: 0 !important;
+}
+
+.bg-mainNav {
+    background-color: #011c42 !important;
+}
+
+.row.croles .panel .panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.anchoForm {
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.imgZoom:hover img {
+    transition: transform .5s ease;
+    transform: scale(2.5);
+}
+
+.imgZoom img {
+    width: 50px;
+    height: 50px;
+    max-width: 100%;
+    height: auto;
+    transition: transform .5s ease;
+    cursor: pointer;
+}
+
+.imgZoom a:hover img {
+    transition: transform .5s ease;
+    transform: scale(2.5);
+    box-shadow: -1px 2px 3px 1px rgba(0,0,0,0.5);
+}
+
+.imgZoom a img {
+    width: 50px;
+    height: 50px;
+    max-width: 100%;
+    height: auto;
+    transition: transform .5s ease;
+    cursor: pointer;
+}
+
+.card-footer-primary {
+    border-top: 1px solid var(--azul) !important;
+}
+
+.card-footer-success {
+    border-top: 1px solid var(--verde) !important;
+}
+
+.card-footer-warning {
+    border-top: 1px solid var(--amarillo) !important;
+}
+
+.card-footer-info {
+    border-top: 1px solid var(--celeste) !important;
+}
+
+.card-footer-danger {
+    border-top: 1px solid var(--rojo) !important;
+}
+
+.card-footer-dark {
+    border-top: 1px solid var(--dark) !important;
+}
+
+.lowerinput::placeholder {
+    text-transform: lowercase;
+}
+
+div.form-check .btn-group button {
+    text-transform: uppercase !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 400;
+}
+.estadoplayer {
+
+}
+
+img.camisita {
+    width: 50px;
+    height: auto;
+    margin-left:2rem;
+    position:relative;
+}
+.numerito {
+   
+    font-size: 1.6rem;
+    color: var(--azul);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************RESPONSIVE****************************/
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 15px;
+}
+
+.footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    line-height: 60px !important;
+}
+
+
+@media(max-width:768px) {
+    .dataTables_wrapper .row:first-child {
+    }
+}

@@ -1,0 +1,289 @@
+﻿@model xilopro2.Models.PlayerViewModel
+@{var path = "/Content/Players/";}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="Player_ID" />
+<input type="hidden" asp-for="States" />
+<input type="hidden" asp-for="Cities" />
+<input type="hidden" asp-for="Countries" />
+<input type="hidden" asp-for="Positions" />
+<input type="hidden" asp-for="Teams" />
+
+<div class="col-md-3">
+    <div class="form-group mb-2 text-center">
+        <label asp-for="FotoFile" class="control-label d-block text-start fw-bold"></label>
+        <img src="@(!string.IsNullOrEmpty(Model.Player_Image) ? Url.Content(path+Model.Player_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="imgpreviewForm" />
+    </div>
+
+    <div class="input-group">
+        <input asp-for="FotoFile" class="form-control" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
+        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearInput()">Limpiar</button>
+    </div>
+    <span asp-validation-for="FotoFile" class="text-danger"></span>
+</div>
+
+<div class="col-md-3">
+
+            <div class="form-group mb-2">
+        <label asp-for="Player_FirstName" class="control-label fw-bold"></label>
+                <input asp-for="Player_FirstName" class="form-control" placeholder="Primer Nombre" />
+                <span asp-validation-for="Player_FirstName" class="text-danger"></span>
+            </div>
+  
+            <div class="form-group mb-2">
+                 <label asp-for="Player_LastName" class="control-label fw-bold"></label>
+                <input asp-for="Player_LastName" class="form-control" placeholder="Segundo Nombre" />
+                <span asp-validation-for="Player_LastName" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group mb-2">
+                <label asp-for="Player_FNC" class="control-label fw-bold"></label>
+                       <input asp-for="Player_FNC" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" id="inputFNC" onchange="calcularEdad()" />
+                        <span asp-validation-for="Player_FNC" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                <label asp-for="Player_Edad" class="control-label fw-bold"></label>
+                         <h4 class="mb-0 mt-2" id="labelEDAD">00</h4>
+                    </div>
+                </div>
+            </div>
+	        
+            <div class="row">
+                <div class="col-md-6">
+                        <div class="form-group mb-2">
+                <label asp-for="Player_PhoneNumber" class="control-label fw-bold"></label>
+                <input asp-for="Player_PhoneNumber" class="form-control" placeholder="0000-0000" />
+                <span asp-validation-for="Player_PhoneNumber" class="text-danger"></span>
+                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                <label for="Player_Genero" class="control-label fw-bold">Genero:</label>
+                <select id="Player_Genero" name="Player_Genero" class="form-select">
+                    @foreach (var opcion in ViewBag.Genero)
+                    {
+                        <option value="@opcion">@opcion</option>
+                    }
+                </select>
+                <span asp-validation-for="Player_Genero" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+	      
+	        <div class="form-group mb-2">
+        <label asp-for="Player_Email" class="control-label fw-bold"></label>
+        <input asp-for="Player_Email" class="form-control" placeholder="email@mail.com" />
+        <span asp-validation-for="Player_Email" class="text-danger"></span>
+	        </div>
+
+
+    </div>
+
+
+<div class="col-md-3">
+    <div class="form-group mb-2">
+        <label asp-for="Teamid" class="control-label fw-bold"></label>
+        <select asp-for="Teamid" asp-items="Model.Teams" class="form-select"></select>
+        <span asp-validation-for="Teamid" class="text-danger"></span>
+    </div>
+
+  
+
+    <div class="form-group mb-2">
+        <label asp-for="Positionid" class="control-label fw-bold"></label>
+        <select asp-for="Positionid" asp-items="Model.Positions" class="form-select"></select>
+        <span asp-validation-for="Positionid" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="CountryID" class="control-label fw-bold"></label>
+        <select asp-for="CountryID" asp-items="Model.Countries" class="form-select"></select>
+        <span asp-validation-for="CountryID" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="StateID" class="control-label fw-bold"></label>
+        <select asp-for="StateID" asp-items="Model.States" class="form-select" id="stateDropdown" onclick="loquito()"></select>
+        <span asp-validation-for="StateID" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="CityID" class="control-label fw-bold"></label>
+        <select asp-for="CityID" asp-items="Model.Cities" class="form-select" id="cityDropdown"></select>
+        <span asp-validation-for="CityID" class="text-danger"></span>
+    </div>
+
+
+
+</div>
+
+
+
+        <div class="col-md-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group mb-2">
+                <label asp-for="Player_Dorsal" class="control-label fw-bold"></label>
+                <input asp-for="Player_Dorsal" class="form-control" type="number" />
+                <span asp-validation-for="Player_Dorsal" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="form-check p-0">
+                <label asp-for="Player_Status" class="form-check-label me-2 fw-bold"></label>
+                <input asp-for="Player_Status" type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+                <span asp-validation-for="Player_Status" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+            
+    <div class="form-group my-3">
+        <label asp-for="SelectedCategoryIds" class="control-label fw-bold"></label>
+        <!--<select asp-for="Categoryid" asp-items="Model.Categories" class="form-select"></select>-->
+        @foreach (var category in Model.Categories)
+        {
+            <div class="form-check form-switch ms-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="SelectedCategoryIds" value="@category.Value"
+                @(Model.SelectedCategoryIds != null && Model.SelectedCategoryIds.Contains(Convert.ToInt32(category.Value)) ? "checked" : "") style="cursor:pointer;">
+                <label class="form-check-label ms-1" for="flexSwitchCheckDefault">@category.Text</label>
+            </div>
+
+        }
+        <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
+    </div>
+            <div class="form-group mb-2" id="campoCedula">
+        <label asp-for="Player_Cedula" class="control-label fw-bold"></label>
+        <input asp-for="Player_Cedula" id="txtcedula" class="form-control" placeholder="XXX-XXXXXX-XXXXXX" />
+        <span asp-validation-for="Player_Cedula" class="text-danger"></span>
+            </div>
+    <div class="form-group mb-2" id="campoFifaid" >
+        <label asp-for="Player_fifaid" class="control-label fw-bold"></label>
+        <input asp-for="Player_fifaid" class="form-control" placeholder="XXXXXX" />
+        <span asp-validation-for="Player_fifaid" class="text-danger"></span>
+    </div>
+           
+        </div>
+  
+
+
+
+    <div class="col">
+        <div class="form-group my-2">
+            <label asp-for="Player_Address" class="control-label fw-bold"></label>
+            <textarea class="form-control" asp-for="Player_Address" cols="20" id="Player_Address" name="Player_Address" rows="2" placeholder="Ingrese Dirección..."   ></textarea>
+            <span asp-validation-for="Player_Address" class="text-danger"></span>
+        </div>
+    </div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script type="text/javascript">
+    function showimagepreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+
+    }
+
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "../images/noimage.png");
+        document.getElementById("inputGroupFile03").value = "";
+    }
+
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
+        onLabel: '<i class="fa-regular fa-thumbs-up"></i> Activa'
+    });
+
+    //evento change para el drop decida si muestra cedula y fifaid segun la categoria
+    document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+       // var checkboxCategoria = document.getElementById("flexSwitchCheckDefault");
+            var checkboxCategoria = checkbox;
+        var campoCedula = document.getElementById("campoCedula");
+        var campoFifaid = document.getElementById("campoFifaid");
+     //   var selectedValue = categoriaSelect.options[categoriaSelect.selectedIndex].value;
+      //  console.log('-> ', checkboxCategoria.value);
+     //   if (selectedValue != "1" /*&& selectedValue != "5" && selectedValue != "7"*/) {
+            if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
+            campoCedula.style.display = "none";
+            campoFifaid.style.display = "none";
+        } else {
+            campoCedula.style.display = "block";
+            campoFifaid.style.display = "block";
+        }
+
+
+    });
+    });
+
+    //calcular edad basado en el evento change del datepicker
+    function calcularEdad() {
+        var fechaNacimiento = document.getElementById('inputFNC').value;
+
+        var fechaNacimientoObj = new Date(fechaNacimiento);
+
+        // Obtiene la fecha actual
+        var fechaActual = new Date();
+
+        // Calcula la diferencia en milisegundos
+        var diferencia = fechaActual - fechaNacimientoObj;
+
+        // Convierte la diferencia a años
+        var edad = Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25));
+
+        // Muestra la edad en algún lugar de la página
+        document.getElementById('labelEDAD').innerText = edad;
+    }
+    window.addEventListener("load", function () {
+        calcularEdad()
+    });
+
+
+    //categorias check independientes
+   document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIds"]');
+       var flag = false;
+        radios.forEach(function (radio) {
+            radio.addEventListener('click', function () {
+
+                if (!radio.checked) {
+                    if (!flag) {
+                        radio.checked = false;
+                        flag = true
+                    } else {
+                        radio.checked = true;
+                    }
+                    radios.forEach(function (otherRadio) {
+                        if (otherRadio !== radio) {
+                            otherRadio.disabled = false;
+                        }
+                    });
+                   /* radios.forEach(function (otherRadio) {
+                        otherRadio.disabled = (otherRadio !== radio);
+                    });*/
+                } else {
+                    radio.disabled = false;
+                    flag = false
+                    radios.forEach(function (otherRadio) {
+                        if (otherRadio !== radio) {
+                            otherRadio.disabled = true;
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+
+</script>

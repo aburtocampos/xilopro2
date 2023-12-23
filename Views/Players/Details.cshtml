@@ -1,0 +1,208 @@
+﻿@model xilopro2.Data.Entities.Player
+
+@{
+    ViewData["Title"] = "Details";
+    var path = "/Content/Players/";
+    var cate = ViewData["CatName"].ToString();
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <a asp-action="Index" class="btn btn-outline-default fs-5"><i class="fa-solid fa-arrow-left"></i> Atras |</a>
+        <h2 class="m-0"><span class="badge bg-dark fs-4 text-uppercase">@Model.Player_FullName</span></h2>
+    </div>
+    <hr />
+
+    <partial name="_Notifications">
+        <div class="card border-dark row" style="width: 100%;margin:0 auto;">
+
+            <div class="card-body row">
+                <div class="col-md-4">
+                    <div class="form-group mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="mb-2 d-block">FIFA ID: <span class="text-primary fw-bold" >@Model.Player_fifaid</span></span>
+                            <div class="estadoplayer">
+                                <label class="form-check-label d-inline">Estado:</label>
+                                @if (Model.Player_Status)
+                                {
+                                    <h5 class="text-primary d-inline">Activo</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="text-danger d-inline">Inactivo</h5>
+                                }
+
+                            </div>
+                        </div>
+                         
+                          <img src="@(!string.IsNullOrEmpty(Model.Player_Image) ? Url.Content(path+Model.Player_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" alt="Image" />
+                    </div>
+                 
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group my-2">
+                        <label class="control-label">Cedula:</label>
+                        <h2 class="text-primary text-uppercase"> @Model.Player_Cedula</h2>
+                    </div>
+                    <div class="form-group my-2">
+                        <label class="control-label">Jugador:</label>
+                        <h2 class="text-primary text-uppercase"> @Model.Player_FullName</h2>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label asp-for="Player_PhoneNumber" class="control-label"></label>
+                        <h3 class="text-primary">@Model.Player_PhoneNumber</h3>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Categoria:</label>
+                        <h3 class="text-primary">@ViewData["CatName"]</h3>
+                    </div>
+                   
+                    <div class="form-group mt-2">
+                        <label asp-for="Player_Address" class="control-label"></label>
+                        <h3 class="text-primary">@Model.Player_Address</h3>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-2 ">
+                                <label class="form-check-label ">Genero:</label>
+                                @if (Model.Player_Genero=="Masculino")
+                                {
+                                    <h5 class="text-primary ">Masculino</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="text-primary ">Femenino</h5>
+                                }
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Posición:</label>
+                                <h3 class="text-primary">@ViewData["Pos"]</h3>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-2 d-flex justify-content-end align-items-center gap-1">
+                                <label class="control-label d-inline">Dorsal:</label>
+                                <h3 class="numerito">@Model.Player_Dorsal</h3>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Equipo:</label>
+                                <h3 class="text-primary">@ViewData["team"]</h3>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group mb-2">
+                        <label class="control-label">Fecha de Nacimiento:</label>
+                        <div class="d-flex align-items-end gap-3">
+                            <h3 class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</h3>
+                            <h4 id="labelEDAD" class="d-inline text-primary ">-</h4>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="form-group mb-2">
+                        <label class="control-label">Pais:</label>
+                        <h3 class="text-primary">@ViewData["PaisName"]</h3>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Departamento:</label>
+                        <h3 class="text-primary">@ViewData["DepartamentoName"]</h3>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Municipio:</label>
+                        <h3 class="text-primary">@ViewData["MunicipioName"]</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer card-footer-dark">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div>
+                        @if (cate != "MAYOR")
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                            <a asp-action="CreateParent" asp-route-id="@Model?.Player_ID" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Agregar Tutor</a>
+                            <a class="btn btn-success"><i class="fa-solid fa-plus"></i> Agregar Archivo</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
+                            <a class="btn btn-info"><i class="fa-solid fa-plus"></i> Agregar Archivo</a>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <hr />
+
+            
+           
+
+       
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Archivos:</button>
+            </li>
+           
+            @if (cate != "MAYOR")
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
+                </li>
+            }
+           
+            
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <partial name="_PlayerFilesList" />
+            </div>
+             @if (cate != "MAYOR")
+            {
+            <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                    <partial name="_ParentsList" />
+            </div>
+            }
+            
+        </div>
+
+
+</div>
+
+<script>
+    //calcular edad basado en el evento change del datepicker
+    function calcularEdad() {
+        var fechaNacimiento = document.getElementById('inputFNC').textContent;
+        console.log("-", fechaNacimiento);
+            var fechaNacimientoObj = new Date(fechaNacimiento);
+
+        // Obtiene la fecha actual
+        var fechaActual = new Date();
+
+        // Calcula la diferencia en milisegundos
+        var diferencia = fechaActual - fechaNacimientoObj;
+
+        // Convierte la diferencia a años
+        var edad = Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25));
+
+        // Muestra la edad en algún lugar de la página
+        document.getElementById('labelEDAD').innerText = "- "+edad + " años";
+    }
+    window.addEventListener("load", function () {
+        calcularEdad()
+    });
+
+</script>
+

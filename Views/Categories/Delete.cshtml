@@ -1,0 +1,30 @@
+﻿@model xilopro2.Data.Entities.Category
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+
+<div class="container">
+   
+    <div class="d-flex justify-content-start align-items-center">
+        <a asp-action="Index" class="btn btn-outline-default fs-5"><i class="fa-solid fa-arrow-left"></i> Atras |</a>
+        <h2 class="m-0">Eliminando Categoria: <span class="badge bg-danger text-white">@Model.Category_Name</span></h2>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 60%;margin:0 auto;">
+        <div class="card-body">
+            <h2 class="text-center">Confirme eliminar la Categoria: <span class="text-danger">@Model.Category_Name</span> ?</h2>
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="Delete">
+                <div class="form-group d-flex justify-content-between">
+                    <input type="hidden" asp-for="Category_ID" />
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

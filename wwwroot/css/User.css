@@ -1,0 +1,20 @@
+﻿
+.imgpreviewForm {
+    width: 296px;
+    height: 296px;
+    object-fit: cover;
+    border-radius:0.25rem;
+    margin:0.25rem 0;
+}
+
+.imgpreviewForm2 {
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+}
+
+.anchoFormUser {
+    max-width: 100%;
+    margin: 0 auto;
+}
+

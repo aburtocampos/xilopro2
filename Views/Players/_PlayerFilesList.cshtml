@@ -1,0 +1,73 @@
+﻿@model xilopro2.Data.Entities.Player
+@{
+    var path2 = "/Content/Files/";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <!--<h3 class="panel-title text-capitalize mb-4 p-1 ms-2">Archivos de Model.Player_FullName</h3>-->
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive table-striped" id="TablaPlayerFiles">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Image)
+                            </th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PlayerFiles)
+                        {
+
+                            <tr>
+                                <td style="vertical-align: middle;">
+                                    <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                        @Html.DisplayFor(modelItem => item.PlayerFiles_Name)
+                                    </a>
+                                </td>
+                                <td style="vertical-align: middle;" class="imgZoom">
+                                    <a asp-action="DetailsParent" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                        <img src="@(!string.IsNullOrEmpty(item.PlayerFiles_Image) ? Url.Content(path2+item.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:50px;height:50px;max-width: 100%; height: auto;" />
+                                    </a>
+                                </td>
+
+                                <td class="text-end">
+                                    <a asp-action="EditParent" asp-route-id="@item.PlayerFiles_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> |
+                                    <a asp-action="DeleteParent" asp-route-id="@item.PlayerFiles_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#TablaPlayerFiles').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ]
+            })
+        })
+    </script>
+}

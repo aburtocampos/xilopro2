@@ -1,0 +1,44 @@
+﻿@model xilopro2.Models.TeamViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-start align-items-center">
+        <a asp-action="Index" asp-controller="Teams" class="btn btn-outline-default fs-5"><i class="fa-solid fa-arrow-left"></i> Atras |</a>
+        <h2 class="m-0">Editando el Equipo: <span class="badge bg-warning text-black">@Model.Team_Name</span></h2>
+    </div>
+    <hr />
+    <div class="card border-warning" style="width: 80%;margin:0 auto;">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" asp-for="Team_ID" />
+                    <input type="hidden" asp-for="Team_Image" />
+
+                    <partial name="_FormEquipos" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-warning">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-warning" onclick="cleInput()"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
+
+<script>
+    function cleInput() {
+        document.getElementById("inputGroupFile04").removeAttribute("required");
+    }
+</script>

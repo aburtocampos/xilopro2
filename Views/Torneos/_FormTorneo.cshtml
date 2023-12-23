@@ -1,0 +1,90 @@
+﻿@model xilopro2.Models.TorneoViewModel
+@{
+
+    var path = "/Content/Tournaments/";
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="Groups" />
+<input type="hidden" asp-for="LogoFile" />
+<input type="hidden" asp-for="Torneo_Image" />
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="Torneo_Name" class="control-label"></label>
+        <input asp-for="Torneo_Name" class="form-control lowerinput" placeholder="Ingrese Torneo..." />
+        <span asp-validation-for="Torneo_Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Torneo_Season" class="control-label"></label>
+        <input asp-for="Torneo_Season" class="form-control lowerinput" placeholder="Ingrese Temporada..." />
+        <span asp-validation-for="Torneo_Season" class="text-danger"></span>
+    </div>
+    
+
+    <div class="form-group mb-2">
+        <label asp-for="Torneo_StartDate" class="control-label"></label>
+        <input asp-for="Torneo_StartDate" class="form-control" value="2000-01-01" />
+        <span asp-validation-for="Torneo_StartDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="Torneo_EndDate" class="control-label"></label>
+        <input asp-for="Torneo_EndDate" class="form-control" value="2000-01-01" />
+        <span asp-validation-for="Torneo_EndDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Torneo_Status" class="form-check-label d-block mb-2"></label>
+        <input asp-for="Torneo_Status" type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+        <span asp-validation-for="Torneo_Status" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="form-group mb-2 text-center">
+        <label asp-for="LogoFile" class="control-label d-block text-start"></label>
+        <img src="@(!string.IsNullOrEmpty(Model.Torneo_Image) ? Url.Content(path+Model.Torneo_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="my-4" style="width:200px;height:200px;max-width: 100%; height: auto;" />
+    </div>
+    <div class="input-group">
+        <input asp-for="LogoFile" class="form-control" type="file" id="inputGroupFile04" onchange="showimagepreview(this)" />
+        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04" onclick="clearInput()">Limpiar</button>
+    </div>
+    <span asp-validation-for="LogoFile" class="text-danger"></span>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script type="text/javascript">
+
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
+        onLabel: '<i class="fa-regular fa-thumbs-up"></i> Activa'
+    });
+
+    function showimagepreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+        /* if (input.files && input.files[0])
+         {
+             var reader = new FileReader();
+             reader.onload = function(e) {
+
+                 document.getElementsByTagName("img")[0].setAttribute("src", e.target.result);
+             }
+             reader.readAsDataURL(input.files[0]);
+         }*/
+    }
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "/images/noimage.png");
+        document.getElementById("inputGroupFile04").value = "";
+        // input.files.removeAttribute("required");
+    }
+
+</script>

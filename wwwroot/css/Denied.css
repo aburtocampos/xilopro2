@@ -1,0 +1,44 @@
+.bgDenied {
+    background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(1,28,66,0.75) 85%),url(../../../../images/bg2.jpg);
+    background-size: cover;
+}
+
+.bgDenied .card {
+    width: 35rem;
+    height: auto;
+    padding: 2rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    color: white;
+    background: rgba(255, 255, 255, .25);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    border: 1.5px solid rgba(209, 213, 219, 0.3);
+}
+
+    .bgDenied .card .card-title {
+        margin-top: 0;
+        margin-bottom: .5rem;
+        font-size: 3rem;
+        font-weight: 700;
+    }
+
+    .bgDenied .card p {
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+        font-size: 1.5rem;
+    }
+    .bgDenied .card span {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+    .bgDenied a {
+        background-color: var(--darkblue);
+        border-radius: 0.5rem;
+        color: white;
+        padding: 0.85rem 1rem;
+        text-decoration: none;
+        border-radius: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
