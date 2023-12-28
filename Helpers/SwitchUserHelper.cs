@@ -119,7 +119,7 @@ namespace xilopro2.Helpers
                 //Player_UserRol = model.Player_UserRol,
                 SelectedCategoryIds = model.SelectedCategoryIds,
 
-                Countryid = model.CountryID,
+                //Countryid = model.CountryID,
                 Stateid = model.StateID,
                 Cityid = model.CityID,
                 
@@ -268,7 +268,7 @@ namespace xilopro2.Helpers
                 User_Image =  _imageHelper.UploadImage(player.FotoFile, "Players"),
                 UserTypeofRole = "User",
                 SelectedCategoryIds = player.SelectedCategoryIds,
-                Countryid = player.Countryid,
+               // Countryid = player.Countryid,
                 Stateid = player.Stateid,
                 Cityid = player.Cityid,
 

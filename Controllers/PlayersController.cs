@@ -191,7 +191,6 @@ namespace xilopro2.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PlayerViewModel model)
         {
             // player.Teamid = 1;
@@ -261,7 +260,7 @@ namespace xilopro2.Controllers
                             Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players"),
                             SelectedCategoryIds = model.SelectedCategoryIds,
 
-                            Countryid = model.CountryID,
+                            //Countryid = model.CountryID,
                             Stateid = model.StateID,
                             Cityid = model.CityID,
                             
@@ -270,7 +269,7 @@ namespace xilopro2.Controllers
                             Team = await _context.Teams.FindAsync(model.Teamid),
 
                         };
-                        _context.Add(newuserobj);
+                            _context.Players.Add(newuserobj);
                             await _context.SaveChangesAsync();
 
                         TempData["successUser"] = "Jugador " + newuserobj.Player_FullName + " creado!!";
@@ -306,7 +305,13 @@ namespace xilopro2.Controllers
             model.States = _combos.GetCombosStates();
             model.Countries = _combos.GetCombosCountries();
             model.Cities = _combos.GetCombosCities();
-
+            List<string> miListaDeStrings = new List<string>
+                {
+                    "Seleccionar",
+                    "Masculino",
+                    "Femenino"
+                };
+            ViewBag.Genero = miListaDeStrings;
             return View(model);
         }
 
