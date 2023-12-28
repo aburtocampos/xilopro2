@@ -594,7 +594,7 @@ namespace xilopro2.Migrations
                     b.Property<int?>("CorrectionAction_ID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Country_ID")
+                    b.Property<int>("Countryid")
                         .HasColumnType("int");
 
                     b.Property<string>("Player_Address")
@@ -662,7 +662,7 @@ namespace xilopro2.Migrations
 
                     b.HasIndex("CorrectionAction_ID");
 
-                    b.HasIndex("Country_ID");
+                    b.HasIndex("Countryid");
 
                     b.HasIndex("Position_ID");
 
@@ -952,12 +952,14 @@ namespace xilopro2.Migrations
             modelBuilder.Entity("xilopro2.Data.Entities.Player", b =>
                 {
                     b.HasOne("xilopro2.Data.Entities.CorrectionAction", null)
-                        .WithMany("Players")
+                        .WithMany("Player")
                         .HasForeignKey("CorrectionAction_ID");
 
                     b.HasOne("xilopro2.Data.Entities.Country", "Country")
                         .WithMany("Players")
-                        .HasForeignKey("Country_ID");
+                        .HasForeignKey("Countryid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("xilopro2.Data.Entities.Position", "Position")
                         .WithMany("Players")
@@ -998,7 +1000,7 @@ namespace xilopro2.Migrations
 
             modelBuilder.Entity("xilopro2.Data.Entities.CorrectionAction", b =>
                 {
-                    b.Navigation("Players");
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("xilopro2.Data.Entities.Country", b =>

@@ -71,7 +71,6 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Email")]
         [EmailAddress(ErrorMessage = "Debes introducir un email válido.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [DataType(DataType.EmailAddress)]
         public string Player_Email { get; set; }
 
 
@@ -104,7 +103,6 @@ namespace xilopro2.Data.Entities
         public string Player_UserRol => "User";
 
         [Display(Name = "Categorias:")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public List<int> SelectedCategoryIds { get; set; }
 
 
@@ -116,11 +114,11 @@ namespace xilopro2.Data.Entities
 
         public Team? Team { get; set; }
 
-        public Position? Position { get; set; }
+       public Position? Position { get; set; }
 
 
 
-       // public int Countryid { get; set; }
+        public int Countryid { get; set; }
 
          public Country? Country { get; set; }
 
@@ -130,9 +128,9 @@ namespace xilopro2.Data.Entities
 
 
 
-        public ICollection<Parent>? Parents { get; set; }
+        public List<Parent>? Parents { get; set; }
 
-       public ICollection<PlayerFiles>? PlayerFiles { get; set; }
+        public List<PlayerFiles>? PlayerFiles { get; set; }
 
 
 

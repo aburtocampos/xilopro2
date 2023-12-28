@@ -76,13 +76,13 @@ namespace xilopro2.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
             );
 
-            /*     builder.Entity<Player>(b =>
-                 {
-                     b.HasKey(e => e.Player_ID);
-                     b.Property(e => e.Player_ID).ValueGeneratedOnAdd();
-                 });*/
+       /*     builder.Entity<Player>(b =>
+            {
+                b.HasKey(e => e.Player_ID);
+                b.Property(e => e.Player_ID).ValueGeneratedOnAdd();
+            });
 
-          /*  builder.Entity<Player>(entity =>
+            builder.Entity<Player>(entity =>
             {
                 entity.HasOne(a => a.Team)
                 .WithMany(p => p.Players)

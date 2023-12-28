@@ -84,7 +84,6 @@ namespace xilopro2.Controllers
                     "Masculino",
                     "Femenino"
                 };
-            ViewBag.Genero = miListaDeStrings;
             UserViewModel model = new UserViewModel
             {
                 UserType = User.IsInRole("Editor") ? _combos.GetCombosRolesunicos() : _combos.GetCombosRoles(),
@@ -95,7 +94,7 @@ namespace xilopro2.Controllers
                 Id = Guid.NewGuid().ToString(),
                 SelectedCategoryIds = new List<int>(),
             };
-           
+            ViewBag.Genero = miListaDeStrings;
             return View(model);
         }
 
@@ -220,13 +219,7 @@ namespace xilopro2.Controllers
             model.Countries = _combos.GetCombosCountries();
                  model.States = _combos.GetCombosStates();
                  model.Cities = _combos.GetCombosCities();
-            List<string> miListaDeStrings = new List<string>
-                {
-                    "Seleccionar",
-                    "Masculino",
-                    "Femenino"
-                };
-            ViewBag.Genero = miListaDeStrings;
+
 
 
             return View(model);
@@ -252,13 +245,7 @@ namespace xilopro2.Controllers
                role.Text,
                role.Value,
                userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
-            List<string> miListaDeStrings = new List<string>
-                {
-                    "Seleccionar",
-                    "Masculino",
-                    "Femenino"
-                };
-            ViewBag.Genero = miListaDeStrings;
+
             UserViewModel model = _swithUsers.ToUserViewModel(user);
             //    model.UserType = roleItems;
             return View(model);

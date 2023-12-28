@@ -49,6 +49,9 @@ namespace xilopro2.Models
       
         public IEnumerable<SelectListItem>? Categories { get; set; }
 
+        [Display(Name = "Categorias:")]
+        public List<int> SelectedCategoryIds { get; set; }
+
 
         [Display(Name = "Equipo:")]
         [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un equipo.")]
