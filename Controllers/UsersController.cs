@@ -236,13 +236,6 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            /*   var userRoles = await _userManager.GetRolesAsync(user);
-
-               var roleItems = _combos.GetComboRoles().Select(role =>
-               new SelectListItem(
-               role.Text,
-               role.Value,
-               userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
             UserViewModel model = _swithUsers.ToUserViewModel(user);
             model.UserType = User.IsInRole("Editor") ? _combos.GetCombosRolesunicos() : _combos.GetCombosRoles();
             ViewBag.Genero = _combos.GetComboGeneros();
@@ -377,6 +370,7 @@ namespace xilopro2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         //perfil de usuarios
 
         
@@ -386,25 +380,15 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-           // var user = await _userHelper.GetUserAsync(Guid.Parse(id));
-            // User user = await _userHelper.GetUserAsync(Guid.Parse(id));
             var user = await _userHelper.GetUserAsyncbyEmail(id);
             List<string> catnames = _dataContext.Categories.Where(e => user.SelectedCategoryIds.Contains(e.Category_ID)).Select(e => e.Category_Name).ToList();
             if (user == null)
             {
                 return NotFound();
             }
-            /*   var userRoles = await _userManager.GetRolesAsync(user);
-
-               var roleItems = _combos.GetComboRoles().Select(role =>
-               new SelectListItem(
-               role.Text,
-               role.Value,
-               userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
             ViewBag.CatNames = catnames;
             UserViewModel model = _swithUsers.ToUserViewModel(user);
             ViewBag.Timesta = model.User_CreatedTime;
-            //    model.UserType = roleItems;
             return View(model);
         }
 
@@ -421,21 +405,10 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            /*   var userRoles = await _userManager.GetRolesAsync(user);
-
-               var roleItems = _combos.GetComboRoles().Select(role =>
-               new SelectListItem(
-               role.Text,
-               role.Value,
-               userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
 
             UserViewModel model = _swithUsers.ToUserViewModel(user);
 
-
-            //    model.UserType = roleItems;
             return View(model);
-
-
         }
 
 
@@ -445,17 +418,10 @@ namespace xilopro2.Controllers
         {
             if (ModelState.IsValid)
             {
-                // var path = model.User_Image;
-
-                // if (model.FotoFile != null) {  path = _imageHelper.UploadImage(model.FotoFile, "Users"); }
-
-              
-
                 var userOnDB = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(model.Id));
 
                 if (model.FotoFile != null)//revisamos si se cargo foto nueva
                 {
-
                     if (!string.IsNullOrEmpty(userOnDB.User_Image))//si se cargo foto nueva se procede a identificar la foto antigua para borrarla
                     {
                         if (_imageHelper.DeleteImage(userOnDB.User_Image, "Users"))//se borra la foto antigua
@@ -473,19 +439,16 @@ namespace xilopro2.Controllers
                     }
                 }
                
-              //  currentUser.Category = await _dataContext.Categories.FindAsync(model.Categoryid);
                 string newRoleNAME = _userHelper.GetRoleNameByID(model.UserTypeof);
-                //  currentUser.User_CreatedTime = currentUser.User_CreatedTime;
                 var currentUser = await _swithUsers.ToUserAsync(model, false);
                 currentUser.SelectedCategoryIds = userOnDB.SelectedCategoryIds;
 
                 if (userOnDB.UserTypeofRole != newRoleNAME)
                 {
-                    var result = await _userHelper.RemoveFromRoleLAST(currentUser.Id, userOnDB.UserTypeofRole, newRoleNAME); //_userHelper.UpdateRoleInUser(currentUser, currentUser.UserTypeofRole, newRoleNAME);
+                    var result = await _userHelper.RemoveFromRoleLAST(currentUser.Id, userOnDB.UserTypeofRole, newRoleNAME); 
                     if (result)
                     {
-                        // await _userHelper.AddUserToRoleAsync(currentUser, newRoleNAME); 
-                        currentUser.UserTypeofRole = newRoleNAME;// _userHelper.GetRoleNameByID(model.UserTypeof.ToString());
+                        currentUser.UserTypeofRole = newRoleNAME;
                     }
 
                 }
@@ -496,10 +459,41 @@ namespace xilopro2.Controllers
 
                 return RedirectToAction("Profile", "Users", new { id = currentUser.Email });
             }
-          //  model.UserType = _combos.GetCombosRoles();
-          //  model.Categories = _combos.GetComboCategorias();
             return View(model);
 
+        }
+
+        //cambair password
+        public IActionResult ChangePassword(string id)
+        {
+            var userOnDB =  _userHelper.GetUserAsyncbyEmail(id);
+            
+            ChangePasswordViewModel model = new()
+            {
+                UserEmail = userOnDB.Result.Email,
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name);
+                IdentityResult result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                  //  return RedirectToAction("ChangeUser");
+                    return RedirectToAction("Profile", "Users", new { id = user.Email });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                }
+            }
+
+            return View(model);
         }
 
 

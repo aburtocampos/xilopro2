@@ -177,7 +177,7 @@ namespace xilopro2.Helpers
 
         public async Task<AppUser> GetUserAsyncbyEmail(string email)
         {
-            AppUser response = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var response = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             return response;
         }
