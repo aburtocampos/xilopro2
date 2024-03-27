@@ -175,13 +175,13 @@ namespace xilopro2.Helpers
             }
         }
 
-        public async Task<AppUser> GetUserAsync(string email)
+        public async Task<AppUser> GetUserAsyncbyEmail(string email)
         {
             AppUser response = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             return response;
         }
-        public async Task<AppUser> GetUserAsync(Guid id)
+        public async Task<AppUser> GetUserAsyncbyGuid(Guid id)
         {
             var response = await _context.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
             return response;
@@ -252,6 +252,14 @@ namespace xilopro2.Helpers
             return false;
         }
 
-       
+        public async Task<IdentityResult> ChangePasswordAsync(AppUser user, string oldpass, string newpass)
+        {
+            return await _userManager.ChangePasswordAsync(user, oldpass, newpass);
+        }
+
+
+
+
+
     }
 }

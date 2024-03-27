@@ -7,8 +7,8 @@ namespace xilopro2.Helpers.Interfaces
     public interface IUserHelper
     {
 
-        Task<AppUser> GetUserAsync(string email);
-        Task<AppUser> GetUserAsync(Guid id);
+        Task<AppUser> GetUserAsyncbyEmail(string email);
+        Task<AppUser> GetUserAsyncbyGuid(Guid id);
 
         Task<AppUser> GetUserManager(string userId);
         Task<bool> RemoveFromRoleLAST(string userID, string roleName, string newRole);
@@ -37,6 +37,9 @@ namespace xilopro2.Helpers.Interfaces
         Task<string> GenerateEmailConfirmationTokenAsync(AppUser user);
 
         Task LogoutAsync();
+
+
+        Task<IdentityResult> ChangePasswordAsync(AppUser user, string oldpass, string newpass);
 
     }
 }

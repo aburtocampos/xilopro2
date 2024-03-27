@@ -111,7 +111,7 @@ namespace xilopro2.Models
         public IEnumerable<SelectListItem> Categories { get; set; }
 
         [Display(Name = "Categorias:")]
-        public List<int> SelectedCategoryIds { get; set; }
+        public List<int>? SelectedCategoryIds { get; set; }
 
         public IEnumerable<SelectListItem> Countries { get; set; }
 

@@ -57,7 +57,9 @@ namespace xilopro2.Data
         public DbSet<Parent> Parents { get; set; }
 
         public DbSet<PlayerFiles> PlayerFiles { get; set; }
-      
+
+        public DbSet<PlayerStatistics> PlayerStatistics { get; set; }
+
 
 
         //  public DbSet<UserCategory> UserCategory { get; set; }

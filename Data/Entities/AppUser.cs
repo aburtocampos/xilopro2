@@ -20,6 +20,7 @@ namespace xilopro2.Data.Entities
         public string? User_LastName { get; set; }
 
         [Display(Name = "Dirección")]
+        [DataType(DataType.MultilineText)]
         [MaxLength(200, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string? User_Address { get; set; }

@@ -38,7 +38,7 @@ namespace xilopro2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
 
             if (User.IsInRole("Editor") || User.IsInRole("Dt"))
@@ -76,7 +76,7 @@ namespace xilopro2.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
 
             TorneoViewModel model = new TorneoViewModel
@@ -116,7 +116,7 @@ namespace xilopro2.Controllers
                     }
                 }
             }
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
             model.Categories = _combos.GetCategoriasPorIds(filtroIdsCategories);
 
@@ -130,7 +130,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
             Torneo tournamentEntity = await _context.Torneos.FindAsync(id);
             if (tournamentEntity == null)
@@ -195,7 +195,7 @@ namespace xilopro2.Controllers
                     }
                 }
             }
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
             model.Categories = _combos.GetCategoriasPorIds(filtroIdsCategories);
             return View(model);
@@ -269,7 +269,7 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
             var userName = User.Identity.Name;
-            var user = await _userHelper.GetUserAsync(userName);
+            var user = await _userHelper.GetUserAsyncbyEmail(userName);
          //   List<string> catnames = _context.Categories.Where(e => user.SelectedCategoryIds.Contains(e.Category_ID)).Select(e => e.Category_Name).ToList();
 
             Torneo tournamentEntity = await _context.Torneos

@@ -54,7 +54,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            var user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            var user = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(id));
 
             UserViewModel model = _swithUsers.ToUserViewModel(user);
 
@@ -231,7 +231,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            var user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            var user = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(id));
             if (user == null)
             {
                 return NotFound();
@@ -259,7 +259,7 @@ namespace xilopro2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userondb = await _userHelper.GetUserAsync(model.Email);
+                var userondb = await _userHelper.GetUserAsyncbyEmail(model.Email);
                 if (model.FotoFile != null)//revisamos si se cargo foto nueva
                 {
 
@@ -323,7 +323,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            var user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            var user = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(id));
             if (user == null)
             {
                 return NotFound();
@@ -352,7 +352,7 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            var user = await _userHelper.GetUserAsync(Guid.Parse(id));
+            var user = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(id));
             if (user == null)
             {
                 return NotFound();
@@ -388,7 +388,7 @@ namespace xilopro2.Controllers
             }
            // var user = await _userHelper.GetUserAsync(Guid.Parse(id));
             // User user = await _userHelper.GetUserAsync(Guid.Parse(id));
-            var user = await _userHelper.GetUserAsync(id);
+            var user = await _userHelper.GetUserAsyncbyEmail(id);
             List<string> catnames = _dataContext.Categories.Where(e => user.SelectedCategoryIds.Contains(e.Category_ID)).Select(e => e.Category_Name).ToList();
             if (user == null)
             {
@@ -416,7 +416,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            var user = await _userHelper.GetUserAsync(id);
+            var user = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(id));
             if (user == null)
             {
                 return NotFound();
@@ -430,6 +430,8 @@ namespace xilopro2.Controllers
                userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
 
             UserViewModel model = _swithUsers.ToUserViewModel(user);
+
+
             //    model.UserType = roleItems;
             return View(model);
 
@@ -443,18 +445,40 @@ namespace xilopro2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = model.User_Image;
+                // var path = model.User_Image;
 
-                if (model.FotoFile != null)
+                // if (model.FotoFile != null) {  path = _imageHelper.UploadImage(model.FotoFile, "Users"); }
+
+              
+
+                var userOnDB = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(model.Id));
+
+                if (model.FotoFile != null)//revisamos si se cargo foto nueva
                 {
-                    path = _imageHelper.UploadImage(model.FotoFile, "Users");
-                }
-                var currentUser = await _swithUsers.ToUserAsync(model, false);
 
-                var userOnDB = await _userHelper.GetUserAsync(model.Id);
+                    if (!string.IsNullOrEmpty(userOnDB.User_Image))//si se cargo foto nueva se procede a identificar la foto antigua para borrarla
+                    {
+                        if (_imageHelper.DeleteImage(userOnDB.User_Image, "Users"))//se borra la foto antigua
+                        {
+                            model.User_Image = _imageHelper.UploadImage(model.FotoFile, "Users");//se sube la foto nuevay se almacena a la entidad
+                        }
+                        else
+                        {
+                            return RedirectToAction("Profile", "Users");
+                        }
+                    }
+                    else
+                    {
+                        model.User_Image = _imageHelper.UploadImage(model.FotoFile, "Users");
+                    }
+                }
+               
               //  currentUser.Category = await _dataContext.Categories.FindAsync(model.Categoryid);
                 string newRoleNAME = _userHelper.GetRoleNameByID(model.UserTypeof);
                 //  currentUser.User_CreatedTime = currentUser.User_CreatedTime;
+                var currentUser = await _swithUsers.ToUserAsync(model, false);
+                currentUser.SelectedCategoryIds = userOnDB.SelectedCategoryIds;
+
                 if (userOnDB.UserTypeofRole != newRoleNAME)
                 {
                     var result = await _userHelper.RemoveFromRoleLAST(currentUser.Id, userOnDB.UserTypeofRole, newRoleNAME); //_userHelper.UpdateRoleInUser(currentUser, currentUser.UserTypeofRole, newRoleNAME);
@@ -470,10 +494,10 @@ namespace xilopro2.Controllers
 
                 TempData["successUser"] = "Usuario " + currentUser.User_FullName + " editado!!";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Profile", "Users", new { id = currentUser.Email });
             }
-            model.UserType = _combos.GetCombosRoles();
-            model.Categories = _combos.GetComboCategorias();
+          //  model.UserType = _combos.GetCombosRoles();
+          //  model.Categories = _combos.GetComboCategorias();
             return View(model);
 
         }

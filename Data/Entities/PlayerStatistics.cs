@@ -4,7 +4,8 @@ namespace xilopro2.Data.Entities
 {
     public class PlayerStatistics
     {
-        [Key]
+       
+       [Key]
         public int PlayerStatistic_ID { get; set; }
         public int PlayerId { get; set; }
         public Player Player { get; set; }

@@ -51,6 +51,7 @@ namespace xilopro2.Data.Entities
         public int GroupsrId { get; set; }
 
 
+        public ICollection<PlayerStatistics> PlayerStats { get; set; }
 
 
     }

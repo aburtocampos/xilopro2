@@ -37,7 +37,7 @@ namespace xilopro2.Controllers
            // var usuarioLogueado = _userHelper.GetUserAsync(User.Identity.Name);
            // ViewBag.ProfileImage = usuarioActual.Result.User_Image;
 
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
            
             // var catId = Convert.ToInt32(usuarioensesion.SelectedCategoryIds);
@@ -101,7 +101,7 @@ namespace xilopro2.Controllers
      
         public async Task<IActionResult> Details(int? id)
         {
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
 
             if (id == null || _context.Players == null)
@@ -161,7 +161,7 @@ namespace xilopro2.Controllers
         // GET: Players/Create
         public async Task<IActionResult> Create()
         {
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
            List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
 
             //  List<string> miListaDeStrings = new List<string> { "Seleccionar", "Masculino", "Femenino" };
@@ -288,7 +288,7 @@ namespace xilopro2.Controllers
 
             _imageHelper.DeleteImage(newuserobj.Player_Image, "Players");
 
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
             model.Teams = _combos.GetCombosEquipos();
             model.Positions = _combos.GetCombosPosiciones();
@@ -310,7 +310,7 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            usuarioensesion = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
 
            // List<string> miListaDeStrings = new List<string> {   "Seleccionar",   "Masculino",  "Femenino"  };

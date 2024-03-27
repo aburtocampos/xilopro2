@@ -246,7 +246,7 @@ namespace xilopro2.Data
 
         private async Task checkUserAsync(string firstName, string lastName, string username, string email, string phone, string address, string userType)
         {
-            AppUser user = await _userHelper.GetUserAsync(email);
+            AppUser user = await _userHelper.GetUserAsyncbyEmail(email);
             if (user == null)
             {
                 
