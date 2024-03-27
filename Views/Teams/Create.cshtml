@@ -4,10 +4,13 @@
     ViewData["Title"] = "Create";
 }
 
-<div class="container">
-    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Creando Nuevo Equipo</h2>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Teams" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Creando Nuevo Equipo</h2>
+    </div>
     <hr />
-    <div class="card border-primary" style="width: 60%;margin:0 auto;">
+    <div class="card border-primary" style="width: 100%;margin:0 auto;">
         <form asp-action="Create" enctype="multipart/form-data">
             <div class="card-body">
                 <div class="row">

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace xilopro2.Data.Entities
@@ -34,9 +35,6 @@ namespace xilopro2.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyy/MM/dd}", ApplyFormatInEditMode = false)]
         public DateTime Torneo_EndDateLocal => Torneo_EndDate.ToLocalTime();
 
-      /*  [Display(Name = "Tipo:")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string Torneo_Type { get; set; }*/
 
         [Display(Name = "Temporada:")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -49,7 +47,13 @@ namespace xilopro2.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public bool Torneo_Status { get; set; }
 
+        [Display(Name = "Categorias:")]
+        public List<int>? SelectedCategoryIds { get; set; }
+
+
         //relations
-        public virtual ICollection<Groups> Groups { get; set; }
+        public ICollection<Groups>? Groups { get; set; }
+
+
     }
 }

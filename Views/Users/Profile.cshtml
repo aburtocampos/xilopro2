@@ -3,13 +3,21 @@
 @{
     ViewData["Title"] = "Pérfil";
     var path = "/Content/Users/";
+
 }
 <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true" />
 
-<div class="container pt-2">
-    <div class="d-flex justify-content-between align-items-center">
-        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-default fs-4"><i class="fa-solid fa-arrow-left"></i> Atras | Mi Usuario:</a>
-        <span class="badge bg-dark fs-4">@Model.Email</span>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <div class="d-flex gap-4 justify-content-center align-items-center">
+            <div class="flex-column">
+                <p class="text-end fw-bold mb-1">Activo desde:</p>
+                <span class="text-end d-flex" id="idtimi"></span>
+            </div>
+            <span class="badge bg-dark fs-4">@Model.Email</span>
+        </div>
+       
     </div>
 
     <hr />
@@ -40,13 +48,10 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group mb-2">
-                                            <label asp-for="User_FirstName" class="control-label"></label>
-                                            <h3 class="text-warning">@Model.User_FirstName</h3>
+                                            <label  class="control-label">Nombres:</label>
+                                           <h3 class="text-warning">@Model.User_FirstName @Model.User_LastName</h3>
                                         </div>
-                                        <div class="form-group mb-2">
-                                            <label asp-for="User_LastName" class="control-label"></label>
-                                            <h3 class="text-warning">@Model.User_LastName</h3>
-                                        </div>
+
                                         <div class="form-group mb-2">
                                             <label asp-for="PhoneNumber" class="control-label"></label>
                                             <h3 class="text-warning">@Model.PhoneNumber</h3>
@@ -62,7 +67,7 @@
 
 
                                     <div class="col-md-4">
-
+                                        
                                         <div class="form-group mb-2">
                                             <label asp-for="Status" class="form-check-label"></label>
                                             @if (Model.Status)
@@ -80,17 +85,23 @@
                                             <label asp-for="Email" class="control-label"></label>
                                             <h3 class="text-warning">@Model.Email</h3>
                                         </div>
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <div class="form-group mb-2">
-                                                <label asp-for="UserTypeof" class="control-label"></label>
-                                                <select asp-for="UserTypeof" asp-items="Model.UserType" class="form-select" disabled></select>
-                                                <span asp-validation-for="UserTypeof" class="text-danger"></span>
-                                            </div>
+                                        <div class="form-group mb-2">
+                                            @if (Enumerable.Count(ViewBag.CatNames) > 1)
+                                            {
+                                                <label class="control-label mb-2 fw-bold">Categorias:</label>
+                                            }
+                                            else
+                                            {
+                                                <label class="control-label mb-2 fw-bold">Categoria:</label>
+                                            }
+                                            <ul class="list-group list-group-flush">
+                                                @foreach (var nombre in ViewBag.CatNames)
+                                                {
+                                                    <li class="list-group-item text-primary fw-bold">@nombre</li>
+                                                }
 
-                                            <div class="form-group mb-2">
-                                            </div>
-                                        }
+                                            </ul>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -104,7 +115,10 @@
                         </form>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
+
+ 
+                </div>
                 <div class="tab-pane fade" id="v-pills-disabled" role="tabpanel" aria-labelledby="v-pills-disabled-tab" tabindex="0">...</div>
                 <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
                 <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
@@ -119,3 +133,38 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+<script>
+
+    function mostrarTiempoTranscurrido() {
+        // Obtener la fecha almacenada en ViewBag
+        var fechaViejaString = '@ViewBag.Timesta';
+        var fechaVieja = new Date(fechaViejaString);
+
+        // Obtener la fecha actual
+        var fechaActual = new Date();
+
+        // Calcular la diferencia en milisegundos
+        var diferencia = fechaActual - fechaVieja;
+
+        // Calcular años, meses y días
+        var milisegundosEnUnSegundo = 1000;
+        var milisegundosEnUnMinuto = milisegundosEnUnSegundo * 60;
+        var milisegundosEnUnaHora = milisegundosEnUnMinuto * 60;
+        var milisegundosEnUnDia = milisegundosEnUnaHora * 24;
+        var años = Math.floor(diferencia / (milisegundosEnUnDia * 365.25));
+        var meses = Math.floor((diferencia % (milisegundosEnUnDia * 365.25)) / (milisegundosEnUnDia * 30.44));
+        var dias = Math.floor((diferencia % (milisegundosEnUnDia * 30.44)) / milisegundosEnUnDia);
+        var horas = Math.floor((diferencia % milisegundosEnUnDia) / milisegundosEnUnaHora);
+        var minutos = Math.floor((diferencia % milisegundosEnUnaHora) / milisegundosEnUnMinuto);
+        var segundos = Math.floor((diferencia % milisegundosEnUnMinuto) / milisegundosEnUnSegundo);
+
+
+
+        // Mostrar en el elemento span
+        var spanTiempoTranscurrido = document.getElementById('idtimi');
+        spanTiempoTranscurrido.innerHTML = `${años}  años,  ${meses}  meses,  ${dias}  días,<br/> ${horas}  horas,  ${minutos}  minutos y  ${segundos} segundos`;
+    }
+
+    mostrarTiempoTranscurrido();
+    setInterval(mostrarTiempoTranscurrido, 1000);
+</script>

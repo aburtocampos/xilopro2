@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 using System.Linq;
 using xilopro2.Data;
+using xilopro2.Data.Entities;
 using xilopro2.Enums;
 using xilopro2.Helpers.Interfaces;
 
 namespace xilopro2.Helpers
 {
-    public class CombosHelper:ICombos
+    public class CombosHelper: ICombos
     {
         private readonly DataContext _dataContext;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -21,11 +25,11 @@ namespace xilopro2.Helpers
         public List<SelectListItem> GetComboGeneros()
         {
             var list = new List<SelectListItem> { 
-               new SelectListItem{
+              /* new SelectListItem{
                     Text = "[Seleccionar...]",
                     Value = "null", // Valor vacío o puedes establecerlo a null
                // Selected = true // Establecer como seleccionado por defecto
-                },
+                },*/
                 new SelectListItem
                 {
                     Text = "Masculino",
@@ -37,6 +41,11 @@ namespace xilopro2.Helpers
                     Value = "Femenino",
                 }
             };
+            list.Insert(0, new SelectListItem
+            {
+                Text = "Seleccionar Género...",
+                Value = ""
+            });
             /*     new SelectListItem
                    {
                        Text = "[Seleccionar...]",
@@ -82,6 +91,17 @@ namespace xilopro2.Helpers
             return list;
         }
 
+
+        public string GetCategoriaPorId(List<int> id)
+        {
+            var categoriaName = _dataContext.Categories
+            .Where(c => id.Contains(c.Category_ID))
+            .Select(c => c.Category_Name)
+            .SingleOrDefault();
+
+            return categoriaName;
+        }
+
         public IEnumerable<SelectListItem> GetComboCategorias()
         {
             List<SelectListItem> list = _dataContext.Categories.Select(x => new SelectListItem
@@ -93,7 +113,7 @@ namespace xilopro2.Helpers
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una categoria...]",
+                Text = "Seleccione una categoria...",
                 Value = "0"
             });
             return list;
@@ -104,17 +124,81 @@ namespace xilopro2.Helpers
             List<SelectListItem> list = _dataContext.Teams.Select(x => new SelectListItem
             {
                 Text = x.Team_Name,
-                Value = $"{x.Team_ID}"
+                 Value = $"{x.Team_ID}",
+                
             })
                 .OrderBy(x => x.Text)
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un equipo...]",
-                Value = "0"
+                Text = "Seleccione un equipo...",
+                Value = "0",
+               
             });
             return list;
         }
+
+
+        public List<Team> GetCombosEquiposPorIds(int id)
+        {
+            List<Team> list = new List<Team>();
+            try
+            {
+                list = _dataContext.GroupDetails
+                 .Include(gd => gd.Team)
+                 .Where(gd => gd.Groups.Group_ID == id)
+                 .Select(gd => new Team
+                 {
+                     Team_ID = gd.Team.Team_ID,
+                     Team_Name = gd.Team.Team_Name , 
+                     Team_Image = gd.Team.Team_Image,
+                 })
+                 .OrderBy(t => t.Team_Name)
+                 .ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return list;
+        }
+
+      /*  public IEnumerable<SelectListItem> GetCombosEquiposPorIds(int id)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            try
+            {
+                list = _dataContext.GroupDetails
+                 .Include(gd => gd.Team)
+                 .Where(gd => gd.Groups.Group_ID == id)
+                 .Select(gd => new SelectListItem
+                 {
+                     Text = gd.Team.Team_Name, // Usar directamente sin string.Format
+                     Value = $"{gd.Team.Team_ID}|{gd.Team.Team_Image}",
+                     //  Value = gd.Team.Team_ID.ToString() + "|" + gd.Team.Team_Image, 
+
+
+                 })
+                 .OrderBy(t => t.Text) // Esto ya ordena por el nombre del equipo directamente
+                 .ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "Seleccionar equipo...",
+                Value = "0"
+            });
+
+            return list;
+        }*/
+
+
+
         public IEnumerable<SelectListItem> GetCombosPosiciones()
         {
             List<SelectListItem> list = _dataContext.Positions.Select(x => new SelectListItem
@@ -126,7 +210,7 @@ namespace xilopro2.Helpers
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione una posición...]",
+                Text = "Seleccione una posición...",
                 Value = "0"
             });
             return list;
@@ -153,7 +237,7 @@ namespace xilopro2.Helpers
             // Agregar la opción por defecto
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un rol...]",
+                Text = "Seleccione un rol...",
                 Value = "0"
             });
 
@@ -173,14 +257,14 @@ namespace xilopro2.Helpers
                .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un rol...]",
+                Text = "Seleccione un rol...",
                 Value = "0"
             });
             return list;
         }
 
         //desde enum
-        public IEnumerable<SelectListItem> GetComboRoles()
+        public IEnumerable<SelectListItem> GetCombosRolesEnum()
         {
 
             List<SelectListItem> list = Enum.GetValues(typeof(UserType)).Cast<UserType>().Select(v => new SelectListItem
@@ -199,6 +283,25 @@ namespace xilopro2.Helpers
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetComboGenerosEnum()
+        {
+
+            List<SelectListItem> list = Enum.GetValues(typeof(Genders)).Cast<Genders>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            })
+                 .OrderBy(x => x.Value)
+                .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccionar genero...]",
+                Value = "0"
+            });
+            return list;
+        }
+
         public IEnumerable<SelectListItem> GetCombosCountries()
         {
             List<SelectListItem> list = _dataContext.Countries.Select(x => new SelectListItem
@@ -210,7 +313,7 @@ namespace xilopro2.Helpers
                  .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un pais...]",
+                Text = "Seleccione un pais...",
                 Value = "0"
             });
             return list;
@@ -219,7 +322,7 @@ namespace xilopro2.Helpers
         public IEnumerable<SelectListItem> GetCombosStates()
         {
             List<SelectListItem> list = _dataContext.States
-                .Where(x => x.Country.Country_Name == "Nicaragua")
+               // .Where(x => x.Country.Country_Name == "Nicaragua")
                 .Select(x => new SelectListItem
                 {
                     Text = x.State_Name,
@@ -230,7 +333,7 @@ namespace xilopro2.Helpers
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un departamento...]",
+                Text = "Seleccione un departamento...",
                 Value = "0"
             });
             return list;
@@ -247,12 +350,50 @@ namespace xilopro2.Helpers
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un municipio...]",
+                Text = "Seleccione un municipio...",
                 Value = "0"
             });
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetCombosCitiesByState(int stateid=1)
+        {
+            List<SelectListItem> list = _dataContext.Cities
+              .Where(c => c.IdState == stateid)
+             .Select(x => new SelectListItem
+            {
+                Text = x.City_Name,
+                Value = $"{x.City_ID}"
+            })
+                .OrderBy(x => x.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "Seleccione un municipio...",
+            });
+            return list;
+        }
 
+        public IEnumerable<SelectListItem> GetCombosStatesByCountry(int countryid = 1)
+        {
+            List<SelectListItem> list = _dataContext.States
+              .Where(c => c.Country.Country_ID == countryid)
+             .Select(x => new SelectListItem
+             {
+                 Text = x.State_Name,
+                 Value = $"{x.State_ID}"
+             })
+                .OrderBy(x => x.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "Seleccione un departamento...",
+            });
+            return list;
+        }
+
+       
     }
 }

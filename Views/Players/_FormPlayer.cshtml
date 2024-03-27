@@ -8,6 +8,7 @@
 <input type="hidden" asp-for="Countries" />
 <input type="hidden" asp-for="Positions" />
 <input type="hidden" asp-for="Teams" />
+<input type="hidden" asp-for="PlayerFiles" />
 
 <div class="col-md-3">
     <div class="form-group mb-2 text-center">
@@ -62,12 +63,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-2">
                 <label for="Player_Genero" class="control-label fw-bold">Genero:</label>
-                <select id="Player_Genero" name="Player_Genero" class="form-select">
-                    @foreach (var opcion in ViewBag.Genero)
-                    {
-                        <option value="@opcion">@opcion</option>
-                    }
-                </select>
+                <select asp-for="Player_Genero" asp-items="ViewBag.Genero" class="form-select"></select>
                 <span asp-validation-for="Player_Genero" class="text-danger"></span>
                     </div>
                 </div>
@@ -98,27 +94,22 @@
         <span asp-validation-for="Positionid" class="text-danger"></span>
     </div>
     <div class="form-group mb-2">
-        <label asp-for="CountryID" class="control-label fw-bold"></label>
-        <select asp-for="CountryID" asp-items="Model.Countries" class="form-select"></select>
-        <span asp-validation-for="CountryID" class="text-danger"></span>
+        <label asp-for="Countryid" class="control-label fw-bold"></label>
+        <select asp-for="Countryid" asp-items="Model.Countries" class="form-select" id="countrySelect" ></select>
+        <span asp-validation-for="Countryid" class="text-danger"></span>
     </div>
     <div class="form-group mb-2">
-        <label asp-for="StateID" class="control-label fw-bold"></label>
-        <select asp-for="StateID" asp-items="Model.States" class="form-select" id="stateDropdown" onclick="loquito()"></select>
-        <span asp-validation-for="StateID" class="text-danger"></span>
+        <label asp-for="Stateid" class="control-label fw-bold"></label>
+        <select asp-for="Stateid"  class="form-select" id="stateSelect"></select>
+        <span asp-validation-for="Stateid" class="text-danger"></span>
     </div>
     <div class="form-group mb-2">
-        <label asp-for="CityID" class="control-label fw-bold"></label>
-        <select asp-for="CityID" asp-items="Model.Cities" class="form-select" id="cityDropdown"></select>
-        <span asp-validation-for="CityID" class="text-danger"></span>
+        <label asp-for="Cityid" class="control-label fw-bold"></label>
+        <select asp-for="Cityid"  class="form-select" id="citySelect"></select>
+        <span asp-validation-for="Cityid" class="text-danger"></span>
     </div>
-
-
 
 </div>
-
-
-
         <div class="col-md-3">
     <div class="row">
         <div class="col-md-3">
@@ -144,8 +135,8 @@
         @foreach (var category in Model.Categories)
         {
             <div class="form-check form-switch ms-4">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="SelectedCategoryIds" value="@category.Value"
-                @(Model.SelectedCategoryIds != null && Model.SelectedCategoryIds.Contains(Convert.ToInt32(category.Value)) ? "checked" : "") style="cursor:pointer;">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="SelectedCategoryIdss" value="@category.Value"
+                @(Model.SelectedCategoryIdss != null && Model.SelectedCategoryIdss.Contains(Convert.ToInt32(category.Value)) ? "checked" : "") style="cursor:pointer;">
                 <label class="form-check-label ms-1" for="flexSwitchCheckDefault">@category.Text</label>
             </div>
 
@@ -179,6 +170,7 @@
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script src="~/js/cascade.js"></script>
 <script type="text/javascript">
     function showimagepreview(input) {
         if (input.files && input.files[0]) {
@@ -195,34 +187,60 @@
     }
 
     function clearInput() {
-        document.getElementById("inputProfileImg").setAttribute("src", "../images/noimage.png");
+        document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
         document.getElementById("inputGroupFile03").value = "";
     }
 
     $('#chckStaus').checkboxpicker({
         html: true,
         offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
-        onLabel: '<i class="fa-regular fa-thumbs-up"></i> Activa'
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> Activa'
     });
 
     //evento change para el drop decida si muestra cedula y fifaid segun la categoria
     document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
         checkbox.addEventListener('change', function () {
        // var checkboxCategoria = document.getElementById("flexSwitchCheckDefault");
-            var checkboxCategoria = checkbox;
+        var checkboxCategoria = checkbox;
         var campoCedula = document.getElementById("campoCedula");
         var campoFifaid = document.getElementById("campoFifaid");
      //   var selectedValue = categoriaSelect.options[categoriaSelect.selectedIndex].value;
       //  console.log('-> ', checkboxCategoria.value);
      //   if (selectedValue != "1" /*&& selectedValue != "5" && selectedValue != "7"*/) {
-            if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
+        if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
             campoCedula.style.display = "none";
             campoFifaid.style.display = "none";
+
+                if (checkboxCategoria.value == 2) {
+                    var edad = document.getElementById('labelEDAD').innerText;
+                    if (edad > 13) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U13");
+                        checkboxCategoria.checked = false;
+                    }
+                }
+                if (checkboxCategoria.value == 5 || checkboxCategoria.value == 3) {
+                    
+                    var edad = document.getElementById('labelEDAD').innerText;
+                    if (edad > 15) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U15");
+                        checkboxCategoria.checked = false;
+                    }
+                }
+                if (checkboxCategoria.value == 4 || checkboxCategoria.value == 6) {
+
+                    var edad = document.getElementById('labelEDAD').innerText;
+                    if (edad > 17) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U17");
+                        checkboxCategoria.checked = false;
+                    }
+                }
+
         } else {
             campoCedula.style.display = "block";
             campoFifaid.style.display = "block";
         }
 
+           
 
     });
     });
@@ -249,9 +267,34 @@
         calcularEdad()
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIdss"]');
+        var selectedRadio = null;
+
+        radios.forEach(function (radio) {
+            if (radio.checked) {
+                selectedRadio = radio;
+            }
+        });
+
+        radios.forEach(function (radio) {
+            radio.addEventListener('click', function () {
+                if (selectedRadio === radio) {
+                    radio.checked = false;
+                    selectedRadio = null;
+                } else {
+                    if (selectedRadio !== null) {
+                        selectedRadio.checked = false;
+                    }
+                    radio.checked = true;
+                    selectedRadio = radio;
+                }
+            });
+        });
+    });
 
     //categorias check independientes
-   document.addEventListener('DOMContentLoaded', function () {
+  /* document.addEventListener('DOMContentLoaded', function () {
         var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIds"]');
        var flag = false;
         radios.forEach(function (radio) {
@@ -269,9 +312,7 @@
                             otherRadio.disabled = false;
                         }
                     });
-                   /* radios.forEach(function (otherRadio) {
-                        otherRadio.disabled = (otherRadio !== radio);
-                    });*/
+
                 } else {
                     radio.disabled = false;
                     flag = false
@@ -283,7 +324,7 @@
                 }
             });
         });
-    });
+    });*/
 
 
 </script>

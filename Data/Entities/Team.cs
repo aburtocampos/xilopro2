@@ -26,7 +26,7 @@ namespace xilopro2.Data.Entities
         //  public int? userid { get; set; }
         //   public User? User { get; set; }
         public ICollection<Player>? Players { get; set; }
-        public ICollection<Match> Matches { get; set; }
-
+      //  public ICollection<Match> Matches { get; set; }
+        //public ICollection<GroupDetail> GroupDetails { get; set; }
     }
 }

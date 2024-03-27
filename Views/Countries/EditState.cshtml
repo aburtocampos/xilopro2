@@ -5,23 +5,29 @@
 }
 
 
-<div class="container">
-    <h3>   <a asp-action="DetailsState" asp-route-id="@Model.State_ID" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Editando el Departamento: <span class="badge bg-warning text-dark">@Model.State_Name</span></h3>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model.CountryId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Editando el Departamento: <span class="badge bg-warning text-black">@Model.State_Name</span></h3>
+    </div>
+   
     <hr />
-    <div class="card border-warning" style="width: 60%;margin:0 auto;">
+    <div class="card border-warning" style="width: 100%;margin:0 auto;">
+        <form asp-action="EditState">
         <div class="card-body">
             <div class="col-md-12">
-                <form asp-action="EditState">
+              
                     <partial name="_FormState" />
-                </form>
+               
             </div>
         </div>
         <div class="card-footer card-footer-warning">
             <div class="form-group my-2 d-flex justify-content-between">
-                <a asp-action="DetailsState" asp-route-id="@Model.State_ID" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                <a asp-action="Details" asp-route-id="@Model.CountryId" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                 <button type="submit" value="Save" class="btn btn-warning"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
             </div>
         </div>
+        </form>
     </div>
 </div>
 

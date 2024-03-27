@@ -3,21 +3,26 @@
 @{
     ViewData["Title"] = "Details";
     var path = "/Content/Players/";
-    var cate = ViewData["CatName"].ToString();
+    var path2 = "/Content/Files/";
+    var path3 = "/Content/Parents/";
+   
+    var municipioList = ViewBag.MunicipioList;
+    var departamentoList = ViewBag.DepartamentoList;
+    
 }
+    <partial name="_Notifications">
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center">
-        <a asp-action="Index" class="btn btn-outline-default fs-5"><i class="fa-solid fa-arrow-left"></i> Atras |</a>
-        <h2 class="m-0"><span class="badge bg-dark fs-4 text-uppercase">@Model.Player_FullName</span></h2>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+            <h2 class="m-0 text-end">@(Model.Player_Genero == "Masculino" ? "Jugador:" : "Jugadora:") <span class="badge bg-dark fs-4 text-uppercase">@Model.Player_FullName</span></h2>
     </div>
     <hr />
 
-    <partial name="_Notifications">
         <div class="card border-dark row" style="width: 100%;margin:0 auto;">
 
             <div class="card-body row">
-                <div class="col-md-4">
+                <div class="col-md-4 text-center">
                     <div class="form-group mb-2">
                         <div class="d-flex justify-content-between">
                             <span class="mb-2 d-block">FIFA ID: <span class="text-primary fw-bold" >@Model.Player_fifaid</span></span>
@@ -25,13 +30,12 @@
                                 <label class="form-check-label d-inline">Estado:</label>
                                 @if (Model.Player_Status)
                                 {
-                                    <h5 class="text-primary d-inline">Activo</h5>
+                                    <h5 class="badge bg-success d-inline">Activo</h5>
                                 }
                                 else
                                 {
-                                    <h5 class="text-danger d-inline">Inactivo</h5>
+                                    <h5 class="badge bg-danger d-inline">Inactivo</h5>
                                 }
-
                             </div>
                         </div>
                          
@@ -40,7 +44,7 @@
                  
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 mt-3">
                     <div class="form-group my-2">
                         <label class="control-label">Cedula:</label>
                         <h2 class="text-primary text-uppercase"> @Model.Player_Cedula</h2>
@@ -65,7 +69,7 @@
 
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 mt-3">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-2 ">
@@ -83,7 +87,6 @@
                                 <label class="control-label">Posición:</label>
                                 <h3 class="text-primary">@ViewData["Pos"]</h3>
                             </div>
-
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-2 d-flex justify-content-end align-items-center gap-1">
@@ -124,18 +127,18 @@
 
             <div class="card-footer card-footer-dark">
                 <div class="form-group my-2 d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
-                    <div>
-                        @if (cate != "MAYOR")
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div class="btn-group">
+                        @if (ViewData["CatName"].ToString() != "MAYOR")
                         {
                             <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-                            <a asp-action="CreateParent" asp-route-id="@Model?.Player_ID" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Agregar Tutor</a>
-                            <a class="btn btn-success"><i class="fa-solid fa-plus"></i> Agregar Archivo</a>
+                            <a asp-action="AddParent" asp-route-id="@Model?.Player_ID" class="btn btn-primary"><i class="fa-solid fa-person-circle-plus"></i> Agregar Tutor</a>
+                            <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
                         }
                         else
                         {
-                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
-                            <a class="btn btn-info"><i class="fa-solid fa-plus"></i> Agregar Archivo</a>
+                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                            <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
                         }
 
                     </div>
@@ -144,42 +147,234 @@
             </div>
         </div>
 
-
         <hr />
-
-            
-           
-
        
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Archivos:</button>
+                <button class="nav-link active fw-bold" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Archivos:</button>
             </li>
            
-            @if (cate != "MAYOR")
+            @if (ViewData["CatName"].ToString() != "MAYOR")
             {
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
+                    <button class="nav-link fw-bold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
                 </li>
             }
-           
-            
         </ul>
+
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                <partial name="_PlayerFilesList" />
-            </div>
-             @if (cate != "MAYOR")
+             <div class="tab-pane fade show active p-2" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <!--<h3 class="panel-title text-capitalize mb-4 p-1 ms-2">Archivos de Model.Player_FullName</h3>-->
+                            </div>
+                            <div class="panel-body p-1">
+                                @if(Model.PlayerFiles.Count > 0){
+                                <table class="table table-hover table-responsive table-striped" id="TablaPlayerFiles">
+                                    <thead>
+                                        <tr>
+                                             <th style="vertical-align: middle; text-align:center;">
+                                                ID
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Name)
+                                            </th>
+                                            <th>
+                                                    @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Image)
+                                            </th>
+                                            <th class="text-end">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.PlayerFiles)
+                                        {
+                                            <tr>
+                                                <td style="vertical-align: middle; text-align:center;">
+                                                   @Html.DisplayFor(modelItem => item.PlayerFiles_ID)
+                                                </td>
+                                                <td style="vertical-align: middle;">
+                                                    <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                                        @Html.DisplayFor(modelItem => item.PlayerFiles_Name)
+                                                    </a>
+                                                </td>
+                                                <td style="vertical-align: middle;" class="imgZoom">
+                                                    <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                                        
+                                                         @if (item.PlayerFiles_Image != null && item.PlayerFiles_Image.Contains(".pdf"))
+                                                         {
+                                                             <i class="fa-solid fa-file-pdf" style=" font-size: 3.2rem;color: #000;" ></i>
+                                                           //<embed id="viewpreview2" type="application/pdf" src="@(!string.IsNullOrEmpty(item.PlayerFiles_Image) ? Url.Content(path+item.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" style="width:50px;height:50px;max-width: 100%; height: auto;"  />
+                                                         }
+                                                         else
+                                                         {
+                                                           <img src="@(!string.IsNullOrEmpty(item.PlayerFiles_Image) ? Url.Content(path2+item.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:50px;height:50px;max-width: 100%; height: auto;"  />
+                                                         }                         
+                                                    </a>
+                                                </td>
+                                                <td class="text-end" style="vertical-align: middle;text-align:right!important;" >
+                                                     <div class="btn-group">
+                                                    <a asp-action="EditPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
+                                                    <a asp-action="DeletePlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                }
+                                else
+                                {
+                                <div class="card-body">
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay archivos
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+
+            
+            @if (ViewData["CatName"] != "MAYOR")
             {
-            <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                    <partial name="_ParentsList" />
-            </div>
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                      <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <!--<h3 class="panel-title text-capitalize mb-4 p-1 ms-2">Tutor de Model.Player_FullName</h3>-->
+                                </div>
+                                <div class="panel-body p-1">
+                                      @if(Model.Parents.Count > 0){
+                                    <table class="table table-hover table-responsive table-striped" id="TablaParents">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_Image)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_FullName)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_Cedula)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().PhoneNumber)
+                                                </th>
+                                            
+                                                <th>
+                                                    @Html.DisplayName("Departamento")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Municipio")
+                                                </th>
+                                                <th class="text-end">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Parents)
+                                            {
+                                                <tr>
+                                                      <td style="vertical-align: middle;" class="imgZoom">
+                                                        <a asp-action="DetailsParent" asp-route-id="@item.Parent_ID" class="rowclick">
+                                                            <img src="@(!string.IsNullOrEmpty(item.Parent_Image) ? Url.Content(path3+item.Parent_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" />
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-uppercase" style="vertical-align: middle;">
+                                                        <a asp-action="DetailsParent" asp-route-id="@item.Parent_ID" class="rowclick">
+                                                            @Html.DisplayFor(modelItem => item.Parent_FullName)
+                                                        </a>
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.Parent_Cedula)
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                                    </td>
+                                                  
+                                                     <td style="vertical-align: middle;">
+
+                                                                @foreach (var nome in departamentoList)
+                                                                {
+                                                                    if (Convert.ToInt32(nome.Value) == item.StateID)
+                                                                    {
+                                                                       @nome.Text
+                                                                    }
+                                                                }
+                                                    </td>
+                                                     <td style="vertical-align: middle;">
+                                                            @foreach (var nome in municipioList)
+                                                            {
+                                                                 if (Convert.ToInt32(nome.Value) == item.CityID)
+                                                                 {
+                                                                    @nome.Text
+                                                                 }
+                                                            }
+                                                           
+                                                    </td>
+             
+                                                    <td class="text-end" style="vertical-align: middle;"  >
+                                                        <div class="btn-group">
+                                                         <a asp-action="EditParent" asp-route-id="@item.Parent_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
+                                                          <a asp-action="DeleteParent" asp-route-id="@item.Parent_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                    }else
+                                    { 
+                                        <div class="card-body">
+                                            <div class="alert alert-warning" role="alert">
+                                                <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>
+                
+                
             }
+        
             
         </div>
 
 
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#TablaPlayerFiles').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+            },
+            "aLengthMenu": [
+                [5, 25, 50, 100, 200, -1],
+                [5, 25, 50, 100, 200, "Todos"]
+            ]
+        })
+
+         $('#TablaParents').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ]
+            })
+
+    })
+</script>
 
 <script>
     //calcular edad basado en el evento change del datepicker

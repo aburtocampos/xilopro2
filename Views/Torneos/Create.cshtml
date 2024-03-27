@@ -4,20 +4,22 @@
     ViewData["Title"] = "Create";
 }
 
-<div class="container">
-    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Creando Nueva Torneo</h2>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Creando Nuevo Torneo</h3>
+    </div>
     <hr />
-    <div class="card border-success" style="width: 80%;margin:0 auto;">
+    <div class="card border-success" style="width: 100%;margin:0 auto;">
         <form asp-action="Create" enctype="multipart/form-data">
             <div class="card-body">
                 <div class="row">
-                    
                     <partial name="_FormTorneo" />
                 </div>
             </div>
             <div class="card-footer card-footer-success">
                 <div class="form-group d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
                 </div>
             </div>

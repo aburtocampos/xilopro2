@@ -32,8 +32,8 @@ namespace xilopro2.Helpers
             return new AppUser
             {
                 Email = model.Email,
-                User_FirstName = model.User_FirstName,
-                User_LastName = model.User_LastName,
+                User_FirstName = model.User_FirstName?.Trim().ToUpper(),
+                User_LastName = model.User_LastName?.Trim().ToUpper(),
                 User_Address = model.User_Address,
                 PhoneNumber = model.PhoneNumber,
                 UserTypeofRole = _userHelper.GetRoleNameByID(model.UserTypeof.ToString()),
@@ -102,10 +102,10 @@ namespace xilopro2.Helpers
         {
             return new Player
             {
-               // Player_ID = isNew ? Guid.NewGuid().ToString() : model.Player_ID,
-                Player_FirstName = model.Player_FirstName,
+                Player_ID = isNew ? 0 : model.Player_ID,
+                Player_FirstName = model.Player_FirstName?.Trim().ToUpper(),
                 Player_Address = model.Player_Address,
-                Player_LastName = model.Player_LastName,
+                Player_LastName = model.Player_LastName?.Trim().ToUpper(),
                 Player_Status = model.Player_Status,
                 Player_Dorsal = model.Player_Dorsal,
                 Player_FNC = model.Player_FNC,
@@ -114,18 +114,23 @@ namespace xilopro2.Helpers
                 Player_Cedula = model.Player_Cedula ?? "0000000000000L",
                 Player_fifaid = model.Player_fifaid ?? "00000",
                 Player_Genero = model.Player_Genero,
-                
-                Player_Image = isNew ? _imageHelper.UploadImage(model.FotoFile, "Players") : null,
+                Player_Image = model.Player_Image,
+           //     Player_Image = isNew ? _imageHelper.UploadImage(model.FotoFile, "Players") : null,
                 //Player_UserRol = model.Player_UserRol,
-                SelectedCategoryIds = model.SelectedCategoryIds,
+                SelectedCategoryIds = model.SelectedCategoryIdss,
 
-                Countryid = model.CountryID,
-                Stateid = model.StateID,
-                Cityid = model.CityID,
+                Countryid = model.Countryid,
+                Stateid = model.Stateid,
+                Cityid = model.Cityid,
+
+                Positionid = model.Positionid,
+                Teamid = model.Teamid,
+
                 
-                Country = await _context.Countries.FindAsync(model.CountryID),
-                Position = await _context.Positions.FindAsync(model.Positionid),
-                Team = await _context.Teams.FindAsync(model.Teamid),
+
+              //  Country = await _context.Countries.FindAsync(model.Countryid),
+             //   Position = await _context.Positions.FindAsync(model.Positionid),
+             //   Team = await _context.Teams.FindAsync(model.Teamid),
                 //TeamId = model.Teamid,
                // PositionId = model.Positionid,
 
@@ -155,8 +160,8 @@ namespace xilopro2.Helpers
                 Player_ID = player.Player_ID,
                 Player_Status = player.Player_Status,
                 Player_fifaid = player.Player_fifaid,
-              //  Player_Genero = player.Player_Genero,
-
+                Player_Genero = player.Player_Genero,
+                SelectedCategoryIdss = player.SelectedCategoryIds,
                 Categories = _combos.GetComboCategorias(),
                 Countries = _combos.GetCombosCountries(),
                 States = _combos.GetCombosStates(),
@@ -173,34 +178,36 @@ namespace xilopro2.Helpers
                /* StateID = player.State.State_ID,
                 CityID = player.City.City_ID,*/
 
-                /* Positionid = (from player0 in _context.Players
+                 Positionid = (from player0 in _context.Players
                            join position in _context.Positions on player0.Position.Position_ID equals position.Position_ID
-                           select position.Position_ID).FirstOrDefault(),*/
+                           select position.Position_ID).FirstOrDefault(),
 
-                /*  Categoryid = (from obj0 in _context.Players
-                                join categoria in _context.Categories on obj0.Category.Category_ID equals categoria.Category_ID
-                                select categoria.Category_ID).FirstOrDefault(),
-                 
-            Teamid = (from player2 in _context.Players
-                          join teams in _context.Teams on player2.Team.Team_ID equals teams.Team_ID
-                          select teams.Team_ID).FirstOrDefault(),
+                 Teamid = (from player2 in _context.Players
+                           join teams in _context.Teams on player2.Team.Team_ID equals teams.Team_ID
+                           select teams.Team_ID).FirstOrDefault(),
 
-                CountryID = (from player3 in _context.Players
-                             join country in _context.Countries on player3.Country.Country_ID equals country.Country_ID
-                         //    where usuario.Id == player.Player_ID
-                             select country.Country_ID).FirstOrDefault(),
+                 Countryid = (from player3 in _context.Players
+                              join country in _context.Countries on player3.Countryid equals country.Country_ID
+                              //    where usuario.Id == player.Player_ID
+                              select country.Country_ID).FirstOrDefault(),
 
-                StateID = (from player4 in _context.Players
-                           join state in _context.States on player4.State.State_ID equals state.State_ID
-                         //  where usuario.Id == player.Player_ID
-                           select state.State_ID).FirstOrDefault(),
+                 Stateid = (from player4 in _context.Players
+                            join state in _context.States on player4.Stateid equals state.State_ID
+                            //  where usuario.Id == player.Player_ID
+                            select state.State_ID).FirstOrDefault(),
 
-                CityID = (from player5 in _context.Players
-                          join city in _context.Cities on player5.City.City_ID equals city.City_ID
-                        //  where usuario.Id == player.Player_ID
-                          select city.City_ID).FirstOrDefault(), */
+                 Cityid = (from player5 in _context.Players
+                           join city in _context.Cities on player5.Cityid equals city.City_ID
+                           //  where usuario.Id == player.Player_ID
+                           select city.City_ID).FirstOrDefault(),
 
-            };
+                 /*  Categoryid = (from obj0 in _context.Players
+                                 join categoria in _context.Categories on obj0.Category.Category_ID equals categoria.Category_ID
+                                 select categoria.Category_ID).FirstOrDefault(),
+
+          */
+
+             };
             return resp;
 
 
@@ -217,10 +224,13 @@ namespace xilopro2.Helpers
                 User_Address = user.User_Address,
                 PhoneNumber = user.PhoneNumber,
                 UserTypeof = _userHelper.GetRoleIdByNAME(user.UserTypeofRole),
-                UserType = _combos.GetCombosRoles(),
+               // UserType = _combos.GetCombosRoles(),
+               User_CreatedTime = user.User_CreatedTime,
                 User_Image = user.User_Image,
                 User_FNC = user.User_FNC,
                 Id = user.Id,
+                User_Genero = user.User_Genero,
+                
                 Status = user.User_Status,
                 SelectedCategoryIds = user.SelectedCategoryIds,
                 Categories = _combos.GetCategorias(),/* PorIds(user.SelectedCategoryIds),*/
@@ -265,7 +275,7 @@ namespace xilopro2.Helpers
                 User_CreatedTime = DateTime.Today,
                 User_FNC = player.Player_FNC,
                 PhoneNumber = player.Player_PhoneNumber,
-                User_Image =  _imageHelper.UploadImage(player.FotoFile, "Players"),
+               // User_Image =  _imageHelper.UploadImage(player.FotoFile, "Players"),
                 UserTypeofRole = "User",
                 SelectedCategoryIds = player.SelectedCategoryIds,
                 Countryid = player.Countryid,

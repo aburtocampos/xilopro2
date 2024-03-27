@@ -6,7 +6,6 @@ namespace xilopro2.Data.Entities
     public class Country
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Country_ID { get; set; }
 
         [Display(Name = "País")]

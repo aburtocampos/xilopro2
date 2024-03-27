@@ -58,6 +58,7 @@ namespace xilopro2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CorrectionAction_ID,CorrectionAction_Name,CorrectionAction_Status")] CorrectionAction correctionAction)
         {
+            ModelState.Remove("CorrectionAction_ID");
             if (ModelState.IsValid)
             {
                 try

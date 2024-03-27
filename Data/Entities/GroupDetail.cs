@@ -20,9 +20,10 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Derrotas")]
         public int MatchesLost { get; set; }
 
+        [Display(Name = "Puntos")]
         public int Points => MatchesWon * 3 + MatchesTied;
 
-        [Display(Name = "Goles a a Favor")]
+        [Display(Name = "Goles a Favor")]
         public int GoalsFor { get; set; }
 
         [Display(Name = "Goles en contra")]
@@ -36,7 +37,11 @@ namespace xilopro2.Data.Entities
 
 
         //relations
-        public Groups Groups { get; set; }
-        public Team Team { get; set; }
+        public Groups? Groups { get; set; }
+        public int groupId { get; set; }
+
+        public Team? Team { get; set; }
+        public int teamId { get; set; }
+
     }
 }

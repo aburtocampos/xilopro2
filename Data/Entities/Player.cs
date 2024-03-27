@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using xilopro2.Models;
 
 namespace xilopro2.Data.Entities
 {
@@ -77,8 +78,9 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Cedula:")]
         [RegularExpression(@"[0-9]{3}[0-9]{6}[0-9]{4}[A-Z]{1}", ErrorMessage = "Formato de Cedula incorrecto")]
         [MaxLength(14, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public string? Player_Cedula { get; set; }
+      //  [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [RequiredIfNotOne(ErrorMessage = "El campo Cedula es requerido")]//campo requerido si la categoria contiene el id 1
+        public string? Player_Cedula { get; set; }= null;
 
 
         [Display(Name = "Genero:")]
@@ -92,11 +94,7 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Foto:", Prompt = "Foto")]
         public string? Player_Image { get; set; }
 
-        [NotMapped]
-        [Display(Name = "Escoger Imagen:")]
-        public IFormFile FotoFile { get; set; }
-
-
+      
         [Display(Name = "Jugador")]
         public string Player_FullName => $"{Player_FirstName} {Player_LastName}";
 
@@ -105,7 +103,8 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Categorias:")]
         public List<int> SelectedCategoryIds { get; set; }
 
-
+        [NotMapped]
+        public bool toogleBoolean { get; set; }
 
 
 
@@ -113,26 +112,61 @@ namespace xilopro2.Data.Entities
 
 
         public Team? Team { get; set; }
+        public int Teamid { get; set; }
 
-       public Position? Position { get; set; }
+        public Position? Position { get; set; }
 
+        public int Positionid { get; set; }
 
-
+        [Display(Name = "Pais:")]
         public int Countryid { get; set; }
 
          public Country? Country { get; set; }
 
-         public int Stateid { get; set; }
+        [Display(Name = "Departamento:")]
+        public int Stateid { get; set; }
 
-         public int Cityid { get; set; }
+        [Display(Name = "Municipio:")]
+        public int Cityid { get; set; }
 
 
 
-        public List<Parent>? Parents { get; set; }
+        public ICollection<Parent>? Parents { get; set; }
 
-        public List<PlayerFiles>? PlayerFiles { get; set; }
-
+        public ICollection<PlayerFiles>? PlayerFiles { get; set; }
 
 
     }
+
+
+
+    public class RequiredIfNotOneAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var model = validationContext.ObjectInstance as PlayerViewModel;
+            if (model == null) return ValidationResult.Success;
+
+            // Assuming that the SelectedCategoryIds property is a List<int>
+            if (model.SelectedCategoryIdss.Contains(1))
+            {
+                
+                // If the category is 1, then the Cedula is required
+                if (string.IsNullOrEmpty(value as string))
+                {
+                    return new ValidationResult(ErrorMessage);
+                }
+            }
+            else
+            {
+                // If the category is not 1, then the Cedula is not required
+                return ValidationResult.Success;
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+
+
+
 }

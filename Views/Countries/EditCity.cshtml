@@ -4,11 +4,14 @@
     ViewData["Title"] = "Edit";
 }
 
-<div class="container">
-    <h3><a asp-action="DetailsState" asp-route-id="@Model.StateId" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Editando el Municipio: <span class="badge bg-warning text-dark">@Model.City_Name</span></h3>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="DetailsState" asp-route-id="@Model.StateId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Editando el Municipio: <span class="badge bg-warning text-black">@Model.City_Name</span>del Departamento de @Model.StateName</h3>
+    </div>
 
     <hr />
-    <div class="card border-warning" style="width: 60%;margin:0 auto;">
+    <div class="card border-warning" style="width: 100%;margin:0 auto;">
         <form asp-action="EditCity">
             <div class="card-body">
                 <div class="col-md-12">

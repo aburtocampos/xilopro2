@@ -6,8 +6,12 @@
 
 <link rel="stylesheet" href="~/css/User.css" asp-append-version="true" />
 
-<div class="container pt-2">
-    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Creando Nuevo Usuario</h2>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Creando Nuevo Usuario</h2>
+    </div>
+   
     <hr />
     <div class="card anchoFormUser border-success">
         <form asp-action="CreateUser" enctype="multipart/form-data">
@@ -19,7 +23,7 @@
             </div>
             <div class="card-footer card-footer-success">
                 <div class="form-group d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
                 </div>
             </div>

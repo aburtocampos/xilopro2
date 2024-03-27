@@ -6,7 +6,7 @@ namespace xilopro2.Data.Entities
     public class Position
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+   //     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Position_ID { get; set; }
 
         [Display(Name = "Posición de Juego:")]

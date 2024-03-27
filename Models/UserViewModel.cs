@@ -35,6 +35,8 @@ namespace xilopro2.Models
         [Phone]
         public string PhoneNumber { get; set; }
 
+        public DateTime User_CreatedTime { get; set; }
+
         [Display(Name = "Cedula:")]
         [RegularExpression(@"[0-9]{3}[0-9]{6}[0-9]{4}[A-Z]{1}", ErrorMessage = "Formato de Cedula incorrecto")]
         [MaxLength(14, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
@@ -50,7 +52,7 @@ namespace xilopro2.Models
         public string? User_Image { get; set; }
 
 
-        [Display(Name = "Rol de usuario:")]
+        [Display(Name = "Rol:")]
         public string UserTypeof { get; set; } = string.Empty;
 
         [Display(Name = "Genero:")]

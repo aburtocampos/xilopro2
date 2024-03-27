@@ -1,0 +1,77 @@
+﻿@model IEnumerable<xilopro2.Data.Entities.Parent>
+
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<div class="container pt-4">
+    <partial name="_Notifications">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading d-flex justify-content-between align-content-center mb-2">
+                    <h3 class="panel-title">Padres o Tutores</h3>
+                 </div>
+                <hr />
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover  table-striped" id="tblPadresotutores">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Parent_FullName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Parent_Cedula)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Player.Player_FullName)
+                                    </th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="vertical-align: middle;">
+                                            @Html.DisplayFor(modelItem => item.Parent_FullName)
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            @Html.DisplayFor(modelItem => item.Parent_Cedula)
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            @Html.DisplayFor(modelItem => item.Player.Player_FullName)
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group">
+                                                <a asp-action="EditParent" asp-route-id="@item.Parent_ID" asp-asp-controller="Players" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                <a asp-action="DeleteParent" asp-route-id="@item.Parent_ID" asp-asp-controller="Players" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#tblPadresotutores').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                        },
+                        "aLengthMenu": [
+                            [5, 25, 50, 100, 200, -1],
+                            [5, 25, 50, 100, 200, "Todos"]
+                        ]
+                    })
+                })
+            </script>
+        }

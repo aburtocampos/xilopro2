@@ -10,14 +10,18 @@
                 <!--<h3 class="panel-title text-capitalize mb-4 p-1 ms-2">Archivos de Model.Player_FullName</h3>-->
             </div>
             <div class="panel-body">
+                @if(Model.PlayerFiles.Count > 0){
                 <table class="table table-hover table-responsive table-striped" id="TablaPlayerFiles">
                     <thead>
                         <tr>
+                             <th style="vertical-align: middle; text-align:center;">
+                                ID
+                            </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Name)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Image)
+                                    @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Image)
                             </th>
                             <th class="text-end">Acciones</th>
                         </tr>
@@ -27,6 +31,11 @@
                         {
 
                             <tr>
+                                <td style="vertical-align: middle; text-align:center;">
+                                  
+                                        @Html.DisplayFor(modelItem => item.PlayerFiles_ID)
+                                 
+                                </td>
                                 <td style="vertical-align: middle;">
                                     <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
                                         @Html.DisplayFor(modelItem => item.PlayerFiles_Name)
@@ -47,15 +56,22 @@
                         }
                     </tbody>
                 </table>
+                }
+                else
+                {
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay archivos
+                    </div>
+                </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+
 
     <script type="text/javascript">
         $(document).ready(function () {

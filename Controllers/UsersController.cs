@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
 using System.Globalization;
+using System.Security.Claims;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
+using xilopro2.Enums;
 using xilopro2.Helpers.Interfaces;
 using xilopro2.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -36,9 +38,10 @@ namespace xilopro2.Controllers
         [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Index()
         {
+           // var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var response = await _dataContext.Users
-               // .Include(x => x.Category)
-                .Where(x => x.UserTypeofRole != "Admin")
+                .Where(x => x.UserTypeofRole != "Admin" /*&& x.Id != loggedInUserId*/)
                 .OrderBy(x => x.User_LastName)
                 .ToListAsync();
 
@@ -78,23 +81,18 @@ namespace xilopro2.Controllers
         [Authorize(Roles = "Admin,Editor")]
         public IActionResult CreateUser()
         {
-            List<string> miListaDeStrings = new List<string>
-                {
-                    "Seleccionar",
-                    "Masculino",
-                    "Femenino"
-                };
+
             UserViewModel model = new UserViewModel
             {
                 UserType = User.IsInRole("Editor") ? _combos.GetCombosRolesunicos() : _combos.GetCombosRoles(),
                 Categories = _combos.GetCategorias(),
                 Countries = _combos.GetCombosCountries(),
-                States = _combos.GetCombosStates(),
-                Cities = _combos.GetCombosCities(),
+              //  States = _combos.GetCombosStates(),
+              //  Cities = _combos.GetCombosCities(),
                 Id = Guid.NewGuid().ToString(),
                 SelectedCategoryIds = new List<int>(),
             };
-            ViewBag.Genero = miListaDeStrings;
+            ViewBag.Genero = _combos.GetComboGeneros();
             return View(model);
         }
 
@@ -115,9 +113,9 @@ namespace xilopro2.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         Email = model.Email,
-                        User_FirstName = model.User_FirstName,
-                        User_LastName = model.User_LastName,
-                        User_Address = model.User_Address,
+                        User_FirstName = model.User_FirstName?.Trim().ToUpper(),
+                       User_LastName = model.User_LastName?.Trim().ToUpper(),
+                       User_Address = model.User_Address,
                         PhoneNumber = model.PhoneNumber,
                         UserTypeofRole = _userHelper.GetRoleNameByID(model.UserTypeof.ToString()),
                         User_Cedula = model.User_Cedula,
@@ -219,7 +217,7 @@ namespace xilopro2.Controllers
             model.Countries = _combos.GetCombosCountries();
                  model.States = _combos.GetCombosStates();
                  model.Cities = _combos.GetCombosCities();
-
+            ViewBag.Genero = _combos.GetComboGeneros();
 
 
             return View(model);
@@ -245,8 +243,9 @@ namespace xilopro2.Controllers
                role.Text,
                role.Value,
                userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
-
             UserViewModel model = _swithUsers.ToUserViewModel(user);
+            model.UserType = User.IsInRole("Editor") ? _combos.GetCombosRolesunicos() : _combos.GetCombosRoles();
+            ViewBag.Genero = _combos.GetComboGeneros();
             //    model.UserType = roleItems;
             return View(model);
 
@@ -311,6 +310,7 @@ namespace xilopro2.Controllers
             model.Countries = _combos.GetCombosCountries();
             model.States = _combos.GetCombosStates();
             model.Cities = _combos.GetCombosCities();
+            ViewBag.Genero = _combos.GetComboGeneros();
             return View(model);
 
         }
@@ -386,8 +386,10 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
+           // var user = await _userHelper.GetUserAsync(Guid.Parse(id));
             // User user = await _userHelper.GetUserAsync(Guid.Parse(id));
             var user = await _userHelper.GetUserAsync(id);
+            List<string> catnames = _dataContext.Categories.Where(e => user.SelectedCategoryIds.Contains(e.Category_ID)).Select(e => e.Category_Name).ToList();
             if (user == null)
             {
                 return NotFound();
@@ -399,8 +401,9 @@ namespace xilopro2.Controllers
                role.Text,
                role.Value,
                userRoles.Any(ur => ur.Contains(role.Text)))).ToList();*/
-
+            ViewBag.CatNames = catnames;
             UserViewModel model = _swithUsers.ToUserViewModel(user);
+            ViewBag.Timesta = model.User_CreatedTime;
             //    model.UserType = roleItems;
             return View(model);
         }
@@ -496,8 +499,24 @@ namespace xilopro2.Controllers
             }
             return Json(state.Cities.OrderBy(cp => cp.City_Name));
         }
-        
 
+        public JsonResult CountryDrop()
+        {
+            var cnt = _dataContext.Countries.ToList();
+            return new JsonResult(cnt);
+        }
+
+        public JsonResult StateDrop(int id)
+        {
+            var st = _dataContext.States.Where(e => e.CountryId == id).ToList();
+            return new JsonResult(st);
+        }
+
+        public JsonResult CityDrop(int id)
+        {
+            var ct = _dataContext.Cities.Where(e => e.IdState == id).ToList();
+            return new JsonResult(ct);
+        }
 
 
 

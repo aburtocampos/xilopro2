@@ -7,42 +7,43 @@
                 <h3 class="panel-title mb-4">Departamentos de @Model.Country_Name</h3>
             </div>
             <div class="panel-body">
-                <table class="table table-hover table-responsive table-striped" id="TablaDepartamentos">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.States.FirstOrDefault().State_Name)
-                            </th>
-                            <th>
-                                #  @Html.DisplayNameFor(model => model.States.FirstOrDefault().CitiesNumber)
-                            </th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.States)
-                        {
-
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="TablaDepartamentos">
+                        <thead>
                             <tr>
-
-                                <td style="vertical-align: middle;">
-                                    <a asp-action="DetailsState" asp-route-id="@item.State_ID" class="rowclick">
-                                        @Html.DisplayFor(modelItem => item.State_Name)
-                                    </a>
-                                </td>
-                                <td style="vertical-align: middle;">
-                                    @Html.DisplayFor(modelItem => item.CitiesNumber)
-                                </td>
-                                <td class="text-end">
-                                    <a asp-action="EditState" asp-route-id="@item.State_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> |
-                                    <a asp-action="DeleteState" asp-route-id="@item.State_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
-                                </td>
-
+                                <th>
+                                    @Html.DisplayNameFor(model => model.States.FirstOrDefault().State_Name)
+                                </th>
+                                <th>
+                                    #  @Html.DisplayNameFor(model => model.States.FirstOrDefault().CitiesNumber)
+                                </th>
+                                <th class="text-end">Acciones</th>
                             </tr>
-
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.States)
+                            {
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                        <a asp-action="DetailsState" asp-route-id="@item.State_ID" class="rowclick">
+                                            @Html.DisplayFor(modelItem => item.State_Name)
+                                        </a>
+                                    </td>
+                                    <td style="vertical-align: middle;" class="text-center">
+                                        @Html.DisplayFor(modelItem => item.CitiesNumber)
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group">
+                                            <a asp-action="EditState" asp-route-id="@item.State_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                            <a asp-action="DeleteState" asp-route-id="@item.State_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+              
             </div>
         </div>
     </div>

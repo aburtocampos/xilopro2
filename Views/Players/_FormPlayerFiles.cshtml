@@ -1,0 +1,134 @@
+﻿@model xilopro2.Models.PlayerFilesViewModel
+@{
+    var path = "/Content/Files/";
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="PlayerFiles_ID" />
+<input type="hidden" asp-for="PlayerId" />
+<input type="hidden" asp-for="PlayerName" />
+<div class="row">
+  
+    <div class="col-md-6">
+
+        <div class="form-group mb-4">
+            <label asp-for="PlayerFiles_Name" class="control-label fw-bold mb-2"></label>
+            <input asp-for="PlayerFiles_Name" class="form-control" placeholder="Nombre del Archivo" />
+            <span asp-validation-for="PlayerFiles_Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-2">
+            <label class="control-label fw-bold mb-2">Cargar Archivo:</label>
+            <div class="input-group">
+                <input asp-for="FotoFile" class="form-control" type="file" id="inputGroupFile03"  />
+                <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearImgPreview()">Limpiar</button>
+            </div>
+            <span asp-validation-for="FotoFile" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group mb-2 text-center">
+            <label asp-for="FotoFile" class="control-label d-block text-start fw-bold mb-4"></label>
+            @if (ViewBag.EditFlag != "")
+            {
+                <img id="viewpreview1" src="@(!string.IsNullOrEmpty(Model.PlayerFiles_Image) ? Url.Content(path+Model.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="imgpreviewForm2" style="@(Model.PlayerFiles_Image.Contains(".pdf") ? "display:none;" : "")" />
+                <embed id="viewpreview3" type="application/pdf" src="@(!string.IsNullOrEmpty(Model.PlayerFiles_Image) ? Url.Content(path+Model.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" style="@(Model.PlayerFiles_Image.Contains(".pdf") ? "width: 100%;height: 400px;" : "width: 100%;height: 400px;display:none;")" />
+            }
+            else
+            {
+                <img id="viewpreview4" src="@(!string.IsNullOrEmpty(Model.PlayerFiles_Image) ? Url.Content(path+Model.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="imgpreviewForm2"  />
+                <embed id="viewpreview2" type="application/pdf" src="@(!string.IsNullOrEmpty(Model.PlayerFiles_Image) ? Url.Content(path+Model.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" style="width: 100%;height: 400px;display:none;" />
+            }
+        </div>
+    </div>
+
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script type="text/javascript">
+    var editFlag = '@ViewBag.EditFlag';
+
+    var viewpreview4 = document.querySelector('#viewpreview4');
+    var viewpreview3 = document.querySelector("#viewpreview3");
+    var viewpreview2 = document.querySelector('#viewpreview2');
+    var viewpreview1 = document.querySelector("#viewpreview1");
+    
+
+    function showimagepreview2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+        
+    }
+
+    document.querySelector('#inputGroupFile03').addEventListener('change', () => {
+        let pdffile = document.querySelector('#inputGroupFile03').files[0];
+        let URLfile = URL.createObjectURL(pdffile);
+
+        if (editFlag == "flag") {
+            if (pdffile.type == "image/jpg" || pdffile.type == "image/jpeg" || pdffile.type == "image/png") {
+
+                viewpreview3.style.display = "none";
+                viewpreview1.style.display = "block";
+                viewpreview1.setAttribute("src", URLfile);
+                console.log("editar / imagen")
+            }
+            if (pdffile.type == "application/pdf") {
+                viewpreview1.style.display = "none";
+
+                viewpreview3.style.display = "block";
+                viewpreview3.setAttribute("src", URLfile);
+                console.log("editar / pdf")
+            }
+        } else {
+             
+            if (pdffile.type == "image/jpg" || pdffile.type == "image/jpeg" || pdffile.type == "image/png") {
+
+                viewpreview2.style.display = "none";
+                viewpreview4.style.display = "block";
+                viewpreview4.setAttribute("src", URLfile);
+                console.log("nuevo / imagen")
+            }
+            if (pdffile.type == "application/pdf") {
+                viewpreview4.style.display = "none";
+
+                viewpreview2.style.display = "block";
+                viewpreview2.setAttribute("src", URLfile);
+                console.log("nuevo / pdf")
+            }
+        }
+      
+        
+
+    });
+
+    function clearImgPreview() {
+
+        var viewPreview1 = document.getElementById("viewpreview1");
+        var viewPreview2 = document.getElementById("viewpreview2");
+        var viewPreview3 = document.getElementById("viewpreview3");
+        var viewPreview4 = document.getElementById("viewpreview4");
+
+        viewPreview1 ? viewPreview1.setAttribute("src", "../../images/noimage.png") : null;
+        viewPreview2 ? viewPreview2.setAttribute("src", "../../images/noimage.png") : null;
+        viewPreview3 ? viewPreview3.setAttribute("src", "../../images/noimage.png") : null;
+        viewPreview4 ? viewPreview4.setAttribute("src", "../../images/noimage.png") : null;
+
+        document.getElementById("inputGroupFile03").value = "";
+    }
+
+
+
+
+</script>

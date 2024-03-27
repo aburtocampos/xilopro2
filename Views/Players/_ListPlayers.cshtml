@@ -1,0 +1,130 @@
+﻿@model IEnumerable<xilopro2.Data.Entities.Player>
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Index";
+    var path = "/Content/Players/";
+   //  bool param1 = (bool)ViewData["param1"];
+}
+
+<div class="table-responsive">
+    <table class="table table-hover  table-striped w-100" id="tblPlayersInactivos">
+        <thead>
+            <tr>
+                <td class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Player_Image)
+                </td>
+                <td class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Player_Dorsal)
+                </td>
+                <th class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Player_FullName)
+                </th>
+                <td class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Player_FNC)
+                </td>
+                <td class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Position.Position_Name)
+                </td>
+                <td class="fw-bold">
+                    @Html.DisplayName("Categoria")
+                </td>
+                <td class="fw-bold">
+                    @Html.DisplayNameFor(model => model.Player_Status)
+                </td>
+                <th class="text-end fw-bold">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(item => item.Player_Status == false))
+            {
+                <tr>
+                    <td style="vertical-align: middle;" class="imgZoom">
+                        <a asp-action="Details" asp-route-id="@item.Player_ID" class="rowclick">
+                            <img src="@(!string.IsNullOrEmpty(item.Player_Image) ? Url.Content(path+item.Player_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:50px;height:50px;max-width: 100%; height: auto;" />
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        @Html.DisplayFor(modelItem => item.Player_Dorsal)
+                    </td>
+                    <td style="vertical-align: middle;text-transform:uppercase;">
+                        <a asp-action="Details" asp-route-id="@item.Player_ID" class="rowclick">
+                            @Html.DisplayFor(modelItem => item.Player_FullName)
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        @Html.DisplayFor(modelItem => item.Player_FNC) |
+                        (@Html.DisplayFor(modelItem => item.Player_Edad) años)
+                    </td>
+                    <td style="vertical-align: middle;">
+                        @Html.DisplayFor(modelItem => item.Position.Position_Name)
+                    </td>
+                    <td style="vertical-align: middle;">
+                        @{
+                            var elemento2 = ViewBag.Cats as IEnumerable<SelectListItem>;
+                            var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
+                            <span>@elemento3.Text</span>
+                        }
+
+                    </td>
+                    <td style="vertical-align: middle;">
+                        @if (item.Player_Status)
+                        {
+                            <i class="fa-solid fa-thumbs-up text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-thumbs-down text-danger"></i>
+                        }
+                    </td>
+                    <td style="vertical-align: middle;" class="">
+                        <div class="p-1 justify-content-end d-flex gap-1">
+                            <div class="btn-group">
+                                <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Player_ID">
+                                    <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span>
+                                </a>
+
+                                <a asp-action="@(item.Player_Status ? "DarBaja" : "DarAlta")" class="btn @(item.Player_Status ? "btn-outline-dark" : "btn-outline-primary")" asp-route-id="@item.Player_ID">
+                                    <i class="fa-regular @(item.Player_Status ? "fa-circle-down" : "fa-circle-up")"></i>
+                                    <span class="d-none d-sm-inline-block">@((item.Player_Status ? "Dar Baja" : "Dar Alta"))</span>
+                                </a>
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Player_ID">
+                                        <i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Eliminar</span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+ 
+
+
+ @section Scripts {
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+                $('#tblPlayersInactivos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                    },
+                    "aLengthMenu": [
+                        [5, 25, 50, 100, 200, -1],
+                        [5, 25, 50, 100, 200, "Todos"]
+                    ]
+                })
+
+        })
+
+    </script>
+
+}

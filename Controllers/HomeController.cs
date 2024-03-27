@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
@@ -16,18 +17,30 @@ namespace xilopro2.Controllers
         private readonly IUserHelper _userHelper;
         private readonly UserManager<AppUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, IUserHelper userHelper, UserManager<AppUser> userManager)
+        public HomeController(ILogger<HomeController> logger, IUserHelper userHelper, UserManager<AppUser> userManager, DataContext context)
         {
             _logger = logger;
             _userHelper = userHelper;
             _userManager = userManager;
+            _dataContext = context;
         }
 
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return View();
+                int totalEntity1 = _dataContext.Users.Count();
+                int totalEntity2 = _dataContext.Players.Count();
+                int totalEntity3 = _dataContext.Torneos.Count();
+                int totalEntity4 = _dataContext.Parents.Count();
+                var viewModel = new DashboardViewModel
+                {
+                    TotalPlayers = totalEntity2,
+                    TotalParents = totalEntity4,
+                    TotalTorneos = totalEntity3,
+                    TotalUsers = totalEntity1
+                };
+                return View(viewModel);
             }
             return RedirectToAction("Login", "Account");
         }

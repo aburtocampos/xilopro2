@@ -6,6 +6,7 @@ namespace xilopro2.Data.Entities
     public class City
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int City_ID { get; set; }
 
         [Display(Name = "Municipio")]
@@ -13,9 +14,10 @@ namespace xilopro2.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string City_Name { get; set; }
 
-        [NotMapped]
-        public int IdState { get; set; }
+     
+        public int? IdState { get; set; }
 
+        [ForeignKey("IdState")]
         public State State { get; set; }
 
     }

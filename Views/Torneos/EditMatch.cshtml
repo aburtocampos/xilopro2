@@ -1,0 +1,38 @@
+﻿@model xilopro2.Models.MatchViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    var path = "/Content/Teams/";
+}
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Editando Jornada <span class="badge bg-warning text-black text-uppercase">@Model.Jornada</span> del Grupo <span class="badge bg-dark text-uppercase">@Model.GroupName</span> </h3>
+    </div>
+    <hr />
+    <div class="card border-warning" style=" width: 100%;margin:0 auto;">
+        <form asp-action="EditMatch" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" asp-for="GroupId" />
+                    <input type="hidden" asp-for="MatchID" />
+                    <partial name="_FormMatch" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-warning">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-warning"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

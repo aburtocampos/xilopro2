@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xilopro2.Data.Entities
 {
     public class State
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int State_ID { get; set; }
 
         [Display(Name = "Departamento")]
@@ -12,7 +15,11 @@ namespace xilopro2.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string State_Name { get; set; }
 
+
+        public int? CountryId { get; set; }
         //a uno
+        [ForeignKey("CountryId")]
+        //[ValidateNever]
         public Country Country { get; set; }
 
         //de muchos

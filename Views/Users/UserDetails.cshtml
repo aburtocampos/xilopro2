@@ -11,10 +11,10 @@
 
 
 
-<div class="container">
-    <div class="d-flex justify-content-start align-items-center">
-        <a asp-action="Index" asp-controller="Users" class="btn btn-outline-default fs-5"><i class="fa-solid fa-arrow-left"></i> Atras |</a>
-        <h2 class="m-0">Usuario: <span class="badge bg-primary fs-4">@Model.Email</span></h2>
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Users" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Usuario: <span class="badge bg-primary fs-4">@Model.Email</span></h3>
     </div>
 
     <hr />
@@ -125,7 +125,7 @@
             </div>
             <div class="card-footer card-footer-primary">
                 <div class="form-group d-flex justify-content-between">
-                    <a asp-action="Index" asp-controller="Users" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <a asp-action="Index" asp-controller="Users" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <div>
                         <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@Model?.Id"><i class="fa-solid fa-delete-left" onclick=""></i> Eliminar</a> |
                         <a asp-action="EditUser" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>

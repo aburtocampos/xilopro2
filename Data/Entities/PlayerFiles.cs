@@ -8,7 +8,7 @@ namespace xilopro2.Data.Entities
         [Key]
         public int PlayerFiles_ID { get; set; }
 
-        [Display(Name = "Registro:", Prompt = "Nombre de registro")]
+        [Display(Name = "Nombre:", Prompt = "Nombre de registro")]
         public string PlayerFiles_Name { get; set; }
 
 
@@ -23,7 +23,7 @@ namespace xilopro2.Data.Entities
         //a uno
         // Propiedad de navegación inversa
         public int PlayerId { get; set; }
-        public Player Player { get; set; }
+        public Player? Player { get; set; }
 
 
     }

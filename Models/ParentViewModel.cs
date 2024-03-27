@@ -7,8 +7,7 @@ namespace xilopro2.Models
 {
     public class ParentViewModel
     {
-        [Key]
-        public string ID { get; set; }
+        public int Parent_ID { get; set; }
 
         [Display(Name = "Nombre")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
@@ -37,9 +36,6 @@ namespace xilopro2.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Parent_Address { get; set; }
 
-        [Display(Name = "Tutor:")]
-        public string Parent_FullName => $"{Parent_FirstName} {Parent_LastName}";
-
         [Display(Name = "Foto:", Prompt = "Foto")]
         public string? Parent_Image { get; set; }
 
@@ -55,12 +51,14 @@ namespace xilopro2.Models
         [Display(Name = "Preview Cedula:")]
         public IFormFile FotoFileCedula { get; set; }
 
-        public string Parent_UserRol => "User";
+        public string Parent_FullName => $"{Parent_FirstName} {Parent_LastName}";
 
 
-        public string PlayerId { get; set; }
+        public int PlayerId { get; set; }
 
         public virtual string PlayerName { get; set; }
+
+
 
         //drops
 

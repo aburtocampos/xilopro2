@@ -36,7 +36,7 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Estado")]
         public bool User_Status { get; set; }
 
-        [Display(Name = "Creado")]
+        [Display(Name = "Creado en")]
         public DateTime User_CreatedTime { get; set; }
 
 
@@ -54,7 +54,7 @@ namespace xilopro2.Data.Entities
 
      
 
-        [Display(Name = "Foto Usuario:", Prompt = "Foto")]
+        [Display(Name = "Foto:", Prompt = "Foto")]
         public string? User_Image { get; set; }
 
 
@@ -62,7 +62,7 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Escoger Imagen:")]
         public IFormFile FotoFile { get; set; }
 
-        [Display(Name = "Rol de usuario")]
+        [Display(Name = "Rol")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string UserTypeofRole { get; set; }
 

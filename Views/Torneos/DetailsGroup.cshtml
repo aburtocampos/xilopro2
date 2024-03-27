@@ -1,0 +1,332 @@
+﻿@model xilopro2.Data.Entities.Groups
+
+@{
+    ViewData["Title"] = "Details";
+    var path = "/Content/Tournaments/";
+    var path2 = "/Content/Teams/";
+}
+
+<partial name="_Notifications">
+
+    <div class="container-fluid pt-3">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <a asp-action="Details" asp-route-id="@Model?.torneoId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+            <h3 class="m-0 text-end">Grupo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Group_Name</span> del Torneo: <span class="badge bg-dark text-white text-uppercase">@Model?.Torneo.Torneo_Name</span></h3>
+        </div>
+
+        <hr />
+
+        <div class="card border-dark row" style="width: 100%;margin:0 auto;">
+            <div class="card-body row">
+                <div class="col-md-6 text-center">
+                    <div class="form-group mb-2">
+                        <div class="d-flex justify-content-between">
+                            <div class="estadoplayer">
+                                <label class="form-check-label d-inline">Estado:</label>
+                                @if (Model.Torneo.Torneo_Status)
+                                {
+                                    <h5 class="badge bg-success d-inline">Activo</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="badge bg-danger d-inline">Inactivo</h5>
+                                }
+                            </div>
+                        </div>
+
+                        <img src="@(!string.IsNullOrEmpty(Model.Torneo.Torneo_Image) ? Url.Content(path+Model.Torneo.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded imgsized " alt="Image" />
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label class="control-label">Nombre de Torneo:</label>
+                        <h2 class="text-primary text-uppercase"> @Model.Torneo.Torneo_Name</h2>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Número de Equipos:</label>
+                        <h3 class="text-primary">@Model.GroupDetails.Count</h3>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Número de Partidos:</label>
+                        <h3 class="text-primary">@Model.Matches.Count</h3>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card-footer card-footer-dark">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model?.torneoId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div class="btn-group">
+                        <a asp-action="EditGroup" asp-route-id="@Model.Group_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar Grupo</span></a>
+                     
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+       
+            <div class="row">
+                <div class="col-md-12">
+                <div class="card text-bg-light">
+                        <div class="card-header">
+                             <h3 class="m-0 panel-title">Detalles del Grupo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Group_Name</span> del Torneo: <span class="badge bg-dark text-white text-uppercase">@Model?.Torneo.Torneo_Name</span></h3>
+                        </div>
+                        <div class="card-body">
+
+                        <div class="card">
+
+                            <div class="card-body">
+                                <div class="heading">
+                                    <h4 class="m-0 card-title">Equipos en Ranking</h4>
+                                    <a asp-action="AddGroupDetail" asp-route-id="@Model.Group_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Asignar Equipos</span></a>
+                                </div>
+                                <hr />
+                                @if (Model.GroupDetails.Count > 0)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-hover  table-striped" id="tblGruposDetails">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().Team.Team_Image)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().Team.Team_Name)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().MatchesPlayed)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().MatchesWon)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().MatchesTied)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().MatchesLost)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().Points)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().GoalsFor)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().GoalsAgainst)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().GoalDifference)
+                                                    </th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.GroupDetails
+                                               .OrderByDescending(g => g.Points)
+                                               .ThenByDescending(g => g.GoalDifference)
+                                               .ThenByDescending(g => g.GoalsFor))
+                                                {
+                                                    <tr>
+                                                        <td class="imgZoom">
+                                                            <img src="@(!string.IsNullOrEmpty(item.Team.Team_Image) ? Url.Content(path2+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.Team.Team_Name)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.MatchesPlayed)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.MatchesWon)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.MatchesTied)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.MatchesLost)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.Points)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.GoalsFor)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.GoalsAgainst)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            @Html.DisplayFor(modelItem => item.GoalDifference)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center">
+                                                            <div class="btn-group">
+                                                                <a asp-action="EditGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                                <a asp-action="DeleteGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="card-body">
+                                        <div class="alert alert-warning" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="card">
+
+                            <div class="card-body">
+                                <div class="heading">
+                                    <h4 class="m-0 card-title">Partidos</h4>
+                                    @if (Model.GroupDetails.Count > 0)
+                                    {
+                                        <a asp-action="AddMatch" asp-route-id="@Model.Group_ID" class="btn btn-primary"><i class="fa-regular fa-calendar-plus"></i> <span class="d-none d-sm-inline-block">Agregar Partido</span></a>
+                                    }
+                                </div>
+
+                                <hr />
+                                @if (Model.GroupDetails.Count != 0 && Model.Matches.Count != 0)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-responsive table-striped" id="tblMatchgames">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Jornada
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.Matches.FirstOrDefault().Date)
+                                                    </th>
+                                                    <th>
+                                                        Local
+                                                    </th>
+                                                    <th style="vertical-align:middle;text-align:center;">
+                                                        @Html.DisplayNameFor(model => model.Matches.FirstOrDefault().GoalsLocal)
+                                                    </th>
+                                                    <th style="vertical-align:middle;text-align:center;">
+                                                        @Html.DisplayNameFor(model => model.Matches.FirstOrDefault().GoalsVisitor)
+                                                    </th>
+                                                    <th>
+                                                        Visitante
+                                                    </th>
+                                                    <th>
+                                                        Proximo / Finalizado
+                                                    </th>
+                                                    <th style="vertical-align:middle;text-align:right;">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.Matches
+                                               .OrderBy(m => m.Date))
+                                                {
+                                                    <tr>
+                                                        <td style="vertical-align:middle;">
+                                                            Jornada <span class="fw-bold">@Html.DisplayFor(modelItem => item.Jornada)</span>
+                                                        </td>
+                                                        <td style="vertical-align:middle;">
+                                                            @Html.DisplayFor(modelItem => item.DateLocal)
+                                                        </td>
+                                                        <td class="imgZoom">
+                                                            <img src="@(!string.IsNullOrEmpty(item.TeamLocal.Team_Image) ? Url.Content(path2+item.TeamLocal.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                                        </td>
+                                                        <td style="vertical-align:middle;text-align:center;">
+                                                            @Html.DisplayFor(modelItem => item.GoalsLocal)
+                                                        </td>
+                                                        <td style="vertical-align:middle;text-align:center;">
+                                                            @Html.DisplayFor(modelItem => item.GoalsVisitor)
+                                                        </td>
+                                                        <td class="imgZoom">
+                                                            <img src="@(!string.IsNullOrEmpty(item.TeamVisitor.Team_Image) ? Url.Content(path2+item.TeamVisitor.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @if (!item.IsClosed)
+                                                            {
+
+                                                                <i class="fa-solid fa-lock text-danger"></i>
+                                                                <span class="fw-bold text-danger">Finalizado</span>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa-solid fa-lock-open text-success"></i>
+                                                                <span class="fw-bold text-success">Proximo</span>
+                                                            }
+                                                        </td>
+                                                        <td style="vertical-align:middle;text-align:right;">
+                                                            <div class="btn-group">
+                                                                <a asp-action="AddStats" asp-route-id="@item.Match_ID" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas</a>
+                                                                <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                                <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Cerrar</span></a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="card-body">
+                                        <div class="alert alert-warning" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                       </div>
+                    </div>
+                </div>
+            </div>
+      
+     
+
+    </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#tblGruposDetails').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                    },
+                    "aLengthMenu": [
+                        [8, 25, 50, 100, 200, -1],
+                        [8, 25, 50, 100, 200, "Todos"]
+                    ]
+                })
+
+
+                $('#tblMatchgames').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                    },
+                    "aLengthMenu": [
+                        [5, 25, 50, 100, 200, -1],
+                        [5, 25, 50, 100, 200, "Todos"]
+                    ]
+                })
+
+            });
+        </script>
+    }

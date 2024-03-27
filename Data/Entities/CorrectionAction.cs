@@ -18,6 +18,6 @@ namespace xilopro2.Data.Entities
 
 
 
-        public ICollection<Player> Player { get; set; }
+        public ICollection<Player>? Player { get; set; }
     }
 }

@@ -4,8 +4,8 @@
     var path = "/Content/Users/";
 }
 
-<div class="container croles">
-    <partial name="_Notifications">
+<div class="container croles pt-4">
+   
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading d-flex justify-content-between align-content-center my-2">
@@ -26,8 +26,8 @@
 
                             @if (Model.Count(item => item.User_Status) > 0)
                             {
-
-                                <table class="table table-hover table-responsive table-striped" id="tblUsuariosActivos">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" id="tblUsuariosActivos">
                                     <thead>
                                         <tr>
                                             <th>
@@ -36,7 +36,7 @@
                                             <th>
                                                 @Html.DisplayNameFor(model => model.Email)
                                             </th>
-                                            <th>
+                                            <th class="d-none d-md-table-cell" >
                                                 @Html.DisplayNameFor(model => model.User_FullName)
                                             </th>
                                             <th>
@@ -63,7 +63,7 @@
                                                         @Html.DisplayFor(modelItem => item.UserName)
                                                     </a>
                                                 </td>
-                                                <td style="vertical-align: middle;text-transform:uppercase;">
+                                                <td style="vertical-align: middle;text-transform:uppercase;" class="d-none d-md-table-cell">
                                                     @Html.DisplayFor(modelItem => item.User_FullName)
                                                 </td>
                                                 <td style="vertical-align: middle;text-transform:uppercase;">
@@ -75,16 +75,14 @@
                                                 <td class="text-end" style="vertical-align: middle;">
                                                     <div class="btn-group">
                                                     <a asp-action="EditUser" class="btn btn-warning" asp-route-id="@item.Id"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                                                    <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@item.Id"><i class="fa-solid fa-delete-left" onclick=""></i> Eliminar</a>
+                                                    <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@item.Id"><i class="fa-solid fa-delete-left" ></i> <span class="d-none d-sm-inline-block">Eliminar</span></a>
                                                     </div>
                                                 </td>
                                             </tr>
                                         }
-
-
-
                                     </tbody>
                                 </table>
+                                </div>
                             }
                             else
                             {
@@ -145,8 +143,8 @@
                                                 </td>
                                                 <td class="text-end" style="vertical-align: middle;">
                                                     <div class="btn-group">
-                                                    <a asp-action="EditUser" class="btn btn-warning" asp-route-id="@item.Id" onclick="alert(" hola")"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                                                    <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@item?.Id"><i class="fa-solid fa-delete-left" onclick=""></i> Eliminar</a>
+                                                      <a asp-action="EditUser" class="btn btn-warning" asp-route-id="@item.Id" onclick="alert(" hola")"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                      <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@item?.Id"><i class="fa-solid fa-delete-left" onclick=""></i> Eliminar</a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -170,6 +168,8 @@
                 </div>
             </div>
         </div>
+
+ <partial name="_Notifications">
 </div>
 @section Scripts {
 
@@ -202,6 +202,6 @@
 
 
     </script>
-
+   
 
 }

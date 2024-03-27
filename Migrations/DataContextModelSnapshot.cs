@@ -17,25 +17,10 @@ namespace xilopro2.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GroupsTorneo", b =>
-                {
-                    b.Property<int>("GroupsGroup_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TorneosTorneo_ID")
-                        .HasColumnType("int");
-
-                    b.HasKey("GroupsGroup_ID", "TorneosTorneo_ID");
-
-                    b.HasIndex("TorneosTorneo_ID");
-
-                    b.ToTable("GroupsTorneo");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -331,12 +316,14 @@ namespace xilopro2.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("State_ID")
+                    b.Property<int?>("IdState")
                         .HasColumnType("int");
 
                     b.HasKey("City_ID");
 
-                    b.HasIndex("State_ID");
+                    b.HasIndex("IdState", "City_Name")
+                        .IsUnique()
+                        .HasFilter("[IdState] IS NOT NULL");
 
                     b.ToTable("Cities");
                 });
@@ -366,7 +353,8 @@ namespace xilopro2.Migrations
                 {
                     b.Property<int>("Country_ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Country_ID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Country_ID"));
 
@@ -397,9 +385,6 @@ namespace xilopro2.Migrations
                     b.Property<int>("GoalsFor")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupsGroup_ID")
-                        .HasColumnType("int");
-
                     b.Property<int>("MatchesLost")
                         .HasColumnType("int");
 
@@ -412,14 +397,18 @@ namespace xilopro2.Migrations
                     b.Property<int>("MatchesWon")
                         .HasColumnType("int");
 
-                    b.Property<int>("Team_ID")
+                    b.Property<int>("groupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("teamId")
                         .HasColumnType("int");
 
                     b.HasKey("GroupDetail_ID");
 
-                    b.HasIndex("GroupsGroup_ID");
+                    b.HasIndex("teamId");
 
-                    b.HasIndex("Team_ID");
+                    b.HasIndex("groupId", "teamId")
+                        .IsUnique();
 
                     b.ToTable("GroupDetails");
                 });
@@ -438,11 +427,19 @@ namespace xilopro2.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Group_Type")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("torneoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Group_ID");
+
+                    b.HasIndex("Group_Name")
+                        .IsUnique();
+
+                    b.HasIndex("torneoId", "Group_Name")
+                        .IsUnique();
 
                     b.ToTable("Groups");
                 });
@@ -480,7 +477,7 @@ namespace xilopro2.Migrations
                     b.ToTable("Lineups");
                 });
 
-            modelBuilder.Entity("xilopro2.Data.Entities.Match", b =>
+            modelBuilder.Entity("xilopro2.Data.Entities.Matchgame", b =>
                 {
                     b.Property<int>("Match_ID")
                         .ValueGeneratedOnAdd()
@@ -497,38 +494,41 @@ namespace xilopro2.Migrations
                     b.Property<int>("GoalsVisitor")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupsGroup_ID")
+                    b.Property<int>("GroupsrId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsClosed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Player_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Team_ID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Jornada")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("TeamLocalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamVisitorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Match_ID");
 
-                    b.HasIndex("GroupsGroup_ID");
+                    b.HasIndex("GroupsrId");
 
-                    b.HasIndex("Player_ID");
+                    b.HasIndex("TeamVisitorId");
 
-                    b.HasIndex("Team_ID");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("TeamLocalId", "TeamVisitorId", "Jornada")
+                        .IsUnique();
 
                     b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("xilopro2.Data.Entities.Parent", b =>
                 {
-                    b.Property<string>("Parent_ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Parent_ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Parent_ID"));
 
                     b.Property<int>("CityID")
                         .HasColumnType("int");
@@ -603,7 +603,6 @@ namespace xilopro2.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Player_Cedula")
-                        .IsRequired()
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)");
 
@@ -645,17 +644,17 @@ namespace xilopro2.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
-                    b.Property<int?>("Position_ID")
+                    b.Property<int>("Positionid")
                         .HasColumnType("int");
 
                     b.Property<string>("SelectedCategoryIds")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Stateid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Team_ID")
+                    b.Property<int>("Teamid")
                         .HasColumnType("int");
 
                     b.HasKey("Player_ID");
@@ -664,9 +663,12 @@ namespace xilopro2.Migrations
 
                     b.HasIndex("Countryid");
 
-                    b.HasIndex("Position_ID");
+                    b.HasIndex("Positionid");
 
-                    b.HasIndex("Team_ID");
+                    b.HasIndex("Teamid");
+
+                    b.HasIndex("SelectedCategoryIds", "Player_Dorsal")
+                        .IsUnique();
 
                     b.ToTable("Players");
                 });
@@ -728,7 +730,8 @@ namespace xilopro2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("State_ID"));
 
-                    b.Property<int>("Country_ID")
+                    b.Property<int?>("CountryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("State_Name")
@@ -738,7 +741,8 @@ namespace xilopro2.Migrations
 
                     b.HasKey("State_ID");
 
-                    b.HasIndex("Country_ID");
+                    b.HasIndex("CountryId", "State_Name")
+                        .IsUnique();
 
                     b.ToTable("States");
                 });
@@ -778,6 +782,9 @@ namespace xilopro2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Torneo_ID"));
 
+                    b.Property<string>("SelectedCategoryIds")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Torneo_EndDate")
                         .HasColumnType("datetime2");
 
@@ -791,7 +798,7 @@ namespace xilopro2.Migrations
 
                     b.Property<string>("Torneo_Season")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Torneo_StartDate")
                         .HasColumnType("datetime2");
@@ -801,22 +808,14 @@ namespace xilopro2.Migrations
 
                     b.HasKey("Torneo_ID");
 
+                    b.HasIndex("Torneo_Name", "SelectedCategoryIds")
+                        .IsUnique();
+
+                    b.HasIndex("Torneo_Name", "SelectedCategoryIds", "Torneo_Season")
+                        .IsUnique()
+                        .HasFilter("Torneo_Season IS NULL");
+
                     b.ToTable("Torneos");
-                });
-
-            modelBuilder.Entity("GroupsTorneo", b =>
-                {
-                    b.HasOne("xilopro2.Data.Entities.Groups", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsGroup_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("xilopro2.Data.Entities.Torneo", null)
-                        .WithMany()
-                        .HasForeignKey("TorneosTorneo_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -874,9 +873,7 @@ namespace xilopro2.Migrations
                 {
                     b.HasOne("xilopro2.Data.Entities.State", "State")
                         .WithMany("Cities")
-                        .HasForeignKey("State_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdState");
 
                     b.Navigation("State");
                 });
@@ -885,19 +882,30 @@ namespace xilopro2.Migrations
                 {
                     b.HasOne("xilopro2.Data.Entities.Groups", "Groups")
                         .WithMany("GroupDetails")
-                        .HasForeignKey("GroupsGroup_ID")
+                        .HasForeignKey("groupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("xilopro2.Data.Entities.Team", "Team")
                         .WithMany()
-                        .HasForeignKey("Team_ID")
+                        .HasForeignKey("teamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Groups");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("xilopro2.Data.Entities.Groups", b =>
+                {
+                    b.HasOne("xilopro2.Data.Entities.Torneo", "Torneo")
+                        .WithMany("Groups")
+                        .HasForeignKey("torneoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Torneo");
                 });
 
             modelBuilder.Entity("xilopro2.Data.Entities.Lineup", b =>
@@ -909,33 +917,31 @@ namespace xilopro2.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("xilopro2.Data.Entities.Match", b =>
+            modelBuilder.Entity("xilopro2.Data.Entities.Matchgame", b =>
                 {
                     b.HasOne("xilopro2.Data.Entities.Groups", "Groups")
                         .WithMany("Matches")
-                        .HasForeignKey("GroupsGroup_ID")
+                        .HasForeignKey("GroupsrId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("xilopro2.Data.Entities.Player", "Player")
+                    b.HasOne("xilopro2.Data.Entities.Team", "TeamLocal")
                         .WithMany()
-                        .HasForeignKey("Player_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("TeamLocalId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("xilopro2.Data.Entities.Team", null)
-                        .WithMany("Matches")
-                        .HasForeignKey("Team_ID");
-
-                    b.HasOne("xilopro2.Data.Entities.AppUser", "User")
+                    b.HasOne("xilopro2.Data.Entities.Team", "TeamVisitor")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("TeamVisitorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Groups");
 
-                    b.Navigation("Player");
+                    b.Navigation("TeamLocal");
 
-                    b.Navigation("User");
+                    b.Navigation("TeamVisitor");
                 });
 
             modelBuilder.Entity("xilopro2.Data.Entities.Parent", b =>
@@ -958,16 +964,20 @@ namespace xilopro2.Migrations
                     b.HasOne("xilopro2.Data.Entities.Country", "Country")
                         .WithMany("Players")
                         .HasForeignKey("Countryid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("xilopro2.Data.Entities.Position", "Position")
                         .WithMany("Players")
-                        .HasForeignKey("Position_ID");
+                        .HasForeignKey("Positionid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("xilopro2.Data.Entities.Team", "Team")
                         .WithMany("Players")
-                        .HasForeignKey("Team_ID");
+                        .HasForeignKey("Teamid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Country");
 
@@ -991,7 +1001,7 @@ namespace xilopro2.Migrations
                 {
                     b.HasOne("xilopro2.Data.Entities.Country", "Country")
                         .WithMany("States")
-                        .HasForeignKey("Country_ID")
+                        .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1036,9 +1046,12 @@ namespace xilopro2.Migrations
 
             modelBuilder.Entity("xilopro2.Data.Entities.Team", b =>
                 {
-                    b.Navigation("Matches");
-
                     b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("xilopro2.Data.Entities.Torneo", b =>
+                {
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

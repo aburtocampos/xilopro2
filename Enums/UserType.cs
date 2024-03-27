@@ -7,4 +7,10 @@
         User,
         Dt
     }
+
+    public enum Genders
+    {
+        Masculino,
+        Femenino
+    }
 }

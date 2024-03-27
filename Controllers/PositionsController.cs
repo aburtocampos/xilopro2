@@ -54,8 +54,9 @@ namespace xilopro2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Position_ID,Position_Name,Position_Status")] Position position)
+        public async Task<IActionResult> Create(Position position)
         {
+            ModelState.Remove("Position_ID");
             if (ModelState.IsValid)
             {
                 try

@@ -69,7 +69,7 @@ namespace xilopro2.Controllers
                     Country obj = new()
                     {
                         Country_ID = country.Country_ID,
-                        Country_Name = country.Country_Name.ToUpper(),
+                        Country_Name = country.Country_Name?.Trim().ToUpper(),
                     };
                     _context.Add(obj);
                     await _context.SaveChangesAsync();
@@ -125,7 +125,12 @@ namespace xilopro2.Controllers
             {
                 try
                 {
-                    _context.Update(country);
+                    Country countryobj = new()
+                    {
+                        Country_ID = country.Country_ID,
+                        Country_Name = country.Country_Name?.Trim().ToUpper(),
+                    };
+                    _context.Update(countryobj);
                     await _context.SaveChangesAsync();
                     TempData["successCountry"] = "País " + country.Country_Name + " Editado!!";
                     return RedirectToAction(nameof(Index));
@@ -239,10 +244,12 @@ namespace xilopro2.Controllers
                     State state = new()
                     {
                         Cities = new List<City>(),
-                        Country = await _context.Countries.FindAsync(model.CountryId),
-                        State_Name = model.State_Name.ToUpper(),
+                      //  Country = await _context.Countries.FindAsync(model.CountryId),
+                        CountryId = model.CountryId, //await _context.Countries.MaxAsync(c => c.Country_ID) + 1, // manually set the CountryId value
+                        State_Name = model.State_Name?.Trim().ToUpper(),
                     };
                     _context.Add(state);
+                   
                     try
                     {
                         await _context.SaveChangesAsync();
@@ -250,7 +257,6 @@ namespace xilopro2.Controllers
                     }
                     catch (Exception)
                     {
-
                         throw;
                     }
                     Country country = await _context.Countries
@@ -324,7 +330,8 @@ namespace xilopro2.Controllers
                     State state = new()
                     {
                         State_ID = model.State_ID,
-                        State_Name = model.State_Name.ToUpper(),
+                        State_Name = model.State_Name?.Trim().ToUpper(),
+                        CountryId = model.CountryId,
                     };
 
                     _context.Update(state);
@@ -451,6 +458,7 @@ namespace xilopro2.Controllers
             {
                 StateId = state.State_ID,
                 StateName = state.State_Name,
+                
             };
             return View(model);
         }
@@ -466,9 +474,9 @@ namespace xilopro2.Controllers
                     City city = new()
                     {
                         City_ID = model.City_ID,
-                        City_Name = model.City_Name.ToUpper(),
-                        State = await _context.States.FindAsync(model.StateId),
-                        
+                        City_Name = model.City_Name?.Trim().ToUpper(),
+                        // State = await _context.States.FindAsync(model.StateId),
+                        IdState = model.StateId,
                     };
                     _context.Add(city);
                     try
@@ -491,7 +499,7 @@ namespace xilopro2.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(String.Empty, "Ya existe un departamento con el mismo nombre en este país");
+                        ModelState.AddModelError(String.Empty, "Ya existe un municipio con el mismo nombre en este departamento");
                     }
                     else
                     {
@@ -547,8 +555,9 @@ namespace xilopro2.Controllers
                     City city = new()
                     {
                         City_ID = model.City_ID,
-                        City_Name = model.City_Name.ToUpper(),
-                        State = await _context.States.FindAsync(model.StateId),
+                        City_Name = model.City_Name?.Trim().ToUpper(),
+                        // State = await _context.States.FindAsync(model.StateId),
+                        IdState = model.StateId,
                     };
 
                     try
@@ -577,7 +586,7 @@ namespace xilopro2.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(String.Empty, "Ya existe un departamento con el mismo nombre en este país");
+                        ModelState.AddModelError(String.Empty, "Ya existe un municipio con el mismo nombre en este departamento");
                     }
                     else
                     {

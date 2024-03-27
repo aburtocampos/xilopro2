@@ -392,7 +392,7 @@ namespace xilopro2.Migrations
                     b.ToTable("Lineups");
                 });
 
-            modelBuilder.Entity("xilopro2.Data.Entities.Match", b =>
+            modelBuilder.Entity("xilopro2.Data.Entities.Matchgame", b =>
                 {
                     b.Property<int>("Match_ID")
                         .ValueGeneratedOnAdd()
@@ -959,7 +959,7 @@ namespace xilopro2.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("xilopro2.Data.Entities.Match", b =>
+            modelBuilder.Entity("xilopro2.Data.Entities.Matchgame", b =>
                 {
                     b.HasOne("xilopro2.Data.Entities.Groups", "Groups")
                         .WithMany("Matches")

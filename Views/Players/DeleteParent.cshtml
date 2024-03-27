@@ -1,0 +1,69 @@
+﻿@model xilopro2.Data.Entities.Parent
+
+@{
+    ViewData["Title"] = "Delete";
+    var path1 = "/Content/Parents/";
+    var path2 = "/Content/Files/";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model?.PlayerId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Eliminando Tutor: <span class="badge bg-danger text-white text-uppercase">@Model.Parent_FullName</span> del Jugador <span class="badge bg-dark text-uppercase">@Model.Player.Player_FullName</span> </h2>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="control-label  mb-2">Nombre:</span>
+                        <h3>@Model.Parent_FullName</h3>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label mb-2">Cedula:</span>
+                        <h3>@Model.Parent_Cedula</h3>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label  mb-2">Teléfono:</span>
+                        <h3>@Model.PhoneNumber</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mt-4">
+                        <span class="control-label d-flex mb-2">Vista previa Foto:</span>
+
+                            <img src="@(!string.IsNullOrEmpty(Model.Parent_Image) ? Url.Content(path1+Model.Parent_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:350px;max-width: 100%; height: auto;" />
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mt-4">
+                        <span class="control-label d-flex fw-bold mb-2">Vista previa Cedula:</span>
+                        @if (Model.Parent_ImageCedula.Contains(".pdf"))
+                        {
+                        //<i class="fa-solid fa-file-pdf" style=" font-size: 3.2rem;color: #000;"></i>
+                            <embed id="viewpreview2" type="application/pdf" src="@(!string.IsNullOrEmpty(Model.Parent_ImageCedula) ? Url.Content(path2+Model.Parent_ImageCedula) : Url.Content("~/images/noimage.png"))" style="width:800px;max-width: 100%; height: 80vh;" />
+                        }
+                        else
+                        {
+                            <img src="@(!string.IsNullOrEmpty(Model.Parent_ImageCedula) ? Url.Content(path2+Model.Parent_ImageCedula) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:350px;max-width: 100%; height: auto;" />
+                        }
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="DeleteParent" enctype="multipart/form-data" >
+                <div class="form-group d-flex justify-content-between">
+                    <input type="hidden" asp-for="Parent_ID" />
+                    <a asp-action="Details" asp-route-id="@Model?.PlayerId" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

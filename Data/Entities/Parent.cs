@@ -6,7 +6,7 @@ namespace xilopro2.Data.Entities
     public class Parent
     {
         [Key]
-        public string Parent_ID { get; set; }
+        public int Parent_ID { get; set; }
 
         [Display(Name = "Nombre")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
