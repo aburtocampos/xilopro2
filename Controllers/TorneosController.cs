@@ -984,20 +984,40 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-            var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID);
-            
-            var statsEntity =  _context.PlayerStatistics.Where(x => x.MatchId == Match_ID);
-            var idc = torneo.FirstOrDefault().SelectedCategoryIds;
-            if (statsEntity == null)
-            {
-                return NotFound();
-            }
+
+            /*usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
+            List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
+            List<Player> filteredPlayers = _context.Players
+                   .Include(cp => cp.Position)
+                    .Include(cp => cp.Team)
+
+                  .AsEnumerable()
+                 // .Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any())
+                 .Where(player => player.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
+                .ToList();*/
+
+
+
+
+
+            var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID).FirstOrDefault(); 
+            //List<int> filtroIdsCategories = torneo.SelectedCategoryIds;
+            List<Player> filteredPlayers = _context.Players
+              .AsEnumerable()
+              .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+              .ToList();
+
+
+          //  var statsEntity =  _context.PlayerStatistics.Where(x => x.MatchId == Match_ID);
+           // var idc = torneo.FirstOrDefault().SelectedCategoryIds;
+
+          //  if (statsEntity == null) {  return NotFound(); }
 
             var model = new PlayerStatisticViewModel
             {
 
                 MatchId = Match_ID,
-                Players =  _combos.GetCombosPlayersbyCat(torneo.FirstOrDefault().SelectedCategoryIds),
+                Players = filteredPlayers,// _combos.GetCombosPlayersbyCat(torneo.FirstOrDefault().SelectedCategoryIds),
             };
 
             return View(model);

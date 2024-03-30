@@ -71,10 +71,20 @@
                         @if (item.Player_Status)
                         {
                             <i class="fa-solid fa-thumbs-up text-success"></i>
+                            @if ((item.PlayerFiles?.Count > 0) || (item.Parents?.Count > 0))
+                            {
+                                <i class="fa-solid fa-paperclip"></i>
+
+                            }
                         }
                         else
                         {
                             <i class="fa-solid fa-thumbs-down text-danger"></i>
+                            @if ((item.PlayerFiles?.Count > 0) || (item.Parents?.Count > 0))
+                            {
+                                <i class="fa-solid fa-paperclip"></i>
+
+                            }
                         }
                     </td>
                     <td style="vertical-align: middle;" class="">

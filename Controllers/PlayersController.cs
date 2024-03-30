@@ -68,7 +68,8 @@ namespace xilopro2.Controllers
                 List<Player> filteredPlayers =  _context.Players
                      .Include(cp => cp.Position)
                       .Include(cp => cp.Team)
-                      
+                      .Include(cp => cp.PlayerFiles)
+                      .Include(cp => cp.Parents)
                     .AsEnumerable()
                    // .Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any())
                    .Where(player => player.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
@@ -92,6 +93,8 @@ namespace xilopro2.Controllers
 
             IActionResult response = View(await _context.Players
                      .Include(cp => cp.Position)
+                     .Include(cp => cp.PlayerFiles)
+                     .Include(cp => cp.Parents)
                     .ToListAsync());
             return response;
 
