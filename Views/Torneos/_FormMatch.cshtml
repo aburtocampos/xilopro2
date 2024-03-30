@@ -2,6 +2,7 @@
 @{
   
     var path = "/Content/Teams/";
+    var path2 = "/Content/Players/";
 }
 <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
 
@@ -23,7 +24,7 @@
         <div class="form-group"  >
              <label class="control-label">Local:</label>
              <div class=" mb-2 d-flex align-items-center">
-               <select id="team_local_select" class="form-select" asp-for="LocalId">
+            <select id="team_local_select" class="form-select" asp-for="LocalId">
                      <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un equipo</option>
                     @foreach (var equipo in Model.Teams)
                     {
@@ -31,7 +32,7 @@
                     }
                 </select>
             </div>
-            <span asp-validation-for="LocalId" class="text-danger"></span>
+        <span asp-validation-for="LocalId" class="text-danger"></span>
         </div>
 
     <div class="form-group">
@@ -48,7 +49,7 @@
         <span asp-validation-for="VisitorId" class="text-danger"></span>
     </div>
 
-
+ 
 
    
 </div>
@@ -113,7 +114,7 @@
             templateSelection: formatEquipo1
         });
 
-
+        
         function formatEquipo2(equipo) {
             if (!equipo.id) { return equipo.text; }
             //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
@@ -124,6 +125,19 @@
         $("#team_visitor_select").select2({
             templateResult: formatEquipo2,
             templateSelection: formatEquipo2
+        });
+
+
+        function formatEquipo3(equipo) {
+            if (!equipo.id) { return equipo.text; }
+            //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+            var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+            return $equipo;
+        };
+
+        $("#player_list").select2({
+            templateResult: formatEquipo3,
+            templateSelection: formatEquipo3
         });
 
     });

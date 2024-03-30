@@ -47,24 +47,24 @@
                 <div class="col-md-4 mt-3">
                     <div class="form-group my-2">
                         <label class="control-label">Cedula:</label>
-                        <h2 class="text-primary text-uppercase"> @Model.Player_Cedula</h2>
+                        <p class="text-primary text-uppercase"> @Model.Player_Cedula</p>
                     </div>
                     <div class="form-group my-2">
                         <label class="control-label">Jugador:</label>
-                        <h2 class="text-primary text-uppercase"> @Model.Player_FullName</h2>
+                        <p class="text-primary text-uppercase"> @Model.Player_FullName</p>
                     </div>
                     <div class="form-group mb-2">
                         <label asp-for="Player_PhoneNumber" class="control-label"></label>
-                        <h3 class="text-primary">@Model.Player_PhoneNumber</h3>
+                        <p class="text-primary">@Model.Player_PhoneNumber</p>
                     </div>
                     <div class="form-group mb-2">
                         <label class="control-label">Categoria:</label>
-                        <h3 class="text-primary">@ViewData["CatName"]</h3>
+                        <p class="text-primary">@ViewData["CatName"]</p>
                     </div>
                    
                     <div class="form-group mt-2">
                         <label asp-for="Player_Address" class="control-label"></label>
-                        <h3 class="text-primary">@Model.Player_Address</h3>
+                        <p class="text-primary">@Model.Player_Address</p>
                     </div>
 
                 </div>
@@ -76,26 +76,26 @@
                                 <label class="form-check-label ">Genero:</label>
                                 @if (Model.Player_Genero=="Masculino")
                                 {
-                                    <h5 class="text-primary ">Masculino</h5>
+                                    <p class="text-primary ">Masculino</p>
                                 }
                                 else
                                 {
-                                    <h5 class="text-primary ">Femenino</h5>
+                                    <p class="text-primary ">Femenino</p>
                                 }
                             </div>
                             <div class="form-group mb-2">
                                 <label class="control-label">Posición:</label>
-                                <h3 class="text-primary">@ViewData["Pos"]</h3>
+                                <p class="text-primary">@ViewData["Pos"]</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-2 d-flex justify-content-end align-items-center gap-1">
                                 <label class="control-label d-inline">Dorsal:</label>
-                                <h3 class="numerito">@Model.Player_Dorsal</h3>
+                                <p class="numerito">@Model.Player_Dorsal</p>
                             </div>
                             <div class="form-group mb-2">
                                 <label class="control-label">Equipo:</label>
-                                <h3 class="text-primary">@ViewData["team"]</h3>
+                                <p class="text-primary">@ViewData["team"]</p>
                             </div>
                         </div>
                     </div>
@@ -104,23 +104,23 @@
                     <div class="form-group mb-2">
                         <label class="control-label">Fecha de Nacimiento:</label>
                         <div class="d-flex align-items-end gap-3">
-                            <h3 class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</h3>
-                            <h4 id="labelEDAD" class="d-inline text-primary ">-</h4>
+                            <p class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</p>
+                            <p id="labelEDAD" class="d-inline text-primary ">-</p>
                         </div>
                         
                     </div>
                     
                     <div class="form-group mb-2">
                         <label class="control-label">Pais:</label>
-                        <h3 class="text-primary">@ViewData["PaisName"]</h3>
+                        <p class="text-primary">@ViewData["PaisName"]</p>
                     </div>
                     <div class="form-group mb-2">
                         <label class="control-label">Departamento:</label>
-                        <h3 class="text-primary">@ViewData["DepartamentoName"]</h3>
+                        <p class="text-primary">@ViewData["DepartamentoName"]</p>
                     </div>
                     <div class="form-group mb-2">
                         <label class="control-label">Municipio:</label>
-                        <h3 class="text-primary">@ViewData["MunicipioName"]</h3>
+                        <p class="text-primary">@ViewData["MunicipioName"]</p>
                     </div>
                 </div>
             </div>

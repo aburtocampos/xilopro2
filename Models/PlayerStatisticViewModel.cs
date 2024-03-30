@@ -1,4 +1,6 @@
-﻿namespace xilopro2.Models
+﻿using xilopro2.Data.Entities;
+
+namespace xilopro2.Models
 {
     public class PlayerStatisticViewModel
     {
@@ -14,6 +16,11 @@
         public int GoalsConceded { get; set; }
         public int Penalties { get; set; }
         public int CornerKicks { get; set; }
+
+        public int MatchId { get; set; }
+
+        public int TorneoId { get; set; }
+        public List<Player>? Players { get; set; }
 
     }
 }

@@ -52,8 +52,7 @@ namespace xilopro2.Models
 
         public List<Team>? Teams { get; set; }
 
-   
-
+       
     }
 
 }

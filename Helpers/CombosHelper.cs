@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
 using xilopro2.Enums;
@@ -164,23 +166,22 @@ namespace xilopro2.Helpers
             return list;
         }
 
-      /*  public IEnumerable<SelectListItem> GetCombosEquiposPorIds(int id)
+
+        public List<Player> GetCombosPlayersPorIds(int id)
         {
-            List<SelectListItem> list = new List<SelectListItem>();
+            List<Player> list = new List<Player>();
             try
             {
-                list = _dataContext.GroupDetails
-                 .Include(gd => gd.Team)
-                 .Where(gd => gd.Groups.Group_ID == id)
-                 .Select(gd => new SelectListItem
+                list = _dataContext.PlayerStatistics
+                 .Include(gd => gd.Player)
+                 .Where(gd => gd.Matchgames.Match_ID == id)
+                 .Select(gd => new Player
                  {
-                     Text = gd.Team.Team_Name, // Usar directamente sin string.Format
-                     Value = $"{gd.Team.Team_ID}|{gd.Team.Team_Image}",
-                     //  Value = gd.Team.Team_ID.ToString() + "|" + gd.Team.Team_Image, 
-
-
+                     Player_ID = gd.Player.Player_ID,
+                     Player_FirstName = gd.Player.Player_FirstName,
+                     Player_Image = gd.Player.Player_Image,
                  })
-                 .OrderBy(t => t.Text) // Esto ya ordena por el nombre del equipo directamente
+                 .OrderBy(t => t.Player_Dorsal)
                  .ToList();
             }
             catch (Exception)
@@ -188,14 +189,86 @@ namespace xilopro2.Helpers
                 throw;
             }
 
-            list.Insert(0, new SelectListItem
+            return list;
+        }
+
+        public List<Player> GetCombosPlayers()
+        {
+            List<Player> list = new List<Player>();
+            try
             {
-                Text = "Seleccionar equipo...",
-                Value = "0"
-            });
+                list = _dataContext.Players
+                 .Where(gd => gd.Player_Status == true)
+                 .OrderBy(t => t.Player_LastName)
+                 .ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return list;
-        }*/
+        }
+
+        public List<Player> GetCombosPlayersbyCat(List<int> ids)
+        {
+            List<Player> list = new List<Player>();
+            try
+            {
+                /*  list = _dataContext.Players
+                   .Where(gd => gd.Player_Status == true && gd.SelectedCategoryIds == ids)
+                   .OrderBy(t => t.Player_LastName)
+                   .ToList();*/
+                var sortedIds = ids.OrderBy(id => id).ToList();
+
+                list = _dataContext.Players
+                    .Where(player =>
+                        player.SelectedCategoryIds != null &&
+                        player.SelectedCategoryIds.OrderBy(id => id).SequenceEqual(sortedIds)
+                    )
+                    .OrderBy(player => player.Player_LastName)
+                        .ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return list;
+        }
+
+        /*  public IEnumerable<SelectListItem> GetCombosEquiposPorIds(int id)
+          {
+              List<SelectListItem> list = new List<SelectListItem>();
+              try
+              {
+                  list = _dataContext.GroupDetails
+                   .Include(gd => gd.Team)
+                   .Where(gd => gd.Groups.Group_ID == id)
+                   .Select(gd => new SelectListItem
+                   {
+                       Text = gd.Team.Team_Name, // Usar directamente sin string.Format
+                       Value = $"{gd.Team.Team_ID}|{gd.Team.Team_Image}",
+                       //  Value = gd.Team.Team_ID.ToString() + "|" + gd.Team.Team_Image, 
+
+
+                   })
+                   .OrderBy(t => t.Text) // Esto ya ordena por el nombre del equipo directamente
+                   .ToList();
+              }
+              catch (Exception)
+              {
+                  throw;
+              }
+
+              list.Insert(0, new SelectListItem
+              {
+                  Text = "Seleccionar equipo...",
+                  Value = "0"
+              });
+
+              return list;
+          }*/
 
 
 

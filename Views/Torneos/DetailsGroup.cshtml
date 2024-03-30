@@ -17,8 +17,8 @@
         <hr />
 
         <div class="card border-dark row" style="width: 100%;margin:0 auto;">
-            <div class="card-body row">
-                <div class="col-md-6 text-center">
+            <div class="card-body row align-items-center">
+                <div class="col-md-3 text-center">
                     <div class="form-group mb-2">
                         <div class="d-flex justify-content-between">
                             <div class="estadoplayer">
@@ -39,22 +39,25 @@
 
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group mb-2">
                         <label class="control-label">Nombre de Torneo:</label>
                         <h2 class="text-primary text-uppercase"> @Model.Torneo.Torneo_Name</h2>
                     </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group mb-2">
                         <label class="control-label">Número de Equipos:</label>
                         <h3 class="text-primary">@Model.GroupDetails.Count</h3>
                     </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group mb-2">
                         <label class="control-label">Número de Partidos:</label>
                         <h3 class="text-primary">@Model.Matches.Count</h3>
                     </div>
-
-
                 </div>
+
             </div>
             <div class="card-footer card-footer-dark">
                 <div class="form-group my-2 d-flex justify-content-between">
@@ -269,7 +272,7 @@
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:right;">
                                                             <div class="btn-group">
-                                                                <a asp-action="AddStats" asp-route-id="@item.Match_ID" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas</a>
+                                                                <a asp-action="AddStats" asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas</a>
                                                                 <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
                                                                 <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Cerrar</span></a>
                                                             </div>

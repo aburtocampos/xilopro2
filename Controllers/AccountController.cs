@@ -78,7 +78,7 @@ namespace xilopro2.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "El usuario no existe. Contacte al administrador.");
+                    ModelState.AddModelError(string.Empty, "El usuario no existe o Email es incorrecto.");
                     return View(model);
                    // return RedirectToAction("Login", "Account");
                 } 
@@ -87,8 +87,8 @@ namespace xilopro2.Controllers
             {
                 return View(model);
             }
-           // return View(model);
-            return RedirectToAction("Login", "Account");
+            return View(model);
+           // return RedirectToAction("Login", "Account");
         }
 
 

@@ -199,7 +199,7 @@ namespace xilopro2.Data
                 });
                 _context.Teams.Add(new Team
                 {
-                    Team_Name = "MINCA FC",
+                    Team_Name = "MINA FC",
                     Team_Estadio = "CAMPO SANTA LUCIA",
                     Team_Image = "",
 

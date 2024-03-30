@@ -34,6 +34,7 @@ namespace xilopro2.Controllers
             // _userManager = userManager;
         }
 
+        #region Users
 
         [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Index()
@@ -370,10 +371,14 @@ namespace xilopro2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
 
+
+
+        #region Profile
         //perfil de usuarios
 
-        
+
         public async Task<IActionResult> Profile(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -485,6 +490,7 @@ namespace xilopro2.Controllers
                 if (result.Succeeded)
                 {
                   //  return RedirectToAction("ChangeUser");
+                    TempData["successUser"] = "Contraseña modificada...!";
                     return RedirectToAction("Profile", "Users", new { id = user.Email });
                 }
                 else
@@ -495,6 +501,10 @@ namespace xilopro2.Controllers
 
             return View(model);
         }
+
+
+
+        #endregion
 
 
         public JsonResult GetDepartments(int countryId) {

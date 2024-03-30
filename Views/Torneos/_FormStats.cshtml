@@ -1,0 +1,111 @@
+﻿@model xilopro2.Models.PlayerStatisticViewModel
+@{
+    var path = "/Content/Players/";
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+<input type="hidden" asp-for="MatchId" />
+<input type="hidden" asp-for="Players" />
+<input type="hidden" asp-for="PlayerId" />
+
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="RedCards" class="control-label"></label>
+        <input asp-for="RedCards" class="form-control" type="number" />
+        <span asp-validation-for="RedCards" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="CornerKicks" class="control-label"></label>
+        <input asp-for="CornerKicks" class="form-control" />
+        <span asp-validation-for="CornerKicks" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Local:</label>
+        <div class=" mb-2 d-flex align-items-center">
+            <select id="team_local_select" class="form-select" asp-for="PlayerId">
+                <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un jugador</option>
+                @foreach (var equipo in Model.Players)
+                {
+                    <option value="@equipo.Player_ID" data-img="@(!string.IsNullOrEmpty(equipo.Player_Image) ? Url.Content(path+equipo.Player_Image) : Url.Content("~/images/noimage.png"))">@equipo.Player_FullName</option>
+                }
+            </select>
+        </div>
+        <span asp-validation-for="PlayerId" class="text-danger"></span>
+    </div>
+
+
+</div>
+
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="Goals" class="control-label"></label>
+        <input asp-for="Goals" class="form-control" />
+        <span asp-validation-for="Goals" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="YellowCards" class="control-label"></label>
+        <input asp-for="YellowCards" class="form-control" />
+        <span asp-validation-for="YellowCards" class="text-danger"></span>
+    </div>
+
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<!-- Agrega estos enlaces en tu sección de <head> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" defer />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js " defer></script>
+<script type="text/javascript">
+    var ruta = '@Url.Content("/Content/Teams/")';
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Finalizado',
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> Proximo'
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var ruta = '@Url.Content("/Content/Teams/")';
+        var teamLocal = document.getElementById('team_local_select');
+        var imgLocal = document.getElementById('imgLocal');
+        var teamVisitante = document.getElementById('team_visitor_select');
+        var imgVisitante = document.getElementById('imgVisitante');
+
+        var flagshowText = false;
+
+    });
+
+    $(document).ready(function () {
+        function formatEquipo1(equipo) {
+            if (!equipo.id) { return equipo.text; }
+            //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+            var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+            return $equipo;
+        };
+
+        $("#team_local_select").select2({
+            templateResult: formatEquipo1,
+            templateSelection: formatEquipo1
+        });
+
+
+        function formatEquipo2(equipo) {
+            if (!equipo.id) { return equipo.text; }
+            //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+            var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+            return $equipo;
+        };
+
+        $("#team_visitor_select").select2({
+            templateResult: formatEquipo2,
+            templateSelection: formatEquipo2
+        });
+
+    });
+
+
+
+</script>

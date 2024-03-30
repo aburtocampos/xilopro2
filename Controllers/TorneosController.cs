@@ -763,6 +763,8 @@ namespace xilopro2.Controllers
 
         #region Matches
 
+      
+
         public async Task<IActionResult> AddMatch(int? id)
         {
             if (id == null)
@@ -782,6 +784,7 @@ namespace xilopro2.Controllers
                 GroupName = groupEntity.Group_Name,
                 GroupId = groupEntity.Group_ID,
                 Teams = _combos.GetCombosEquiposPorIds(groupEntity.Group_ID),
+               
             };
 
             return View(model);
@@ -877,6 +880,7 @@ namespace xilopro2.Controllers
              VisitorId = matchEntity.TeamVisitorId,
              MatchID = matchEntity.Match_ID,
              Teams = _combos.GetCombosEquiposPorIds(matchEntity.GroupsrId),
+            
             };
 
             return View(model);
@@ -949,6 +953,109 @@ namespace xilopro2.Controllers
 
         #region stats
 
+        public async Task<IActionResult> ListStats(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var groupEntity = await _context.Groups
+                .Include(g => g.Matches)
+                .ThenInclude(g => g.TeamLocal)
+                .Include(g => g.Matches)
+                .ThenInclude(g => g.TeamVisitor)
+                .Include(g => g.Torneo)
+                .Include(g => g.GroupDetails)
+                .ThenInclude(gd => gd.Team)
+                .FirstOrDefaultAsync(g => g.Group_ID == id);
+            if (groupEntity == null)
+            {
+                return NotFound();
+            }
+
+            return View(groupEntity);
+        }
+
+
+        public async Task<IActionResult> AddStats(int Match_ID, int Torneo_ID)
+        {
+            if (Match_ID == null)
+            {
+                return NotFound();
+            }
+            var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID);
+            
+            var statsEntity =  _context.PlayerStatistics.Where(x => x.MatchId == Match_ID);
+            var idc = torneo.FirstOrDefault().SelectedCategoryIds;
+            if (statsEntity == null)
+            {
+                return NotFound();
+            }
+
+            var model = new PlayerStatisticViewModel
+            {
+
+                MatchId = Match_ID,
+                Players =  _combos.GetCombosPlayersbyCat(torneo.FirstOrDefault().SelectedCategoryIds),
+            };
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+
+        public async Task<IActionResult> AddStats(PlayerStatisticViewModel model)
+        {
+           
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                        var statsEntity = new PlayerStatistics
+                        {
+                           CornerKicks = model.CornerKicks,
+                           Fouls = model.Fouls,
+                           GoalkeeperSaves = model.GoalkeeperSaves,
+                           Goals = model.Goals,
+                           GoalsConceded = model.GoalsConceded,
+                           MatchId = model.MatchId,
+                           Penalties = model.Penalties,
+                           PlayerId = model.PlayerId,
+                           RedCards = model.RedCards,
+                           YellowCards = model.YellowCards,
+
+                        };
+                        _context.Add(statsEntity);
+                        await _context.SaveChangesAsync();
+                        TempData["successTorneo"] = "Estaatidistica agregada  exitosamente!!";
+                        return RedirectToAction(nameof(DetailsGroup), new { Id = model.MatchId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe esta jornada en este grupo");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+
+                //  ModelState.AddModelError(string.Empty, "The local and visitor must be differents teams.");
+            }
+
+           
+
+            model.Players = _combos.GetCombosPlayers();
+            return View(model);
+        }
 
 
 
