@@ -10,6 +10,7 @@ using xilopro2.Helpers;
 using xilopro2.Helpers.Interfaces;
 using xilopro2.Migrations;
 using xilopro2.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace xilopro2.Controllers
 {
@@ -512,11 +513,14 @@ namespace xilopro2.Controllers
                 .Include(g => g.GroupDetails)
                 .ThenInclude(gd => gd.Team)
                 .FirstOrDefaultAsync(g => g.Group_ID == id);
+
+
             if (groupEntity == null)
             {
                 return NotFound();
             }
-
+            ViewData["idgroupdetails"] = id;
+            ViewData["idtorneo"] = groupEntity.torneoId;
             return View(groupEntity);
         }
 
@@ -951,73 +955,52 @@ namespace xilopro2.Controllers
         #endregion
 
 
-        #region stats
+        #region Stats
 
-        public async Task<IActionResult> ListStats(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var groupEntity = await _context.Groups
-                .Include(g => g.Matches)
-                .ThenInclude(g => g.TeamLocal)
-                .Include(g => g.Matches)
-                .ThenInclude(g => g.TeamVisitor)
-                .Include(g => g.Torneo)
-                .Include(g => g.GroupDetails)
-                .ThenInclude(gd => gd.Team)
-                .FirstOrDefaultAsync(g => g.Group_ID == id);
-            if (groupEntity == null)
-            {
-                return NotFound();
-            }
-
-            return View(groupEntity);
-        }
-
-
-        public async Task<IActionResult> AddStats(int Match_ID, int Torneo_ID)
+        public async Task<IActionResult> ListStats(int DetailsGroup_ID, int Match_ID, int Torneo_ID)
         {
             if (Match_ID == null)
             {
                 return NotFound();
             }
 
-            /*usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
-            List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
-            List<Player> filteredPlayers = _context.Players
-                   .Include(cp => cp.Position)
-                    .Include(cp => cp.Team)
-
-                  .AsEnumerable()
-                 // .Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any())
-                 .Where(player => player.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
-                .ToList();*/
+            List<PlayerStatistics> statEntity =  _context.PlayerStatistics
+                .Include(g => g.Player)
+                .Where(g => g.MatchId == Match_ID).ToList();
 
 
 
+            if (statEntity == null)
+            {
+                return NotFound();
+            }
+            ViewData["idmach"] = Match_ID;
+            ViewData["idgroupdetails"] = DetailsGroup_ID;
+            ViewData["idtorneo"] = Torneo_ID;
+            return View(statEntity);
+        }
 
+
+        public async Task<IActionResult> AddStats(int DetailsGroup_ID, int Match_ID, int Torneo_ID)
+        {
+            if (Match_ID == null)
+            {
+                return NotFound();
+            }
 
             var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID).FirstOrDefault(); 
-            //List<int> filtroIdsCategories = torneo.SelectedCategoryIds;
             List<Player> filteredPlayers = _context.Players
               .AsEnumerable()
               .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
               .ToList();
 
-
-          //  var statsEntity =  _context.PlayerStatistics.Where(x => x.MatchId == Match_ID);
-           // var idc = torneo.FirstOrDefault().SelectedCategoryIds;
-
-          //  if (statsEntity == null) {  return NotFound(); }
-
             var model = new PlayerStatisticViewModel
             {
-
+                DetailsGroupId = DetailsGroup_ID,
                 MatchId = Match_ID,
-                Players = filteredPlayers,// _combos.GetCombosPlayersbyCat(torneo.FirstOrDefault().SelectedCategoryIds),
+                Players = filteredPlayers,
+                TorneoId = Torneo_ID,
+                
             };
 
             return View(model);
@@ -1025,7 +1008,6 @@ namespace xilopro2.Controllers
 
 
         [HttpPost]
-
         public async Task<IActionResult> AddStats(PlayerStatisticViewModel model)
         {
            
@@ -1049,8 +1031,8 @@ namespace xilopro2.Controllers
                         };
                         _context.Add(statsEntity);
                         await _context.SaveChangesAsync();
-                        TempData["successTorneo"] = "Estaatidistica agregada  exitosamente!!";
-                        return RedirectToAction(nameof(DetailsGroup), new { Id = model.MatchId });
+                        TempData["successTorneo"] = "Estadística agregada  exitosamente!!";
+                        return RedirectToAction(nameof(ListStats), new { DetailsGroup_ID = model.MatchId, Match_ID = model.MatchId, Torneo_ID = model.TorneoId });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {

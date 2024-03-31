@@ -21,7 +21,7 @@ namespace xilopro2.Helpers.Interfaces
 
         List<Player> GetCombosPlayers();
 
-        List<Player> GetCombosPlayersPorIds(int id);
+      //  List<Player> GetCombosPlayersPorIds(int id);
 
         IEnumerable<SelectListItem> GetCombosCountries();
 

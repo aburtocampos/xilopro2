@@ -272,7 +272,8 @@
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:right;">
                                                             <div class="btn-group">
-                                                                <a asp-action="AddStats" asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas</a>
+                                                                <a asp-action="ListStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]"  asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas
+                                                                </a>
                                                                 <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
                                                                 <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Cerrar</span></a>
                                                             </div>

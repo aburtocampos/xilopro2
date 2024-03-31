@@ -68,7 +68,22 @@
                                                         @{
                                                             var elemento2 = ViewBag.Cats as IEnumerable<SelectListItem>;
                                                             var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
-                                                            <span class="badge text-bg-secondary"> @elemento3.Text</span>
+                                                             <span class="@GetBadgebyClass(elemento3.Text)"> @elemento3.Text</span>
+                                                        @functions {
+                                                          private string GetBadgebyClass(string text)
+                                                            {
+                                                                return text switch
+                                                                {
+                                                                    "MAYOR" => "badge text-bg-secondary",
+                                                                    "U13 MASCULINO" => "badge text-bg-green", 
+                                                                    "U15 MASCULINO" => "badge text-bg-yellow",
+                                                                    "U15 FEMENINO" => "badge text-bg-pink",
+                                                                    "U17 MASCULINO" => "badge text-bg-blue",
+                                                                    "U17 FEMENINO" => "badge text-bg-purple",
+                                                                      _ => "badge", // Default case
+                                                                };
+                                                            }
+                                                       }
                                                         }
                                                   
                                                     </td>
@@ -226,34 +241,5 @@
             </div>
         </div>
 </div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#tblTorneoActivos').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
-                },
-                "aLengthMenu": [
-                    [5, 25, 50, 100, 200, -1],
-                    [5, 25, 50, 100, 200, "Todos"]
-                ]
-            });
-
-
-            $('#tblTorneoInactivos').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
-                },
-                "aLengthMenu": [
-                    [5, 25, 50, 100, 200, -1],
-                    [5, 25, 50, 100, 200, "Todos"]
-                ]
-            });
-
-        })
-    </script>
-}
+cc
 

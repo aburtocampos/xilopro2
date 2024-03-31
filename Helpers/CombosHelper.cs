@@ -167,7 +167,7 @@ namespace xilopro2.Helpers
         }
 
 
-        public List<Player> GetCombosPlayersPorIds(int id)
+       /* public List<Player> GetCombosPlayersPorIds(int id)
         {
             List<Player> list = new List<Player>();
             try
@@ -190,7 +190,7 @@ namespace xilopro2.Helpers
             }
 
             return list;
-        }
+        }*/
 
         public List<Player> GetCombosPlayers()
         {

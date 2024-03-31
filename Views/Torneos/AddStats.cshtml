@@ -7,7 +7,7 @@
 
 <div class="container pt-3">
     <div class="d-flex justify-content-between align-items-center gap-2">
-        <a asp-action="DetailsGroup" asp-route-id="@Model?.MatchId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <a asp-action="ListStats" asp-route-DetailsGroup_ID="@Model?.DetailsGroupId" asp-route-Match_ID="@Model?.MatchId" asp-route-Torneo_ID="@Model?.TorneoId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
         <h3 class="m-0 text-end">Agregando Estadisticas a la Jornada <span class="badge bg-dark">@Model.MatchId</span></h3>
     </div>
     <hr />
@@ -20,7 +20,7 @@
             </div>
             <div class="card-footer card-footer-primary">
                 <div class="form-group d-flex justify-content-between">
-                    <a asp-action="DetailsGroup" asp-route-id="@Model.MatchId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <a asp-action="ListStats" asp-route-DetailsGroup_ID="@Model?.DetailsGroupId" asp-route-Match_ID="@Model?.MatchId" asp-route-Torneo_ID="@Model?.TorneoId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
                 </div>
             </div>

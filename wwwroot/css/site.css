@@ -178,6 +178,32 @@ img.camisita {
     height: 50px;
 }
 
+.text-bg-pink {
+    color: #fff !important;
+    background-color: rgba(225, 0, 158) !important;
+}
+
+.text-bg-green {
+    color: #fff !important;
+    background-color: rgba(31, 159, 49) !important;
+}
+
+.text-bg-blue {
+    color: #fff !important;
+    background-color: rgba(0, 46, 198) !important;
+}
+
+.text-bg-yellow {
+    color: #fff !important;
+    background-color: rgba(204, 188, 0);
+}
+
+.text-bg-purple {
+    color: #fff !important;
+    background-color: rgba(133, 0, 194) !important;
+}
+
+
 /**table arrangements**/
 table{
     width:100%!important;
