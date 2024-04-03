@@ -63,7 +63,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-2">
                 <label for="Player_Genero" class="control-label fw-bold">Genero:</label>
-                <select asp-for="Player_Genero" asp-items="ViewBag.Genero" class="form-select"></select>
+                <select asp-for="Player_Genero" asp-items="ViewBag.Genero" class="form-select" id="selectGenero" ></select>
                 <span asp-validation-for="Player_Genero" class="text-danger"></span>
                     </div>
                 </div>
@@ -200,50 +200,87 @@
     //evento change para el drop decida si muestra cedula y fifaid segun la categoria
     document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
         checkbox.addEventListener('change', function () {
-       // var checkboxCategoria = document.getElementById("flexSwitchCheckDefault");
-        var checkboxCategoria = checkbox;
-        var campoCedula = document.getElementById("campoCedula");
-        var campoFifaid = document.getElementById("campoFifaid");
-     //   var selectedValue = categoriaSelect.options[categoriaSelect.selectedIndex].value;
-      //  console.log('-> ', checkboxCategoria.value);
-     //   if (selectedValue != "1" /*&& selectedValue != "5" && selectedValue != "7"*/) {
-        if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
-            campoCedula.style.display = "none";
-            campoFifaid.style.display = "none";
+            var checkboxCategoria = checkbox;
+            var campoCedula = document.getElementById("campoCedula");
+            var campoFifaid = document.getElementById("campoFifaid");
+            if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
+                campoCedula.style.display = "none";
+                campoFifaid.style.display = "none";
 
-                if (checkboxCategoria.value == 2) {
-                    var edad = document.getElementById('labelEDAD').innerText;
-                    if (edad > 13) {
-                        alert("La Edad de este Jugador no es aceptada en la Categoria U13");
-                        checkboxCategoria.checked = false;
+                    if (checkboxCategoria.value == 2) {
+                        var edad = document.getElementById('labelEDAD').innerText;
+                        if (edad > 13) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U13");
+                            checkboxCategoria.checked = false;
+                        }
                     }
-                }
-                if (checkboxCategoria.value == 5 || checkboxCategoria.value == 3) {
+                    if (checkboxCategoria.value == 5 || checkboxCategoria.value == 3) {
                     
-                    var edad = document.getElementById('labelEDAD').innerText;
-                    if (edad > 15) {
-                        alert("La Edad de este Jugador no es aceptada en la Categoria U15");
-                        checkboxCategoria.checked = false;
+                        var edad = document.getElementById('labelEDAD').innerText;
+                        if (edad > 15) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U15");
+                            checkboxCategoria.checked = false;
+                        }
                     }
-                }
-                if (checkboxCategoria.value == 4 || checkboxCategoria.value == 6) {
+                    if (checkboxCategoria.value == 4 || checkboxCategoria.value == 6) {
 
-                    var edad = document.getElementById('labelEDAD').innerText;
-                    if (edad > 17) {
-                        alert("La Edad de este Jugador no es aceptada en la Categoria U17");
-                        checkboxCategoria.checked = false;
+                        var edad = document.getElementById('labelEDAD').innerText;
+                        if (edad > 17) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U17");
+                            checkboxCategoria.checked = false;
+                        }
                     }
-                }
 
-        } else {
-            campoCedula.style.display = "block";
-            campoFifaid.style.display = "block";
-        }
+            
 
-           
+            } else {
+                campoCedula.style.display = "block";
+                campoFifaid.style.display = "block";
+            }
 
-    });
-    });
+         });
+    });   
+
+
+    //validar genero con categorias
+        var selectGenero = document.getElementById("selectGenero");
+        selectGenero.addEventListener("change", function () {
+            const selectedValue = this.value;
+            if (selectedValue == "Masculino") {
+                document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                    var checkboxValue = parseInt(checkbox.value);  // Convertir el valor del checkbox a entero
+                    if (checkboxValue === 5 || checkboxValue === 6) {
+                        checkbox.disabled = true;
+                    }
+                    if (checkboxValue === 1 || checkboxValue === 2 || checkboxValue === 3 || checkboxValue === 4) {
+                        checkbox.disabled = false;
+                    }
+                });
+             } 
+            if (selectedValue == "Femenino") {
+                document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                var checkboxValue = parseInt(checkbox.value);
+                    if (checkboxValue === 5 || checkboxValue === 6) {
+                        checkbox.disabled = false;
+                    }
+                    if (checkboxValue === 1 || checkboxValue === 2 || checkboxValue === 3 || checkboxValue === 4) {
+                        checkbox.disabled = true;
+                    }
+                });
+            }
+            if (selectedValue == "") {
+                document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                        checkbox.disabled = true;
+                });
+            }
+        });
+
+    
+ 
+
+            
+
+
 
     //calcular edad basado en el evento change del datepicker
     function calcularEdad() {
@@ -292,39 +329,6 @@
             });
         });
     });
-
-    //categorias check independientes
-  /* document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIds"]');
-       var flag = false;
-        radios.forEach(function (radio) {
-            radio.addEventListener('click', function () {
-
-                if (!radio.checked) {
-                    if (!flag) {
-                        radio.checked = false;
-                        flag = true
-                    } else {
-                        radio.checked = true;
-                    }
-                    radios.forEach(function (otherRadio) {
-                        if (otherRadio !== radio) {
-                            otherRadio.disabled = false;
-                        }
-                    });
-
-                } else {
-                    radio.disabled = false;
-                    flag = false
-                    radios.forEach(function (otherRadio) {
-                        if (otherRadio !== radio) {
-                            otherRadio.disabled = true;
-                        }
-                    });
-                }
-            });
-        });
-    });*/
 
 
 </script>

@@ -11,14 +11,66 @@
     <div class="container-fluid pt-3">
         <div class="d-flex justify-content-between align-items-center gap-2">
             <a asp-action="DetailsGroup" asp-route-id="@ViewData["idgroupdetails"]" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
-
+            <h3>Estadisticas de la Jornada @ViewData["jornada"]</h3>
             <a asp-action="AddStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]" class="btn btn-dark">
                     <i class="fa-regular fa-pen-to-square"></i> Agregar Estadistica
                 </a>
         </div>
 
         <hr />
+
         <div class="card">
+            <div class="card-body row">
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Goals)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tiros de Esquina:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.CornerKicks)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                           Penaltis:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Penalties)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tarjetas Amarillas:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.YellowCards)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tarjetas Rojas:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.RedCards)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Faltas:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Fouls)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles Concedidos:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.GoalsConceded)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles Atajados:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.GoalkeeperSaves)</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Penaltis:
+                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Fouls)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr />
             <div class="card-body">
                 @if (Model.Count() > 0)
                 {

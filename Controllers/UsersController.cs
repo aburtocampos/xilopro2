@@ -39,10 +39,15 @@ namespace xilopro2.Controllers
         [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Index()
         {
-           // var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+           var usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
+            
+            //List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
 
             var response = await _dataContext.Users
-                .Where(x => x.UserTypeofRole != "Admin" /*&& x.Id != loggedInUserId*/)
+               // .Where(x => x.UserTypeofRole != "Admin" || x.Email != usuarioensesion.Email)
+                .Where(x => x.UserTypeofRole != "Admin" && x.Email != usuarioensesion.Email)
                 .OrderBy(x => x.User_LastName)
                 .ToListAsync();
 

@@ -127,6 +127,11 @@ namespace xilopro2.Data
               .OnDelete(DeleteBehavior.NoAction);
 
 
+            //    entity.HasOne(p => p.Category) // Un Player tiene una Category
+             //    .WithMany(c => c.Players) // Una Category tiene muchos Players
+                // .HasForeignKey(p => p.CategoryId);
+
+
             });
 
             builder.Entity<Player>()

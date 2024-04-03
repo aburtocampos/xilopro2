@@ -168,8 +168,8 @@
                                                         </td>
                                                         <td style="vertical-align:middle" class="text-center">
                                                             <div class="btn-group">
-                                                                <a asp-action="EditGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-                                                                <a asp-action="DeleteGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                                <a asp-action="EditGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                                <a asp-action="DeleteGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Borrar</span></a>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -246,6 +246,7 @@
                                                         </td>
                                                         <td class="imgZoom">
                                                             <img src="@(!string.IsNullOrEmpty(item.TeamLocal.Team_Image) ? Url.Content(path2+item.TeamLocal.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                                            @Html.DisplayFor(modelItem => item.TeamLocal.Team_Name)
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:center;">
                                                             @Html.DisplayFor(modelItem => item.GoalsLocal)
@@ -255,6 +256,7 @@
                                                         </td>
                                                         <td class="imgZoom">
                                                             <img src="@(!string.IsNullOrEmpty(item.TeamVisitor.Team_Image) ? Url.Content(path2+item.TeamVisitor.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                                            @Html.DisplayFor(modelItem => item.TeamVisitor.Team_Name)
                                                         </td>
                                                         <td style="vertical-align: middle;" class="d-none d-md-table-cell">
                                                             @if (!item.IsClosed)
@@ -272,10 +274,11 @@
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:right;">
                                                             <div class="btn-group">
-                                                                <a asp-action="ListStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]"  asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark"><i class="fa-regular fa-pen-to-square"></i> Estadisticas
+                                                                <a asp-action="ListStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark">
+                                                                    <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Estadisticas</span>
                                                                 </a>
-                                                                <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-                                                                <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Cerrar</span></a>
+                                                                <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                                <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block"><span class="d-none d-sm-inline-block">Cerrar</span></span></a>
                                                             </div>
                                                         </td>
                                                     </tr>

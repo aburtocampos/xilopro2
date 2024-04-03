@@ -78,7 +78,6 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Cedula:")]
         [RegularExpression(@"[0-9]{3}[0-9]{6}[0-9]{4}[A-Z]{1}", ErrorMessage = "Formato de Cedula incorrecto")]
         [MaxLength(14, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
-      //  [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [RequiredIfNotOne(ErrorMessage = "El campo Cedula es requerido")]//campo requerido si la categoria contiene el id 1
         public string? Player_Cedula { get; set; }= null;
 
@@ -109,6 +108,12 @@ namespace xilopro2.Data.Entities
 
 
         //relations
+
+        // Clave Foránea
+       // public int CategoryId { get; set; }
+
+        // Propiedad de Navegación
+      //  public Category? Category { get; set; }
 
 
         public Team? Team { get; set; }

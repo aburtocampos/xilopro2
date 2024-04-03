@@ -2,11 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
 using xilopro2.Helpers.Interfaces;
 using xilopro2.Models;
+using xilopro2.Models.toCharts;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace xilopro2.Controllers
 {
@@ -27,6 +32,9 @@ namespace xilopro2.Controllers
 
         public IActionResult Index()
         {
+            jugadoresxCat();
+
+
             if (User.Identity.IsAuthenticated)
             {
                 int totalEntity1 = _dataContext.Users.Count();
@@ -38,7 +46,7 @@ namespace xilopro2.Controllers
                     TotalPlayers = totalEntity2,
                     TotalParents = totalEntity4,
                     TotalTorneos = totalEntity3,
-                    TotalUsers = totalEntity1
+                    TotalUsers = totalEntity1 - 1,
                 };
                 return View(viewModel);
             }
@@ -68,7 +76,52 @@ namespace xilopro2.Controllers
         {
             return View();
         }
+        public IActionResult golesxTorneo() {
 
+            List<GolesxtorneoViewModel> Lista = _dataContext.Torneos
+                .Include(torneo => torneo.Groups)
+                    .ThenInclude(grupo => grupo.GroupDetails)
+                        .ThenInclude(detalle => detalle.Team) 
+                        .AsEnumerable()
+                .Where(torneo => torneo.SelectedCategoryIds.Contains(1)) 
+                .Select(torneo => new GolesxtorneoViewModel
+                {
+                    NombreTorneo = torneo.Torneo_Name,
+                    Temporada = torneo.Torneo_Season,
+                    CantidadGoles = torneo.Groups
+                        .SelectMany(grupo => grupo.GroupDetails)
+                        .Where(df=>df.teamId == 1)
+                        .Sum(detalle => detalle.GoalsFor)
+                })
+                .ToList();
+
+            return StatusCode(StatusCodes.Status200OK, Lista);
+        }
+
+
+        public IActionResult jugadoresxCat()
+        {
+            var categoryPlayersCount = _dataContext.Players
+            .AsEnumerable() // AsEnumerable aquí para manipular objetos en memoria, dependiendo de la lógica necesaria.
+            .SelectMany(player => player.SelectedCategoryIds.Select(categoryId => new { CategoryId = categoryId }))
+            .GroupBy(cp => cp.CategoryId)
+            .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+            .ToList();
+
+            // Unir con los nombres de las categorías usando un left join
+            List<JugadoresxCatViewModel> Lista = (from categoryCount in categoryPlayersCount
+                                                 join category in _dataContext.Categories on categoryCount.CategoryId equals category.Category_ID into categoryGroup
+                                                 from subCategory in categoryGroup.DefaultIfEmpty()
+                                                 select new JugadoresxCatViewModel
+                                                 {
+                                                     Categorias = subCategory != null ? subCategory.Category_Name : "Unknown Category",
+                                                     CantidadJugadores = categoryCount.Count
+                                                 }).ToList();
+
+            // List<JugadoresxCatViewModel> Lista = _dataContext.Torneos.ToList();
+
+            return StatusCode(StatusCodes.Status200OK, Lista);
+        }
 
     }
 }

@@ -965,10 +965,11 @@ namespace xilopro2.Controllers
             }
 
             List<PlayerStatistics> statEntity =  _context.PlayerStatistics
+                
                 .Include(g => g.Player)
                 .Where(g => g.MatchId == Match_ID).ToList();
 
-
+            var partido = _context.Matches.Where(m=>m.Match_ID == Match_ID);
 
             if (statEntity == null)
             {
@@ -977,6 +978,7 @@ namespace xilopro2.Controllers
             ViewData["idmach"] = Match_ID;
             ViewData["idgroupdetails"] = DetailsGroup_ID;
             ViewData["idtorneo"] = Torneo_ID;
+            ViewData["jornada"] = partido.FirstOrDefault().Jornada;
             return View(statEntity);
         }
 

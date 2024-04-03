@@ -20,19 +20,8 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Estado:")]
         public bool Category_Status { get; set; }
 
-      //  public ICollection<Player> Players { get; } = new List<Player>();
-
-        //  public virtual ICollection<IdentityUserCategoria> IdentityUserCategorias { get; set; } 
-
-        //   public virtual ICollection<Player> Players { get; set; }
-        //
-
-        /*  public string UserId { get; set; } = string.Empty;
-
-          public virtual User User { get; set; }*/
-
-        // public virtual ICollection<UserCategory>? UserCategory { get; set; }
-        // public virtual ICollection<UserCategory> UserCategory { get; set; }
+        // Colección de Navegación
+      //  public ICollection<Player> Players { get; set; }
 
     }
 }

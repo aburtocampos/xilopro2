@@ -241,7 +241,6 @@ namespace xilopro2.Controllers
                             Player_Cedula = model.Player_Cedula,
                             Player_fifaid = model.Player_fifaid,
                             Player_Genero = model.Player_Genero,
-
                             Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players"),
                             SelectedCategoryIds = model.SelectedCategoryIdss,
 
@@ -251,12 +250,16 @@ namespace xilopro2.Controllers
 
                             Positionid = model.Positionid,
                             Teamid = model.Teamid,
-                            
-                          //  Country = await _context.Countries.FindAsync(model.CountryID),
-                          //  Position = await _context.Positions.FindAsync(model.Positionid),
-                          //  Team = await _context.Teams.FindAsync(model.Teamid),
 
-                        };
+                           // ID de cat agregado para test
+                          //  CategoryId = model.SelectedCategoryIds != null && model.SelectedCategoryIds.Any() ? model.SelectedCategoryIds.First() : 0,
+
+
+                         //  Country = await _context.Countries.FindAsync(model.CountryID),
+                         //  Position = await _context.Positions.FindAsync(model.Positionid),
+                         //  Team = await _context.Teams.FindAsync(model.Teamid),
+
+                     };
 
                         _context.Players.Add(newuserobj);
                         await _context.SaveChangesAsync();
@@ -266,16 +269,17 @@ namespace xilopro2.Controllers
                     }
                     catch (DbUpdateException ex)
                     {
-                       /* if (ex.InnerException.Message.Contains("duplicate"))
-                        {
-                            ModelState.AddModelError(string.Empty, "Jugador Ya existe");
-                        }*/
-                        if (ex.InnerException.Message.Contains("SelectedCategoryIds"))
+                    /* if (ex.InnerException.Message.Contains("duplicate"))
+                     {
+                         ModelState.AddModelError(string.Empty, "Jugador Ya existe");
+                     }*/
+                   
+                          if (ex.InnerException.Message.Contains("Players_SelectedCategoryIds_Player_Dorsal"))
                         {
                         var nombrecat = _context.Categories
-                            .Where(c => model.SelectedCategoryIds.Contains(c.Category_ID))
-                            .Select(c => c.Category_Name)
-                            .ToList();
+                        .Where(c => model.SelectedCategoryIdss.Contains(c.Category_ID))
+                        .Select(c => c.Category_Name)
+                        .ToList();
                         ModelState.AddModelError(string.Empty, $"El dorsal {model.Player_Dorsal} ya existe en la categoria {string.Join(", ", nombrecat)}");
                         }
                         else
