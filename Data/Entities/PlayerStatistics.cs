@@ -11,8 +11,6 @@ namespace xilopro2.Data.Entities
         public Player Player { get; set; }
         public int MatchId { get; set; }
 
-        //  public Matchgame Matchgames { get; set; }
-
         [Display(Name = "Goles:")]
         public int Goals { get; set; }
 
@@ -36,5 +34,6 @@ namespace xilopro2.Data.Entities
 
         [Display(Name = "Tiros de Esquina:")]
         public int CornerKicks { get; set; }
+
     }
 }

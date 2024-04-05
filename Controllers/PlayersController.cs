@@ -5,6 +5,7 @@ using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
 using xilopro2.Helpers.Interfaces;
+using xilopro2.Migrations;
 using xilopro2.Models;
 
 namespace xilopro2.Controllers
@@ -117,6 +118,21 @@ namespace xilopro2.Controllers
                  .Include(c => c.PlayerFiles)
                  .FirstOrDefaultAsync(m => m.Player_ID == id);
 
+          /*  List<PlayerStatistics> listplayerStats =  _context.PlayerStatistics
+              .Where(ps => ps.PlayerId == player.Player_ID).ToList();*/
+
+            var listplayerStats = _context.PlayerStatistics
+            .Where(ps => ps.PlayerId == id)
+            .Join(_context.Matches, // La tabla con la que quieres hacer join
+                ps => ps.MatchId, // La clave foránea de PlayerStatistics
+                m => m.Match_ID, // La clave primaria de Match
+                (ps, m) => new // El resultado de la combinación
+                {
+                    PlayerStatistic = ps,
+                    Match = m
+                })
+            .ToList();
+
             if (player == null)
             {
                 return NotFound();
@@ -157,7 +173,7 @@ namespace xilopro2.Controllers
 
             ViewBag.DepartamentoList = listDepas;
             ViewBag.MunicipioList = listMuni;
-
+            ViewBag.StatList = listplayerStats;
             return View(player);
         }
 

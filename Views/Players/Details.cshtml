@@ -1,4 +1,5 @@
-﻿@model xilopro2.Data.Entities.Player
+﻿@using xilopro2.Data.Entities
+@model xilopro2.Data.Entities.Player
 
 @{
     ViewData["Title"] = "Details";
@@ -8,7 +9,7 @@
    
     var municipioList = ViewBag.MunicipioList;
     var departamentoList = ViewBag.DepartamentoList;
-    
+    var statList = ViewBag.StatList;
 }
     <partial name="_Notifications">
 
@@ -153,7 +154,9 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active fw-bold" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Archivos:</button>
             </li>
-           
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="stat-tab" data-bs-toggle="tab" data-bs-target="#stat-tab-pane" type="button" role="tab" aria-controls="stat-tab-pane" aria-selected="true">Estadisticas:</button>
+            </li>
             @if (ViewData["CatName"].ToString() != "MAYOR")
             {
                 <li class="nav-item" role="presentation">
@@ -237,11 +240,109 @@
                     </div>
                 </div>
               </div>
+            <div class="tab-pane fade" id="stat-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                @if (statList != null)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped display" id="tblStats">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Jornada
+                                                    </th>
+                                                    <th>
+                                                        Goles
+                                                    </th>
+                                                    <th>
+                                                       Tarjetas amarillas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Faltas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Tarjetas Rojas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Goles Atajados
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Goles Concedidos
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Penaltis
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Tiros de Esquina
+                                                    </th>
+                                                    <th class="text-end">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in statList)
+                                                {
+                                                    <tr>
+                                                        <td style="vertical-align: middle;" class="imgZoom">
+                                                            @item.Match.Jornada
+                                                        </td>
+                                                        <td style="vertical-align: middle;">
+                                                            <i class="fa-solid fa-futbol"></i> @item.PlayerStatistic.Goals
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            <i class="fa-solid fa-file text-warning"></i> @item.PlayerStatistic.YellowCards
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.Fouls
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            <i class="fa-solid fa-file text-danger"></i> @item.PlayerStatistic.RedCards
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.GoalkeeperSaves
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.GoalsConceded
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.Penalties
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.CornerKicks
+                                                        </td>
 
+
+                                                        <td style="vertical-align: middle;" class="text-end">
+                                                            <div class="btn-group">
+                                                                <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.PlayerStatistic.PlayerStatistic_ID"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.PlayerStatistic.PlayerStatistic_ID"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Eliminar</span></a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="card-body">
+                                        <div class="alert alert-warning" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay estadisticas registradas
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             @if (ViewData["CatName"] != "MAYOR")
             {
-                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="2">
                       <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
@@ -341,8 +442,7 @@
                         </div>
                     </div>
                      </div>
-                
-                
+
             }
         
             

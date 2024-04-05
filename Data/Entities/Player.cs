@@ -105,17 +105,6 @@ namespace xilopro2.Data.Entities
         [NotMapped]
         public bool toogleBoolean { get; set; }
 
-
-
-        //relations
-
-        // Clave Foránea
-       // public int CategoryId { get; set; }
-
-        // Propiedad de Navegación
-      //  public Category? Category { get; set; }
-
-
         public Team? Team { get; set; }
         public int Teamid { get; set; }
 
