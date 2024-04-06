@@ -70,7 +70,7 @@
                     </ul>
                 </div>
             </div>
-            <hr />
+            <hr style="width: 98%;margin: 0 auto;" />
             <div class="card-body">
                 @if (Model.Count() > 0)
                 {
@@ -144,8 +144,8 @@
 
                                         <td style="vertical-align: middle;" class="text-end">
                                             <div class="btn-group">
-                                                <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.PlayerStatistic_ID"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                                                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.PlayerStatistic_ID"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Eliminar</span></a>
+                                                <a asp-action="EditStats" class="btn btn-warning" asp-route-id="@item.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                <a asp-action="DeleteStats" class="btn btn-danger" asp-route-id="@item.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Borrar</span></a>
                                             </div>
                                         </td>
                                     </tr>

@@ -703,7 +703,9 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            var groupDet = await _context.GroupDetails.FirstOrDefaultAsync(m => m.GroupDetail_ID == id);
+            var groupDet = await _context.GroupDetails
+                .Include(gh=>gh.Team)
+                .FirstOrDefaultAsync(m => m.GroupDetail_ID == id);
 
             GroupDetailViewModel model = new()
             {
@@ -719,6 +721,7 @@ namespace xilopro2.Controllers
                 GroupName = _context.Groups.Where(g => g.Group_ID == groupDet.groupId)
                                     .Select(g => g.Group_Name)
                                     .FirstOrDefault(),
+                TeamName = _context.Teams.Where(g => g.Team_ID == groupDet.teamId).Select(t => t.Team_Name).FirstOrDefault(),
             };
 
             if (model == null)
@@ -738,7 +741,9 @@ namespace xilopro2.Controllers
                 return Problem("Entity set 'DataContext.GroupDetails'  is null.");
             }
            // var groupDet = await _context.GroupDetails.FindAsync(id);
-            var groupDet = await _context.GroupDetails.FirstOrDefaultAsync(m => m.GroupDetail_ID == id);
+            var groupDet = await _context.GroupDetails
+                .Include(gc=>gc.Team)
+                .FirstOrDefaultAsync(m => m.GroupDetail_ID == id);
             if (groupDet != null)
             {
                 _context.GroupDetails.Remove(groupDet);
@@ -750,7 +755,7 @@ namespace xilopro2.Controllers
                 var namegroup = _context.Groups.Where(g => g.Group_ID == groupDet.groupId)
                                     .Select(g => g.Group_Name)
                                     .FirstOrDefault();
-                TempData["successTorneo"] = "Equipos del grupo " + namegroup + " Eliminado!!";
+                TempData["successTorneo"] = @$"Equipo ${groupDet.Team.Team_Name} eliminado del grupo  ${namegroup}";
             }
             catch (Exception)
             {
@@ -928,28 +933,69 @@ namespace xilopro2.Controllers
             return View(model);
         }
 
-
         public async Task<IActionResult> DeleteMatch(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Matches == null)
             {
                 return NotFound();
             }
-
             var matchEntity = await _context.Matches
-                .Include(m => m.Groups)
-                .FirstOrDefaultAsync(m => m.Match_ID == id);
-            if (matchEntity == null)
+             .Include(m => m.Groups)
+             .FirstOrDefaultAsync(m => m.Match_ID == id);
+
+            MatchViewModel model = new()
+            {
+               Date = matchEntity.Date,
+               GoalsLocal = matchEntity.GoalsLocal,
+               GoalsVisitor = matchEntity.GoalsVisitor,
+               GroupId = matchEntity.GroupsrId,
+               IsClosed = matchEntity.IsClosed,
+               Jornada = matchEntity.Jornada,
+               LocalId = matchEntity.TeamLocalId,
+               VisitorId = matchEntity.TeamVisitorId,
+               GroupName = matchEntity.Groups.Group_Name
+            };
+
+            if (model == null)
             {
                 return NotFound();
             }
-
-            _context.Matches.Remove(matchEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DetailsGroup), new { Id = matchEntity.GroupsrId });
+            return View(model);
         }
 
 
+        [HttpPost, ActionName("DeleteMatch")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedMatch(int? id)
+        {
+            if (_context.Matches == null)
+            {
+                return Problem("Entity set 'DataContext.Matches'  is null.");
+            }
+            var matchEntity = await _context.Matches
+           //   .Include(m => m.Groups)
+              .FirstOrDefaultAsync(m => m.Match_ID == id);
+
+            if (matchEntity != null)
+            {
+                _context.Matches.Remove(matchEntity);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                var namegroup = _context.Groups.Where(g => g.Group_ID == matchEntity.GroupsrId)
+                                    .Select(g => g.Group_Name)
+                                    .FirstOrDefault();
+                TempData["successTorneo"] = "Jornada Eliminada!!";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return RedirectToAction(nameof(DetailsGroup), new { Id = matchEntity.GroupsrId });
+        }
 
 
         #endregion
@@ -998,8 +1044,8 @@ namespace xilopro2.Controllers
 
             var model = new PlayerStatisticViewModel
             {
-                DetailsGroupId = DetailsGroup_ID,
                 MatchId = Match_ID,
+                DetailsGroupId = DetailsGroup_ID,
                 Players = filteredPlayers,
                 TorneoId = Torneo_ID,
                 
@@ -1034,7 +1080,7 @@ namespace xilopro2.Controllers
                         _context.Add(statsEntity);
                         await _context.SaveChangesAsync();
                         TempData["successTorneo"] = "Estadística agregada  exitosamente!!";
-                        return RedirectToAction(nameof(ListStats), new { DetailsGroup_ID = model.MatchId, Match_ID = model.MatchId, Torneo_ID = model.TorneoId });
+                        return RedirectToAction(nameof(ListStats), new { DetailsGroup_ID = model.DetailsGroupId, Match_ID = model.MatchId, Torneo_ID = model.TorneoId });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -1055,12 +1101,178 @@ namespace xilopro2.Controllers
                 //  ModelState.AddModelError(string.Empty, "The local and visitor must be differents teams.");
             }
 
-           
-
             model.Players = _combos.GetCombosPlayers();
             return View(model);
         }
 
+
+        public async Task<IActionResult> EditStats(int? id, int DetailsGroup_ID, int Match_ID, int Torneo_ID)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var statEntity = await _context.PlayerStatistics
+                .Include(m => m.Player)
+                .FirstOrDefaultAsync(m => m.PlayerStatistic_ID == id);
+
+            var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID).FirstOrDefault();
+            List<Player> filteredPlayers = _context.Players
+              .AsEnumerable()
+              .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+              .ToList();
+
+            if (statEntity == null)
+            {
+                return NotFound();
+            }
+
+            var model = new PlayerStatisticViewModel
+            {
+
+                CornerKicks = statEntity.CornerKicks,
+                Fouls = statEntity.Fouls,
+                GoalkeeperSaves = statEntity.GoalkeeperSaves,
+                Goals = statEntity.Goals,
+                GoalsConceded = statEntity.GoalsConceded,
+                MatchId = statEntity.MatchId,
+                Penalties = statEntity.Penalties,
+                PlayerId = statEntity.PlayerId,
+                RedCards = statEntity.RedCards,
+                YellowCards = statEntity.YellowCards,
+                PlayerStatistic_ID = statEntity.PlayerStatistic_ID,
+
+                DetailsGroupId = DetailsGroup_ID,
+                Players = filteredPlayers,
+                TorneoId = Torneo_ID,
+
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStats(PlayerStatisticViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var statEntity = await _context.PlayerStatistics
+                   .Include(m => m.Player)
+                     .FirstOrDefaultAsync(m => m.PlayerStatistic_ID == model.PlayerStatistic_ID);
+
+                var torneo = _context.Torneos.Where(x => x.Torneo_ID == model.TorneoId).FirstOrDefault();
+                List<Player> filteredPlayers = _context.Players
+                  .AsEnumerable()
+                  .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+                  .ToList();
+
+                statEntity = new PlayerStatistics
+                {
+                    CornerKicks = model.CornerKicks,
+                    Fouls = model.Fouls,
+                    GoalkeeperSaves = model.GoalkeeperSaves,
+                    Goals = model.Goals,
+                    GoalsConceded = model.GoalsConceded,
+                    MatchId = model.MatchId,
+                    Penalties = model.Penalties,
+                    PlayerId = model.PlayerId,
+                    RedCards = model.RedCards,
+                    YellowCards = model.YellowCards,
+                    PlayerStatistic_ID = model.PlayerStatistic_ID,
+
+                    DetailsGroupId = model.DetailsGroupId,
+                    Players = filteredPlayers,
+                    TorneoId = model.TorneoId,
+                };
+
+                try
+                {
+                    _context.Update(statEntity);
+                    await _context.SaveChangesAsync();
+                    TempData["successTorneo"] = "Estadistica editada exitosamente!!";
+                    return RedirectToAction(nameof(ListStats), new { Id = model.PlayerStatistic_ID, DetailsGroup_ID = model.DetailsGroupId, Match_ID = model.MatchId, Torneo_ID = model.TorneoId });
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteStats(int? id)
+        {
+            if (id == null || _context.PlayerStatistics == null)
+            {
+                return NotFound();
+            }
+            var statEntity = await _context.PlayerStatistics
+             .Include(m => m.Player)
+             .FirstOrDefaultAsync(m => m.PlayerStatistic_ID == id);
+
+            PlayerStatisticViewModel model = new()
+            {
+                CornerKicks = statEntity.CornerKicks,
+                Fouls = statEntity.Fouls,
+                GoalkeeperSaves = statEntity.GoalkeeperSaves,
+                Goals = statEntity.Goals,
+                GoalsConceded = statEntity.GoalsConceded,
+                MatchId = statEntity.MatchId,
+                Penalties = statEntity.Penalties,
+                PlayerId = statEntity.PlayerId,
+                RedCards = statEntity.RedCards,
+                YellowCards = statEntity.YellowCards,
+                PlayerStatistic_ID = statEntity.PlayerStatistic_ID,
+                PlayerName = _context.Players.Where(g => g.Player_ID == statEntity.PlayerId)
+                                    .Select(g => g.Player_FullName)
+                                    .FirstOrDefault(),
+                DetailsGroupId = statEntity.DetailsGroupId,
+              //  Players = filteredPlayers,
+                TorneoId = statEntity.TorneoId,
+            };
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
+        }
+
+
+        [HttpPost, ActionName("DeleteStats")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedStats(int? id)
+        {
+            if (_context.PlayerStatistics == null)
+            {
+                return Problem("Entity set 'DataContext.Matches'  is null.");
+            }
+            var statEntity = await _context.PlayerStatistics
+              //   .Include(m => m.Groups)
+              .FirstOrDefaultAsync(m => m.PlayerStatistic_ID == id);
+
+            if (statEntity != null)
+            {
+                _context.PlayerStatistics.Remove(statEntity);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+  
+                TempData["successTorneo"] = "Estadistica Eliminada!!";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(ListStats), new { Id = statEntity.PlayerStatistic_ID, DetailsGroup_ID = statEntity.DetailsGroupId, Match_ID = statEntity.MatchId, Torneo_ID =statEntity.TorneoId});
+           // return RedirectToAction(nameof(DetailsGroup), new { Id = matchEntity.GroupsrId });
+        }
 
 
         #endregion

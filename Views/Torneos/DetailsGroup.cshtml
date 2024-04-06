@@ -64,8 +64,6 @@
                     <a asp-action="Details" asp-route-id="@Model?.torneoId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <div class="btn-group">
                         <a asp-action="EditGroup" asp-route-id="@Model.Group_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar Grupo</span></a>
-                     
-                        
                     </div>
                 </div>
             </div>
@@ -278,7 +276,7 @@
                                                                     <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Estadisticas</span>
                                                                 </a>
                                                                 <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                                                                <a asp-action="CloseMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block"><span class="d-none d-sm-inline-block">Cerrar</span></span></a>
+                                                                <a asp-action="DeleteMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block"><span class="d-none d-sm-inline-block">Borrar</span></span></a>
                                                             </div>
                                                         </td>
                                                     </tr>

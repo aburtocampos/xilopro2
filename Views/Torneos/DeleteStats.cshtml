@@ -1,0 +1,70 @@
+﻿@model xilopro2.Models.PlayerStatisticViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="ListStats" asp-route-id="@Model?.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@Model?.DetailsGroupId" asp-route-Match_ID="@Model?.MatchId" asp-route-Torneo_ID="@Model?.TorneoId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Eliminando Estadistica <span class="badge bg-danger text-white text-uppercase"></span></h3>
+    </div>
+    <hr />
+    <div class="card border-danger mb-4" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Confirme eliminar Estadisticas de la Jornada<span class="text-danger"></span> ?</h2>
+            <div class="row justify-content-center" >
+                <div class="col-4">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Nombre:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.PlayerName</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.Goals</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Penaltis:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.Penalties</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tiros de Esquina:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.CornerKicks</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Faltas:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.Fouls</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tarjetas Amarillas: 
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.YellowCards</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Tarjetas Rojas:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.RedCards</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles Concedidos:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.GoalsConceded</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Goles Atajados:
+                            <span class="badge text-bg-danger rounded-pill fs-6">@Model.GoalkeeperSaves</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="DeleteStats">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="ListStats" asp-route-id="@Model?.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@Model?.DetailsGroupId" asp-route-Match_ID="@Model?.MatchId" asp-route-Torneo_ID="@Model?.TorneoId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

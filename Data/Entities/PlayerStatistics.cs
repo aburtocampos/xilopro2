@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace xilopro2.Data.Entities
 {
@@ -34,6 +35,20 @@ namespace xilopro2.Data.Entities
 
         [Display(Name = "Tiros de Esquina:")]
         public int CornerKicks { get; set; }
+
+
+        [NotMapped]
+        public int DetailsGroupId { get; set; }
+
+        [NotMapped]
+        public int TorneoId { get; set; }
+
+        [NotMapped]
+        public List<Player> Players { get; set; }
+
+   
+
+
 
     }
 }
