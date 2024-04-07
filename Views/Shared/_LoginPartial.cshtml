@@ -62,16 +62,6 @@
                     }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Editor"))
                     {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Reportes
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="nav-link text-dark">Usuarios</a></li>
-                                <li><a class="nav-link text-dark">Jugadores</a></li>
-                                <li><a class="nav-link text-dark">Torneos</a></li>
-                            </ul>
-                        </li>
                         <li><a class="nav-link" asp-area="" asp-controller="Teams" asp-action="Index">Equipos</a></li>
                         <li><a class="nav-link" asp-area="" asp-controller="Torneos" asp-action="Index">Torneos</a></li>
                         <li><a class="nav-link" asp-area="" asp-controller="Players" asp-action="Index">Jugadores</a></li>
@@ -79,16 +69,6 @@
 
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Dt"))
                     {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Reportes
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="nav-link text-dark">Usuarios</a></li>
-                                <li><a class="nav-link text-dark">Jugadores</a></li>
-                                <li><a class="nav-link text-dark">Torneos</a></li>
-                            </ul>
-                        </li>
                         <li><a class="nav-link" asp-area="" asp-controller="Teams" asp-action="Index">Equipos</a></li>
                         <li><a class="nav-link" asp-area="" asp-controller="Torneos" asp-action="Index">Torneos</a></li>
                         <li><a class="nav-link" asp-area="" asp-controller="Players" asp-action="Index">Jugadores</a></li>

@@ -531,7 +531,7 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            var groupEntity = await _context.Groups.FindAsync(id);
+            var groupEntity = await _context.Groups.FindAsync(id);//id de grupo
             if (groupEntity == null)
             {
                 return NotFound();
@@ -543,6 +543,7 @@ namespace xilopro2.Controllers
                 GroupId = groupEntity.Group_ID,
                 Teams = _combos.GetCombosEquipos(),
                 GroupName = groupEntity.Group_Name,
+                
             };
 
             return View(model);
@@ -574,7 +575,7 @@ namespace xilopro2.Controllers
                     {
                         _context.Add(groupDetailEntity);
                         await _context.SaveChangesAsync();
-                        TempData["successTorneo"] = "Equipos agregados a " + model.GroupName + " exitosamente!!";
+                        TempData["successTorneo"] = "Equipos agregados a Grupo " + model.GroupName + " exitosamente!!";
                         return RedirectToAction(nameof(DetailsGroup), new { Id = model.GroupId });
                     }
                     catch (Exception)
@@ -953,7 +954,8 @@ namespace xilopro2.Controllers
                Jornada = matchEntity.Jornada,
                LocalId = matchEntity.TeamLocalId,
                VisitorId = matchEntity.TeamVisitorId,
-               GroupName = matchEntity.Groups.Group_Name
+               GroupName = matchEntity.Groups.Group_Name,
+               
             };
 
             if (model == null)
@@ -1075,7 +1077,7 @@ namespace xilopro2.Controllers
                            PlayerId = model.PlayerId,
                            RedCards = model.RedCards,
                            YellowCards = model.YellowCards,
-
+                           TorneoId = model.TorneoId,
                         };
                         _context.Add(statsEntity);
                         await _context.SaveChangesAsync();
@@ -1204,7 +1206,7 @@ namespace xilopro2.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DeleteStats(int? id)
+        public async Task<IActionResult> DeleteStats(int? id, int DetailsGroup_ID)
         {
             if (id == null || _context.PlayerStatistics == null)
             {
@@ -1230,7 +1232,7 @@ namespace xilopro2.Controllers
                 PlayerName = _context.Players.Where(g => g.Player_ID == statEntity.PlayerId)
                                     .Select(g => g.Player_FullName)
                                     .FirstOrDefault(),
-                DetailsGroupId = statEntity.DetailsGroupId,
+                DetailsGroupId = DetailsGroup_ID,
               //  Players = filteredPlayers,
                 TorneoId = statEntity.TorneoId,
             };

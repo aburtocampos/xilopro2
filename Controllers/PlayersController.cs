@@ -114,6 +114,7 @@ namespace xilopro2.Controllers
             }
 
             Player player = await _context.Players
+
                  .Include(c => c.Parents)
                  .Include(c => c.PlayerFiles)
                  .FirstOrDefaultAsync(m => m.Player_ID == id);
@@ -174,6 +175,9 @@ namespace xilopro2.Controllers
             ViewBag.DepartamentoList = listDepas;
             ViewBag.MunicipioList = listMuni;
             ViewBag.StatList = listplayerStats;
+
+
+
             return View(player);
         }
 

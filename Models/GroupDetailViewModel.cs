@@ -39,7 +39,7 @@ namespace xilopro2.Models
         public int GroupId { get; set; }
         public string GroupName { get; set; }
 
-        public string TeamName { get; set; }
+        public string? TeamName { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [Display(Name = "Equipo")]

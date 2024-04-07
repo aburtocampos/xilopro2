@@ -36,12 +36,12 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Tiros de Esquina:")]
         public int CornerKicks { get; set; }
 
+        public int TorneoId { get; set; }
 
         [NotMapped]
         public int DetailsGroupId { get; set; }
 
-        [NotMapped]
-        public int TorneoId { get; set; }
+   
 
         [NotMapped]
         public List<Player> Players { get; set; }

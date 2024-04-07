@@ -20,20 +20,20 @@
         <hr />
 
         <div class="card">
-            <div class="card-body row">
+            <div class="card-body row justify-content-center">
                 <div class="col-md-3">
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Goles:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Goals)</span>
+                            <span class="badge text-bg-primary  fs-6">@Model.Sum(x => x.Goals)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Tiros de Esquina:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.CornerKicks)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.CornerKicks)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                            Penaltis:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Penalties)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.Penalties)</span>
                         </li>
                     </ul>
                 </div>
@@ -41,15 +41,15 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Tarjetas Amarillas:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.YellowCards)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.YellowCards)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Tarjetas Rojas:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.RedCards)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.RedCards)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Faltas:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Fouls)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.Fouls)</span>
                         </li>
                     </ul>
                 </div>
@@ -57,15 +57,15 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Goles Concedidos:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.GoalsConceded)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.GoalsConceded)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Goles Atajados:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.GoalkeeperSaves)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.GoalkeeperSaves)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Penaltis:
-                            <span class="badge text-bg-primary rounded-pill">@Model.Sum(x => x.Fouls)</span>
+                            <span class="badge text-bg-primary fs-6">@Model.Sum(x => x.Penalties)</span>
                         </li>
                     </ul>
                 </div>

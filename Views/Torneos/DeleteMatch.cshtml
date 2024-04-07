@@ -7,7 +7,7 @@
 <div class="container pt-3">
 
     <div class="d-flex justify-content-between align-items-center gap-2">
-        <a asp-action="DetailsGroup" asp-route-id="@Model?.MatchID" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
         <h3 class="m-0 text-end">Eliminando Jornada @Model.Jornada del Grupo: <span class="badge bg-danger text-white text-uppercase">@Model.GroupName</span></h3>
     </div>
     <hr />
@@ -19,7 +19,7 @@
             <form asp-action="DeleteMatch">
                 <div class="form-group d-flex justify-content-between">
                     <input type="hidden" asp-for="MatchID" />
-                    <a asp-action="DeleteMatch" asp-route-id="@Model?.MatchID" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
                 </div>
             </form>
