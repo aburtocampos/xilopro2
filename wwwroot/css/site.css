@@ -202,10 +202,29 @@ img.camisita {
     background-color: rgba(133, 0, 194) !important;
 }
 
+.membresiastilo {
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+}
+
+@media(max-width:768px) {
+    .membresiastilo {
+        display: flex;
+        flex-direction:column;
+        text-align: center;
+    }
+    .statscards span, .statscards a {
+        font-size: 11px !important;
+    }
+        .statscards span.card-title {
+            font-size: 17px !important;
+        }
+}
 
 /**table arrangements**/
-table{
-    width:100%!important;
+table {
+    width: 100% !important;
 }
     table.dataTable th:not(:last-child) {
         text-align: left !important;
@@ -329,7 +348,7 @@ html {
         padding:0 1rem
     }
     .navbar-nav {
-        margin-top: 1rem;
+        margin-top: 0rem;
         padding: 0 1rem;
     }
 }

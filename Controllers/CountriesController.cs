@@ -227,9 +227,6 @@ namespace xilopro2.Controllers
                 CountryId = country.Country_ID,
                 CountryName = country.Country_Name,
             };
-
-
-
             return View(model);
         }
 

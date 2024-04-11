@@ -13,4 +13,13 @@
         Masculino,
         Femenino
     }
+
+    public enum MembershipStatus
+    {
+        Pendiente,
+        Cancelada,
+        Activa,
+        Inactiva
+    }
+
 }

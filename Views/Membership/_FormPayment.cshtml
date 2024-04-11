@@ -1,0 +1,54 @@
+﻿@model xilopro2.Models.PaymentViewModel
+@{
+
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="MembersId" />
+
+
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="PaymentDate" class="control-label"></label>
+        <input asp-for="PaymentDate" class="form-control lowerinput" min="2023-01-01" max="2040-12-31" />
+        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="PaymentAmount" class="control-label"></label>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">C$</span>
+            <input asp-for="PaymentAmount" type="text" class="form-control" />
+        </div>
+        <span asp-validation-for="PaymentAmount" class="text-danger"></span>
+    </div>
+   
+</div>
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="PaymentMethod" class="control-label"></label>
+        <select asp-for="PaymentMethod" class="form-select">
+            <option value="0">Seleccione un metodo de pago...</option>
+            <option value="EFECTIVO">EFECTIVO</option>
+            <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+            <option value="CHEQUE">CHEQUE</option>
+        </select>
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="PaymentStatus" class="control-label"></label>
+        <select asp-for="PaymentStatus" class="form-select">
+            <option value="0">Seleccione un estado...</option>
+            <option value="PAGADO">PAGADO</option>
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="CANCELADO">CANCELADO</option>
+        </select>
+        <span asp-validation-for="PaymentStatus" class="text-danger"></span>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+   
+
+</script>

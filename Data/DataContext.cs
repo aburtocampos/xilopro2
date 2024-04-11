@@ -60,6 +60,9 @@ namespace xilopro2.Data
 
         public DbSet<PlayerStatistics> PlayerStatistics { get; set; }
 
+        public DbSet<Membership> Memberships { get; set; }
+
+        public DbSet<Payments> Payments { get; set; }
 
 
         //  public DbSet<UserCategory> UserCategory { get; set; }
@@ -212,7 +215,11 @@ namespace xilopro2.Data
                .WithMany(gd => gd.Matches)
                .HasForeignKey(gd => gd.GroupsrId);
 
-            
+
+            //MEmbership
+            builder.Entity<Membership>().HasIndex(p => p.Membership_FullName).IsUnique();
+
+
         }
     }
 }

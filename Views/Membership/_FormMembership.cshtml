@@ -1,0 +1,63 @@
+﻿@model xilopro2.Models.MembershipViewModel
+@{
+
+    var path = "/Content/Teams/";
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="Membership_FullName" />
+
+
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="MemberFirstName" class="control-label"></label>
+        <input asp-for="MemberFirstName" class="form-control lowerinput" placeholder="Ingrese Nombres..." />
+        <span asp-validation-for="MemberFirstName" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="MemberLastName" class="control-label"></label>
+        <input asp-for="MemberLastName" class="form-control" placeholder="Ingrese Apellidos..." />
+        <span asp-validation-for="MemberLastName" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="MembershipType" class="control-label"></label>
+        <select asp-for="MembershipType" class="form-select">
+            <option value="0">Seleccione un tipo...</option>
+            <option value="SEMANAL">SEMANAL</option>
+            <option value="QUINCENAL">QUINCENAL</option>
+            <option value="MENSUAL">MENSUAL</option>
+            <option value="ANUAL">ANUAL</option>
+        </select>
+        <span asp-validation-for="MembershipType" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="form-group mb-2">
+        <label asp-for="StartDate" class="control-label"></label>
+        <input asp-for="StartDate" class="form-control text-uppercase" min="2023-01" max="2040-12" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="EndDate" class="control-label"></label>
+        <input asp-for="EndDate" class="form-control text-uppercase" min="2023-01" max="2040-12" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Status" class="control-label"></label>
+        <select asp-for="Status" class="form-select">
+            <option value="0" >Seleccione un estado...</option>
+            <option value="ACTIVO">ACTIVO</option>
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="INACTIVO">INACTIVO</option>
+            <option value="CANCELADO">CANCELADO</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+   
+
+</script>

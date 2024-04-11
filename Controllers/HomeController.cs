@@ -32,9 +32,7 @@ namespace xilopro2.Controllers
 
         public IActionResult Index()
         {
-            jugadoresxCat();
-
-
+           // jugadoresxCat();
             if (User.Identity.IsAuthenticated)
             {
                 int totalEntity1 = _dataContext.Users.Count();
