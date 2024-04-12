@@ -16,7 +16,7 @@
         <label asp-for="PaymentAmount" class="control-label"></label>
         <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon1">C$</span>
-            <input asp-for="PaymentAmount" type="text" class="form-control" />
+            <input asp-for="PaymentAmount" type="text" class="form-control" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
         </div>
         <span asp-validation-for="PaymentAmount" class="text-danger"></span>
     </div>

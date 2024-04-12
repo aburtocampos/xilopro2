@@ -22,7 +22,7 @@ namespace xilopro2.Data.Entities
         public string MembershipType { get; set; }
 
         [Display(Name = "Fecha de Inicio:")]
-        [BindProperty, DataType("month")]
+        [BindProperty, DataType("month", ErrorMessage = "Your message here")]
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Fecha de Finalización:")]

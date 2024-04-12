@@ -25,5 +25,7 @@ namespace xilopro2.Data.Entities
 
         public int MembershipId { get; set; }
         public Membership? Membership { get; set; }
+
+
     }
 }

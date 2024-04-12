@@ -107,7 +107,7 @@ namespace xilopro2.Controllers
             .ToList();
 
             // Unir con los nombres de las categorías usando un left join
-            List<JugadoresxCatViewModel> Lista = (from categoryCount in categoryPlayersCount
+           List<JugadoresxCatViewModel> Lista = (from categoryCount in categoryPlayersCount
                                                  join category in _dataContext.Categories on categoryCount.CategoryId equals category.Category_ID into categoryGroup
                                                  from subCategory in categoryGroup.DefaultIfEmpty()
                                                  select new JugadoresxCatViewModel
@@ -117,6 +117,7 @@ namespace xilopro2.Controllers
                                                  }).ToList();
 
             // List<JugadoresxCatViewModel> Lista = _dataContext.Torneos.ToList();
+
 
             return StatusCode(StatusCodes.Status200OK, Lista);
         }

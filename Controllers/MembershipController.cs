@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
+using xilopro2.Helpers.Interfaces;
 using xilopro2.Models;
+using xilopro2.Models.toCharts;
 
 namespace xilopro2.Controllers
 {
@@ -20,6 +22,7 @@ namespace xilopro2.Controllers
 
         public async Task<IActionResult> Index()
         {
+            membresiascant();
            // var response = _context.Memberships.ToList();
             IActionResult response = _context.Memberships != null ?
                View(await _context.Memberships
@@ -290,10 +293,186 @@ namespace xilopro2.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> EditPayment(int? id)
+        {
+            if (id == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+
+            var pay = await _context.Payments.FindAsync(id);
+            if (pay == null)
+            {
+                return NotFound();
+            }
+            PaymentViewModel model = new()
+            {
+                ID = pay.Id,
+                MembersId = pay.MembershipId,
+                PaymentAmount = pay.PaymentAmount,
+                PaymentDate = pay.PaymentDate,
+                PaymentMethod = pay.PaymentMethod,
+                PaymentStatus = pay.PaymentStatus,
+                MembershipFullName = _context.Memberships
+                                .Where(torneo => torneo.Id == pay.Id)
+                                .Select(torneo => torneo.Membership_FullName)
+                                .FirstOrDefault(),
+            };
+            return View(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPayment(PaymentViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Payments pay = new() {
+                Id = model.ID,
+                PaymentAmount = model.PaymentAmount,
+                PaymentDate = model.PaymentDate,
+                PaymentMethod = model.PaymentMethod,
+                PaymentStatus = model.PaymentStatus,
+                MembershipId = model.MembersId,
+               
+                };
+               
+                try
+                {
+                    _context.Update(pay);
+                    await _context.SaveChangesAsync();
+                    TempData["successMem"] = "Pago de " + model.MembershipFullName + " editado!!";
+                    // return RedirectToAction(nameof(Details));
+                    return RedirectToAction(nameof(Details), new { Id = model.MembersId });
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Already there is a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> DeletePayment(int? id)
+        {
+            if (id == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+
+            var pay = await _context.Payments.FirstOrDefaultAsync(m => m.Id == id);
+
+            PaymentViewModel model = new()
+            {
+                ID = pay.Id,
+                MembersId = pay.MembershipId,
+                PaymentAmount = pay.PaymentAmount,
+                PaymentDate = pay.PaymentDate,
+                PaymentMethod = pay.PaymentMethod,
+                PaymentStatus = pay.PaymentStatus,
+                MembershipFullName = _context.Memberships
+                                .Where(torneo => torneo.Id == pay.Id)
+                                .Select(torneo => torneo.Membership_FullName)
+                                .FirstOrDefault(),
+            };
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
+        }
+
+
+        [HttpPost, ActionName("DeletePayment")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedPayment(int id)
+        {
+            if (_context.Payments == null)
+            {
+                return Problem("Entity set 'DataContext.Payments'  is null.");
+            }
+            var pay = await _context.Payments.FindAsync(id);
+            if (pay != null)
+            {
+                _context.Payments.Remove(pay);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                TempData["successMem"] = "Pago eliminado!!";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Details), new { Id = pay.MembershipId });
+        }
+
+        public async Task<IActionResult> DetailsPayment(int? id)
+        {
+            if (id == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+
+            var pay = await _context.Payments.FindAsync(id);
+            if (pay == null)
+            {
+                return NotFound();
+            }
+            PaymentViewModel model = new()
+            {
+                ID = pay.Id,
+                MembersId = pay.MembershipId,
+                PaymentAmount = pay.PaymentAmount,
+                PaymentDate = pay.PaymentDate,
+                PaymentMethod = pay.PaymentMethod,
+                PaymentStatus = pay.PaymentStatus,
+                MembershipFullName = _context.Memberships
+                                 .Where(torneo => torneo.Id == pay.Id)
+                                 .Select(torneo => torneo.Membership_FullName)
+                                 .FirstOrDefault(),
+            };
+
+
+            return View(model);
+        }
 
 
         #endregion
 
+
+        #region Charts
+        public IActionResult membresiascant()
+        {
+            var Lista = _context.Memberships
+                     .GroupBy(m => m.Status)
+                     .Select(group => new
+                     {
+                         Status = group.Key,
+                         Count = group.Count()
+                     })
+                     .ToList();
+
+            // List<JugadoresxCatViewModel> Lista = _dataContext.Torneos.ToList();
+
+            return StatusCode(StatusCodes.Status200OK, Lista);
+        }
+
+
+        #endregion
 
     }
 }

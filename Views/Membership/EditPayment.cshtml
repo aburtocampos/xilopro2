@@ -1,0 +1,33 @@
+﻿@model xilopro2.Models.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model?.ID" asp-controller="Membership" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Editando pago de  <span class="badge bg-warning text-black text-uppercase">@Model.MembershipFullName</span></h3>
+    </div>
+    <hr />
+    <div class="card border-warning" style=" width: 100%;margin:0 auto;">
+        <form asp-action="EditPayment" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="row">
+                    <partial name="_FormPayment" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-warning">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model?.ID" asp-controller="Membership" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-warning"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
