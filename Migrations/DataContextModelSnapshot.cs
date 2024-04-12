@@ -821,6 +821,9 @@ namespace xilopro2.Migrations
 
                     b.HasIndex("PlayerId");
 
+                    b.HasIndex("MatchId", "PlayerId")
+                        .IsUnique();
+
                     b.ToTable("PlayerStatistics");
                 });
 

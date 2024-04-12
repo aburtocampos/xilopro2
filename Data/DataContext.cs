@@ -79,7 +79,7 @@ namespace xilopro2.Data
            // builder.Entity<Groups>().HasIndex(p => p.Group_Name).IsUnique();
             builder.Entity<Groups>().HasIndex(g => new { g.torneoId, g.Group_Name }).IsUnique();// no repetir nombres de grupos en el mismo torneo
             builder.Entity<GroupDetail>().HasIndex(gd => new { gd.groupId, gd.teamId }).IsUnique(); // no repetir equipos en detalles de grupos
-
+            builder.Entity<PlayerStatistics>().HasIndex(gd => new { gd.MatchId, gd.PlayerId }).IsUnique();
             builder.Entity<Player>().HasIndex(gd => new { gd.SelectedCategoryIds, gd.Player_Dorsal }).IsUnique();
             builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamLocalId, gd.TeamVisitorId, gd.Jornada }).IsUnique();//no repetir jornada y local ni visitante
             builder.Entity<Country>(entity =>

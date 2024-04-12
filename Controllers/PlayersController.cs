@@ -119,20 +119,38 @@ namespace xilopro2.Controllers
                  .Include(c => c.PlayerFiles)
                  .FirstOrDefaultAsync(m => m.Player_ID == id);
 
-          /*  List<PlayerStatistics> listplayerStats =  _context.PlayerStatistics
-              .Where(ps => ps.PlayerId == player.Player_ID).ToList();*/
-
+            //consulta que devuelve las etadsiticas registradas en un partido de jugador
             var listplayerStats = _context.PlayerStatistics
             .Where(ps => ps.PlayerId == id)
-            .Join(_context.Matches, // La tabla con la que quieres hacer join
-                ps => ps.MatchId, // La clave foránea de PlayerStatistics
-                m => m.Match_ID, // La clave primaria de Match
-                (ps, m) => new // El resultado de la combinación
+            .Join(_context.Matches, 
+                ps => ps.MatchId, 
+                m => m.Match_ID, 
+                (ps, m) => new 
                 {
                     PlayerStatistic = ps,
                     Match = m
                 })
             .ToList();
+
+            //consulta que regres la lista de estadisticas los jugadores basado en partidos unicamente
+          /*  var listplayerStatsbyMatch = _context.PlayerStatistics
+                .Where(ps => ps.PlayerId == id)
+                .Join(_context.Matches,
+                    ps => ps.MatchId,
+                    m => m.Match_ID,
+                    (ps, m) => new
+                    {
+                        PlayerStatistic = ps,
+                        Match = m
+                    })
+                .GroupBy(item => item.Match.Match_ID)
+                .Select(group => new
+                {
+                    Match_ID = group.Key,
+                    TotalGoals = group.Sum(item => item.PlayerStatistic.Goals),
+                    // Agrega aquí cualquier otro campo que quieras sumar o agrupar
+                })
+                .ToList();*/
 
             if (player == null)
             {

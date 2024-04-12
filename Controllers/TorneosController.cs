@@ -1088,7 +1088,7 @@ namespace xilopro2.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe esta jornada en este grupo");
+                        ModelState.AddModelError(string.Empty, "Ya existe la estadistica de este jugador");
                     }
                     else
                     {
