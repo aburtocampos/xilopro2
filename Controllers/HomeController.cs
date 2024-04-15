@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +34,9 @@ namespace xilopro2.Controllers
 
         public IActionResult Index()
         {
-           // jugadoresxCat();
+            //golesxTorneo();
+            // jugadoresxCat()
+            // jugadoresgoleadores();
             if (User.Identity.IsAuthenticated)
             {
                 int totalEntity1 = _dataContext.Users.Count();
@@ -74,22 +78,23 @@ namespace xilopro2.Controllers
         {
             return View();
         }
+
+
+        #region Chart
+
         public IActionResult golesxTorneo() {
 
-            List<GolesxtorneoViewModel> Lista = _dataContext.Torneos
-                .Include(torneo => torneo.Groups)
-                    .ThenInclude(grupo => grupo.GroupDetails)
-                        .ThenInclude(detalle => detalle.Team) 
-                        .AsEnumerable()
-                .Where(torneo => torneo.SelectedCategoryIds.Contains(1)) 
-                .Select(torneo => new GolesxtorneoViewModel
+          //  var temporadas = _dataContext.Torneos.ToDictionary(c => c.Torneo_ID, c => c.Torneo_Season);
+            var playerStatistics = _dataContext.PlayerStatistics.ToList();
+            var categoryNames = _dataContext.Categories.ToDictionary(c => c.Category_ID, c => c.Category_Name);
+
+            var Lista = playerStatistics
+                .GroupBy(stat => stat.TorneoId)
+                .Select(g => new GolesxtorneoViewModel
                 {
-                    NombreTorneo = torneo.Torneo_Name,
-                    Temporada = torneo.Torneo_Season,
-                    CantidadGoles = torneo.Groups
-                        .SelectMany(grupo => grupo.GroupDetails)
-                        .Where(df=>df.teamId == 1)
-                        .Sum(detalle => detalle.GoalsFor)
+                   
+                    Categorias = categoryNames[g.Key],
+                    CantidadGoles = g.Sum(stat => stat.Goals)
                 })
                 .ToList();
 
@@ -121,6 +126,121 @@ namespace xilopro2.Controllers
 
             return StatusCode(StatusCodes.Status200OK, Lista);
         }
+
+
+        public IActionResult jugadoresgoleadores()
+        {
+            /*  var players = _dataContext.Players.ToList();
+              var playerStatistics = _dataContext.PlayerStatistics.ToList();
+              var categoryNames = _dataContext.Categories.ToDictionary(c => c.Category_ID, c => c.Category_Name);
+
+              List<GolesxCatViewModel> Lista = players
+                  .SelectMany(player => player.SelectedCategoryIds.Select(categoryId => new { Player = player, CategoryId = categoryId }))
+                  .GroupBy(cp => new { cp.CategoryId, cp.Player.Player_ID, cp.Player.Player_FullName })
+                  .Select(g => new GolesxCatViewModel
+                  {
+                      Categorias = categoryNames[g.Key.CategoryId],
+                      Player = g.Key.Player_FullName,
+                      Goles = g.Max(x => playerStatistics
+                          .Where(stat => stat.PlayerId == g.Key.Player_ID && stat.TorneoId == g.Key.CategoryId)
+                          .Sum(stat => stat.Goals))
+                  })
+                  .GroupBy(cp => cp.Categorias)
+                  .Select(g => g.OrderByDescending(x => x.Goles).FirstOrDefault())
+                  .ToList();*/
+
+            /* var players = _dataContext.Players.ToList();
+             var playerStatistics = _dataContext.PlayerStatistics.ToList();
+             var categoryNames = _dataContext.Categories.ToDictionary(c => c.Category_ID, c => c.Category_Name);
+
+             List<GolesxCatViewModel> Lista = players
+                 .SelectMany(player => player.SelectedCategoryIds.Select(categoryId => new { Player = player, CategoryId = categoryId }))
+                 .GroupBy(cp => new { cp.CategoryId, cp.Player.Player_ID, cp.Player.Player_FullName })
+                 .Select(g => new GolesxCatViewModel
+                 {
+                     Categorias = categoryNames[g.Key.CategoryId],
+                     Player = g.Key.Player_FullName,
+                     Goles = playerStatistics
+                         .Where(stat => stat.PlayerId == g.Key.Player_ID && stat.TorneoId == g.Key.CategoryId)
+                         .Sum(stat => stat.Goals)
+                 })
+                 .GroupBy(cp => cp.Categorias)
+                 .SelectMany(g => g.OrderByDescending(x => x.Goles).Take(3)) // Aquí es donde seleccionamos los top 3 goleadores por categoría
+                 .ToList();*/
+
+
+            // Primero traemos los datos necesarios a memoria
+            /* var players = _dataContext.Players.ToList();
+             var categories = _dataContext.Categories.ToList();
+             var playerStats = _dataContext.PlayerStatistics.ToList();
+
+             // Luego usamos LINQ to Objects para procesar los datos
+             var query = from playerStat in playerStats
+                         join player in players on playerStat.PlayerId equals player.Player_ID
+                         from categoryId in player.SelectedCategoryIds
+                         join category in categories on categoryId equals category.Category_ID
+                         group playerStat by new
+                         {
+                             playerStat.PlayerId,
+                             player.Player_FirstName,
+                             player.Player_LastName,
+                             categoryId,
+                             category.Category_Name
+                         } into grouped
+                         where grouped.Sum(ps => ps.Goals) > 0
+                         orderby grouped.Sum(ps => ps.Goals) descending
+                         select new GolesxCatViewModel
+                         {
+                             Player = $@"{grouped.Key.Player_LastName} {grouped.Key.Player_FirstName}",
+                             Categorias = grouped.Key.Category_Name,
+                             Goles = grouped.Sum(ps => ps.Goals)
+                         };
+
+             var Lista = query.ToList();*/
+            var players = _dataContext.Players.ToList();
+            var categories = _dataContext.Categories.ToList();
+            var playerStats = _dataContext.PlayerStatistics.ToList();
+
+            // Procesar los datos usando LINQ to Objects
+            var query = from playerStat in playerStats
+                        join player in players on playerStat.PlayerId equals player.Player_ID
+                        from categoryId in player.SelectedCategoryIds
+                        join category in categories on categoryId equals category.Category_ID
+                        group playerStat by new
+                        {
+                           // playerStat.PlayerId,
+                            category.Category_Name
+                        } into groupedByCategory
+                        select new
+                        {
+                           // CategoryId = groupedByCategory.Key.CategoryId,
+                            CategoryName = groupedByCategory.Key.Category_Name,
+                            TopScorer = groupedByCategory
+                                         .GroupBy(x => x.PlayerId)
+                                         .Select(g => new
+                                         {
+                                             PlayerId = g.Key,
+                                             Goles = g.Sum(x => x.Goals),
+                                             PlayerName = $"{players.First(p => p.Player_ID == g.Key).Player_LastName} {players.First(p => p.Player_ID == g.Key).Player_FirstName}"
+                                         })
+                                         .OrderByDescending(g => g.Goles)
+                                         .FirstOrDefault() // Tomamos el jugador con más goles
+                        };
+
+            var Lista = query.ToList()
+               // .GroupBy(x => x.CategoryName)
+                .Select(x => new GolesxCatViewModel
+            {
+                Player = $"{x.TopScorer.PlayerName} - {x.CategoryName.Substring(0,5)}",
+                Categorias =  x.CategoryName,
+                Goles = x.TopScorer.Goles
+            }).ToList().OrderByDescending(g => g.Goles);
+
+
+            return StatusCode(StatusCodes.Status200OK, Lista);
+        }
+
+        #endregion
 
     }
 }

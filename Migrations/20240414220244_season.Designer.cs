@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xilopro2.Data;
 
@@ -11,9 +12,11 @@ using xilopro2.Data;
 namespace xilopro2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240414220244_season")]
+    partial class season
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -507,16 +510,13 @@ namespace xilopro2.Migrations
                     b.Property<int>("TeamVisitorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("torneoid")
-                        .HasColumnType("int");
-
                     b.HasKey("Match_ID");
 
                     b.HasIndex("GroupsrId");
 
                     b.HasIndex("TeamVisitorId");
 
-                    b.HasIndex("TeamLocalId", "TeamVisitorId", "Jornada", "GroupsrId")
+                    b.HasIndex("TeamLocalId", "TeamVisitorId", "Jornada")
                         .IsUnique();
 
                     b.ToTable("Matches");
@@ -783,9 +783,6 @@ namespace xilopro2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerStatistic_ID"));
 
                     b.Property<int>("CornerKicks")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DetailsGroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("Fouls")

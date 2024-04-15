@@ -23,6 +23,8 @@ namespace xilopro2.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string PaymentStatus { get; set; }
 
+
+
         public int MembershipId { get; set; }
         public Membership? Membership { get; set; }
 

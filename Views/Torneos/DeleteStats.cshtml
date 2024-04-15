@@ -60,6 +60,7 @@
         </div>
         <div class="card-footer card-footer-danger">
             <form asp-action="DeleteStats">
+                <input type="hidden" asp-for="DetailsGroupId" />
                 <div class="form-group d-flex justify-content-between">
                     <a asp-action="ListStats" asp-route-id="@Model?.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@Model?.DetailsGroupId" asp-route-Match_ID="@Model?.MatchId" asp-route-Torneo_ID="@Model?.TorneoId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
                     <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>

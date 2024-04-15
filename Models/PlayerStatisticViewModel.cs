@@ -8,6 +8,7 @@ namespace xilopro2.Models
         public int PlayerStatistic_ID { get; set; }
         public int PlayerId { get; set; }
         public string? PlayerName { get; set; }
+        public string? Jornada { get; set; }
 
         [Display(Name = "Goles:")]
         public int Goals { get; set; }

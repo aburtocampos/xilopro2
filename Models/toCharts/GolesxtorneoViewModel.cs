@@ -4,8 +4,8 @@
     {
 
         public int CantidadGoles { get; set; }
-        public string NombreTorneo { get; set; }
+        public string Categorias { get; set; }
 
-        public string Temporada { get; set; }
+       // public string Temporadas { get; set; }
     }
 }

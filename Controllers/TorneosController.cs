@@ -109,7 +109,7 @@ namespace xilopro2.Controllers
                     if (ex.InnerException.Message.Contains("Torneo_Name"))
                     {
 
-                        ModelState.AddModelError(string.Empty, $"Ya existe un torneo con el nombre {tournament.Torneo_Name.ToUpper()} en la categoria {_combos.GetCategoriaPorId(tournament.SelectedCategoryIds)}.");
+                        ModelState.AddModelError(string.Empty, $"Ya existe un torneo con el nombre {tournament.Torneo_Name.ToUpper()} en la categoria {_combos.GetCategoriaPorId(tournament.SelectedCategoryIds)} o en la misma Temporada.");
                     }
                     else
                     {
@@ -497,32 +497,6 @@ namespace xilopro2.Controllers
 
         #region GroupDetails
 
-        public async Task<IActionResult> DetailsGroup(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var groupEntity = await _context.Groups
-                .Include(g => g.Matches)
-                .ThenInclude(g => g.TeamLocal)
-                .Include(g => g.Matches)
-                .ThenInclude(g => g.TeamVisitor)
-                .Include(g => g.Torneo)
-                .Include(g => g.GroupDetails)
-                .ThenInclude(gd => gd.Team)
-                .FirstOrDefaultAsync(g => g.Group_ID == id);
-
-
-            if (groupEntity == null)
-            {
-                return NotFound();
-            }
-            ViewData["idgroupdetails"] = id;
-            ViewData["idtorneo"] = groupEntity.torneoId;
-            return View(groupEntity);
-        }
 
         public async Task<IActionResult> AddGroupDetail(int? id)
         {
@@ -766,6 +740,37 @@ namespace xilopro2.Controllers
             return RedirectToAction(nameof(DetailsGroup), new { Id = groupDet.groupId });
         }
 
+        public async Task<IActionResult> DetailsGroup(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var groupEntity = await _context.Groups
+                 .Include(g => g.Matches)
+                  .ThenInclude(g => g.PlayerStatistics)
+                .Include(g => g.Matches)
+                .ThenInclude(g => g.TeamLocal)
+                .Include(g => g.Matches)
+                .ThenInclude(g => g.TeamVisitor)
+                .Include(g => g.Torneo)
+                .Include(g => g.GroupDetails)
+                .ThenInclude(gd => gd.Team)
+                 
+                .FirstOrDefaultAsync(g => g.Group_ID == id);
+
+            
+            if (groupEntity == null)
+            {
+                return NotFound();
+            }
+            ViewData["idgroupdetails"] = id;
+            ViewData["idtorneo"] = groupEntity.torneoId;
+          
+          //  ViewData["numb"] = groupEntity.Matches.Select(g => g.PlayerStatsNumber);
+            return View(groupEntity);
+        }
 
 
         #endregion
@@ -794,7 +799,7 @@ namespace xilopro2.Controllers
                 GroupName = groupEntity.Group_Name,
                 GroupId = groupEntity.Group_ID,
                 Teams = _combos.GetCombosEquiposPorIds(groupEntity.Group_ID),
-               
+                torneoid = groupEntity.torneoId,
             };
 
             return View(model);
@@ -825,6 +830,7 @@ namespace xilopro2.Controllers
                             TeamVisitorId = model.VisitorId,
                             GroupsrId = model.GroupId,
                             Jornada = model.Jornada,
+                            torneoid = model.torneoid,
                         };
                         _context.Add(matchEntity);
                         await _context.SaveChangesAsync();
@@ -1043,14 +1049,15 @@ namespace xilopro2.Controllers
               .AsEnumerable()
               .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
               .ToList();
-
+            var partido = _context.Matches.Where(m => m.Match_ID == Match_ID);
             var model = new PlayerStatisticViewModel
             {
                 MatchId = Match_ID,
                 DetailsGroupId = DetailsGroup_ID,
                 Players = filteredPlayers,
                 TorneoId = Torneo_ID,
-                
+                Jornada = partido.FirstOrDefault().Jornada,
+
             };
 
             return View(model);
@@ -1072,12 +1079,13 @@ namespace xilopro2.Controllers
                            GoalkeeperSaves = model.GoalkeeperSaves,
                            Goals = model.Goals,
                            GoalsConceded = model.GoalsConceded,
-                           MatchId = model.MatchId,
                            Penalties = model.Penalties,
-                           PlayerId = model.PlayerId,
                            RedCards = model.RedCards,
                            YellowCards = model.YellowCards,
+                           PlayerId = model.PlayerId,
+                           MatchId = model.MatchId,
                            TorneoId = model.TorneoId,
+                           DetailsGroupId = model.DetailsGroupId,
                         };
                         _context.Add(statsEntity);
                         await _context.SaveChangesAsync();
@@ -1103,7 +1111,13 @@ namespace xilopro2.Controllers
                 //  ModelState.AddModelError(string.Empty, "The local and visitor must be differents teams.");
             }
 
-            model.Players = _combos.GetCombosPlayers();
+           // model.Players = _combos.GetCombosPlayers();
+            var torneo = _context.Torneos.Where(x => x.Torneo_ID == model.TorneoId).FirstOrDefault();
+            List<Player> filteredPlayers = _context.Players
+              .AsEnumerable()
+              .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+              .ToList();
+            model.Players = filteredPlayers; 
             return View(model);
         }
 
@@ -1272,8 +1286,8 @@ namespace xilopro2.Controllers
             {
                 throw;
             }
-            return RedirectToAction(nameof(ListStats), new { Id = statEntity.PlayerStatistic_ID, DetailsGroup_ID = statEntity.DetailsGroupId, Match_ID = statEntity.MatchId, Torneo_ID =statEntity.TorneoId});
-           // return RedirectToAction(nameof(DetailsGroup), new { Id = matchEntity.GroupsrId });
+           // return RedirectToAction(nameof(ListStats), new { Id = statEntity.DetailsGroupId, statEntity.PlayerStatistic_ID,  Match_ID = statEntity.MatchId, Torneo_ID =statEntity.TorneoId});
+            return RedirectToAction(nameof(ListStats), new { Id = statEntity.PlayerStatistic_ID, DetailsGroup_ID = statEntity.DetailsGroupId, Match_ID = statEntity.MatchId, Torneo_ID = statEntity.TorneoId });
         }
 
 

@@ -69,45 +69,56 @@ namespace xilopro2.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            /***********************************************COUNTRY********************************************/
             builder.Entity<Country>().HasIndex(e => e.Country_Name).IsUnique();
-            builder.Entity<State>().HasIndex(g => new { g.CountryId, g.State_Name }).IsUnique();// no repetir nombres de departamentos en el mismo pais
-            builder.Entity<City>().HasIndex(g => new { g.IdState, g.City_Name }).IsUnique();// no repetir nombres de municipios en el mismo departamento
-            builder.Entity<Team>().HasIndex(e => e.Team_Name).IsUnique();
-            builder.Entity<Category>().HasIndex(x => x.Category_Name).IsUnique();
-            builder.Entity<Position>().HasIndex(p => p.Position_Name).IsUnique();
-            builder.Entity<AppUser>().HasIndex(p => p.Email).IsUnique();
-           // builder.Entity<Groups>().HasIndex(p => p.Group_Name).IsUnique();
-            builder.Entity<Groups>().HasIndex(g => new { g.torneoId, g.Group_Name }).IsUnique();// no repetir nombres de grupos en el mismo torneo
-            builder.Entity<GroupDetail>().HasIndex(gd => new { gd.groupId, gd.teamId }).IsUnique(); // no repetir equipos en detalles de grupos
-            builder.Entity<PlayerStatistics>().HasIndex(gd => new { gd.MatchId, gd.PlayerId }).IsUnique();
-            builder.Entity<Player>().HasIndex(gd => new { gd.SelectedCategoryIds, gd.Player_Dorsal }).IsUnique();
-            builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamLocalId, gd.TeamVisitorId, gd.Jornada }).IsUnique();//no repetir jornada y local ni visitante
             builder.Entity<Country>(entity =>
             {
                 entity.Property(e => e.Country_ID)
                     //.ValueGeneratedNever()
                     .HasColumnName("Country_ID");
             });
-
-            //arreglo de enteros para las categorias asignadas a usuarios
-            builder.Entity<AppUser>()
-            .Property(u => u.SelectedCategoryIds)
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
-            );
-
             builder.Entity<Country>(b =>
             {
                 b.HasKey(e => e.Country_ID);
                 b.Property(e => e.Country_ID).ValueGeneratedOnAdd();
             });
 
+            /************************************************STATES************************************************/
+            builder.Entity<State>().HasIndex(g => new { g.CountryId, g.State_Name }).IsUnique();// no repetir nombres de departamentos en el mismo pais
             builder.Entity<State>(b =>
             {
                 b.HasKey(e => e.State_ID);
                 b.Property(e => e.State_ID).ValueGeneratedOnAdd();
             });
+
+            /************************************************CITY***********************************************/
+
+            builder.Entity<City>().HasIndex(g => new { g.IdState, g.City_Name }).IsUnique();// no repetir nombres de municipios en el mismo departamento
+
+            /*******************************************************APPUSER**************************************/
+            builder.Entity<AppUser>().HasIndex(p => p.Email).IsUnique();
+           
+            builder.Entity<AppUser>() //arreglo de enteros para las categorias asignadas a usuarios
+            .Property(u => u.SelectedCategoryIds)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
+            );
+
+            /***********************************************TEAM***********************************************/
+            builder.Entity<Team>().HasIndex(e => e.Team_Name).IsUnique();
+            builder.Entity<Team>(b =>
+            {
+                b.HasKey(e => e.Team_ID);
+                b.Property(e => e.Team_ID).ValueGeneratedOnAdd();
+            });
+
+            /***************************************************CATEGORY******************************************/
+            builder.Entity<Category>().HasIndex(x => x.Category_Name).IsUnique();
+
+            /****************************************************PLAYERS*******************************************/
+            builder.Entity<Player>().HasIndex(gd => new { gd.SelectedCategoryIds, gd.Player_Dorsal }).IsUnique();
 
             builder.Entity<Player>(b =>
             {
@@ -128,13 +139,6 @@ namespace xilopro2.Data
                 entity.HasOne(a => a.Country)
               .WithMany(p => p.Players)
               .OnDelete(DeleteBehavior.NoAction);
-
-
-            //    entity.HasOne(p => p.Category) // Un Player tiene una Category
-             //    .WithMany(c => c.Players) // Una Category tiene muchos Players
-                // .HasForeignKey(p => p.CategoryId);
-
-
             });
 
             builder.Entity<Player>()
@@ -144,40 +148,15 @@ namespace xilopro2.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
             );
 
-            builder.Entity<Torneo>()
-           .Property(u => u.SelectedCategoryIds)
-           .HasConversion(
-               v => string.Join(',', v),
-               v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
-           );
-
-            //try to fix the isssue when add group to a torneo
-            builder.Entity<Torneo>(b =>
-            {
-                b.HasKey(e => e.Torneo_ID);
-                b.Property(e => e.Torneo_ID).ValueGeneratedOnAdd();
-            });
-
-            //para no repetir season, name en la misma categoria
-            builder.Entity<Torneo>()
-            .HasIndex(g => new { g.Torneo_Name, g.SelectedCategoryIds })
-            .IsUnique()
-            .HasFilter(null);
-
-            builder.Entity<Torneo>()
-                .HasIndex(g => new { g.Torneo_Name, g.SelectedCategoryIds, g.Torneo_Season })
-                .IsUnique()
-                .HasFilter("Torneo_Season IS NULL");
-
-
-            builder.Entity<Team>(b =>
-            {
-                b.HasKey(e => e.Team_ID);
-                b.Property(e => e.Team_ID).ValueGeneratedOnAdd();
-            });
-
-
-            // Configuración de relaciones Detalle de Grupos, Team y Grupos
+            /************************************************************POSITION****************************************************/
+            builder.Entity<Position>().HasIndex(p => p.Position_Name).IsUnique();
+         
+            /**************************************************************GROUPS****************************************************/
+            builder.Entity<Groups>().HasIndex(g => new { g.torneoId, g.Group_Name }).IsUnique();// no repetir nombres de grupos en el mismo torneo
+                                                                                                // builder.Entity<Groups>().HasIndex(p => p.Group_Name).IsUnique();
+           /*************************************************************GROUPDETAILS************************************************/
+            builder.Entity<GroupDetail>().HasIndex(gd => new { gd.groupId, gd.teamId }).IsUnique(); // no repetir equipos en detalles de grupos
+                                                                                                    // Configuración de relaciones Detalle de Grupos, Team y Grupos
             builder.Entity<GroupDetail>()
                 .HasKey(gd => gd.GroupDetail_ID); // Establecer la clave primaria
 
@@ -192,9 +171,37 @@ namespace xilopro2.Data
                 .HasForeignKey(gd => gd.teamId); // Establecer la relación con Team
 
 
-           
+            /*************************************************************TORNEO*****************************************************/
+            builder.Entity<Torneo>()
+            .Property(u => u.SelectedCategoryIds)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
+            );
+
+            //try to fix the isssue when add group to a torneo
+            builder.Entity<Torneo>(b =>
+            {
+                b.HasKey(e => e.Torneo_ID);
+                b.Property(e => e.Torneo_ID).ValueGeneratedOnAdd();
+            });
+
+            //para no repetir season, name en la misma categoria
+            /*builder.Entity<Torneo>()
+            .HasIndex(g => new { g.Torneo_Name, g.SelectedCategoryIds })
+            .IsUnique()
+            .HasFilter(null);*/
+
+            builder.Entity<Torneo>()
+                .HasIndex(g => new { g.Torneo_Name, g.SelectedCategoryIds, g.Torneo_Season })
+                .IsUnique()
+                .HasFilter(null);
+
+            /******************************************PLAYERSTATIDISTICS*********************************************************/
+            builder.Entity<PlayerStatistics>().HasIndex(gd => new { gd.MatchId, gd.PlayerId }).IsUnique();//no repetir stat de jugador por jornada
 
             /*********************************************MATCHGAME************************************************/
+            builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamLocalId, gd.TeamVisitorId, gd.Jornada, gd.GroupsrId }).IsUnique();//no repetir jornada y local ni visitante
             //fix llamar Team dos veces en Matches
             builder.Entity<Matchgame>()
             .HasOne(u => u.TeamLocal)
@@ -216,7 +223,7 @@ namespace xilopro2.Data
                .HasForeignKey(gd => gd.GroupsrId);
 
 
-            //MEmbership
+            /**************************************MEMBERSHIP****************************************************/
             builder.Entity<Membership>().HasIndex(p => p.Membership_FullName).IsUnique();
 
 

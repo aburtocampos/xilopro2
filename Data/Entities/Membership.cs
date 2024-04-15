@@ -35,6 +35,9 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Miembro")]
         public string? Membership_FullName { get; set; }
 
+
+
+
         [Display(Name = "Pagos")]
         public int PaymentsNumber => Payments == null ? 0 : Payments.Count;
 

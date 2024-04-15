@@ -32,7 +32,7 @@ namespace xilopro2.Models
         public bool IsClosed { get; set; }
 
 
-
+        public int torneoid { get; set; }
 
 
         public int GroupId { get; set; }

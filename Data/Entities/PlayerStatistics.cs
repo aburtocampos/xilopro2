@@ -10,7 +10,7 @@ namespace xilopro2.Data.Entities
         public int PlayerStatistic_ID { get; set; }
         public int PlayerId { get; set; }
         public Player Player { get; set; }
-        public int MatchId { get; set; }
+
 
         [Display(Name = "Goles:")]
         public int Goals { get; set; }
@@ -38,10 +38,12 @@ namespace xilopro2.Data.Entities
 
         public int TorneoId { get; set; }
 
-        [NotMapped]
+    
         public int DetailsGroupId { get; set; }
 
-   
+        public int MatchId { get; set; }
+
+        public Matchgame? Matchgame { get; set; }
 
         [NotMapped]
         public List<Player> Players { get; set; }

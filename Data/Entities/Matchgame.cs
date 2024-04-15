@@ -31,6 +31,8 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Is Closed?")]
         public bool IsClosed { get; set; }
 
+        public int torneoid { get; set; }
+
 
         //relations
 
@@ -51,7 +53,9 @@ namespace xilopro2.Data.Entities
         public int GroupsrId { get; set; }
 
 
-        public ICollection<PlayerStatistics> PlayerStats { get; set; }
+        [Display(Name = "# Estadisticas")]
+        public int PlayerStatisticsNumber => PlayerStatistics == null ? 0 : PlayerStatistics.Count;
+        public List<PlayerStatistics>? PlayerStatistics { get; set; }
 
 
     }

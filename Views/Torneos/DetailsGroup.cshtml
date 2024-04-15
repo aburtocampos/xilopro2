@@ -167,7 +167,12 @@
                                                         <td style="vertical-align:middle" class="text-center">
                                                             <div class="btn-group">
                                                                 <a asp-action="EditGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+
+                                                                @if(Model.Matches.Count == 0)
+                                                                {
+                                                                    
                                                                 <a asp-action="DeleteGroupDetail" asp-route-id="@item.GroupDetail_ID" asp-controller="Torneos" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Borrar</span></a>
+                                                                }
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -194,7 +199,7 @@
                             <div class="card-body">
                                 <div class="heading">
                                     <h4 class="m-0 card-title">Partidos</h4>
-                                    @if (Model.GroupDetails.Count > 0)
+                                    @if (Model.GroupDetails.Count >= 2)
                                     {
                                         <a asp-action="AddMatch" asp-route-id="@Model.Group_ID" class="btn btn-primary"><i class="fa-regular fa-calendar-plus"></i> <span class="d-none d-sm-inline-block">Agregar Partido</span></a>
                                     }
@@ -276,8 +281,10 @@
                                                                     <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Estadisticas</span>
                                                                 </a>
                                                                 <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                                                                <a asp-action="DeleteMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block"><span class="d-none d-sm-inline-block">Borrar</span></span></a>
-                                                            </div>
+
+                                                                        <a asp-action="DeleteMatch" asp-route-id="@item.Match_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block"><span class="d-none d-sm-inline-block">Borrar</span></span></a>
+                                                              
+                                                             </div>
                                                         </td>
                                                     </tr>
                                                 }
