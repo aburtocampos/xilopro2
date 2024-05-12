@@ -114,43 +114,46 @@ namespace xilopro2.Controllers
             }
 
             Player player = await _context.Players
-
+                 .Include(c => c.CorrectionActions)
                  .Include(c => c.Parents)
                  .Include(c => c.PlayerFiles)
                  .FirstOrDefaultAsync(m => m.Player_ID == id);
 
             //consulta que devuelve las etadsiticas registradas en un partido de jugador
+            /*   var listplayerStats = _context.PlayerStatistics
+               .Where(ps => ps.PlayerId == id)
+               .Join(_context.Matches, 
+                   ps => ps.MatchId, 
+                   m => m.Match_ID, 
+                   (ps, m) => new 
+                   {
+                       PlayerStatistic = ps,
+                       Match = m
+                   })
+               .ToList();*/
+
             var listplayerStats = _context.PlayerStatistics
             .Where(ps => ps.PlayerId == id)
-            .Join(_context.Matches, 
-                ps => ps.MatchId, 
-                m => m.Match_ID, 
-                (ps, m) => new 
+            .Join(_context.Matches,
+                ps => ps.MatchId,
+                m => m.Match_ID,
+                (ps, m) => new
                 {
                     PlayerStatistic = ps,
                     Match = m
                 })
+            .Join(_context.Torneos, // Aquí se agrega la unión con la entidad Torneo
+                ps => ps.PlayerStatistic.TorneoId, // Suponiendo que Match tiene una propiedad TorneoId que corresponde a Torneo_ID
+                t => t.Torneo_ID,
+                (psm, t) => new
+                {
+                    PlayerStatistic = psm.PlayerStatistic,
+                    Match = psm.Match,
+                    Torneo = t
+                })
+            .OrderByDescending(d => d.Match.Jornada)
             .ToList();
 
-            //consulta que regres la lista de estadisticas los jugadores basado en partidos unicamente
-          /*  var listplayerStatsbyMatch = _context.PlayerStatistics
-                .Where(ps => ps.PlayerId == id)
-                .Join(_context.Matches,
-                    ps => ps.MatchId,
-                    m => m.Match_ID,
-                    (ps, m) => new
-                    {
-                        PlayerStatistic = ps,
-                        Match = m
-                    })
-                .GroupBy(item => item.Match.Match_ID)
-                .Select(group => new
-                {
-                    Match_ID = group.Key,
-                    TotalGoals = group.Sum(item => item.PlayerStatistic.Goals),
-                    // Agrega aquí cualquier otro campo que quieras sumar o agrupar
-                })
-                .ToList();*/
 
             if (player == null)
             {
@@ -158,13 +161,18 @@ namespace xilopro2.Controllers
             }
 
            var cate = _combos.GetCategoriasPorIds(player.SelectedCategoryIds);
-            ViewData["CatName"] = cate.FirstOrDefault().Text;
+            ViewBag.CatName = cate.FirstOrDefault().Text;
 
             string painame = _context.Countries.Where(c => c.Country_ID == player.Countryid).Select(y => y.Country_Name).FirstOrDefault();
             string depname = _context.States.Where(c => c.State_ID == player.Stateid).Select(y => y.State_Name).FirstOrDefault();
             string munname = _context.Cities.Where(c => c.City_ID == player.Cityid).Select(y => y.City_Name).FirstOrDefault();
             string pos = _context.Positions.Where(c => c.Position_ID == player.Positionid).Select(y => y.Position_Name).FirstOrDefault();
             string team = _context.Teams.Where(c => c.Team_ID == player.Teamid).Select(y => y.Team_Name).FirstOrDefault();
+
+            // string teamjornadas = _context.Matches.Where(c => c.Match_ID == listplayerStats.FirstOrDefault().Match.Match_ID).FirstOrDefault();
+             ViewBag.teamnames = _context.Teams.ToList();
+      
+
 
             ViewData["team"] = team;
             ViewData["Pos"] = pos;
@@ -193,7 +201,6 @@ namespace xilopro2.Controllers
             ViewBag.DepartamentoList = listDepas;
             ViewBag.MunicipioList = listMuni;
             ViewBag.StatList = listplayerStats;
-
 
 
             return View(player);
@@ -1155,6 +1162,110 @@ namespace xilopro2.Controllers
             TempData["successPlayer"] = "Tutor " + parent.Parent_FullName + " eliminado!!";
             return RedirectToAction(nameof(Details), new { Id = parent.PlayerId });
         }
+
+
+
+        #endregion
+
+
+        #region CorrectActions
+
+
+
+
+
+        public async Task<IActionResult> AddCorrectActions(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Player player = await _context.Players.FindAsync(id);
+
+            if (player == null)
+            {
+                return NotFound();
+            }
+
+            CorrectActionViewModel model = new()
+            {
+                PlayerId = player.Player_ID,
+                PlayerName = player.Player_FullName
+            };
+
+           // model.Countries = _combos.GetCombosCountries();
+            //  model.CountryID = oparent.Country.Country_ID;
+
+            //  model.States = _combos.GetCombosStates();
+            //  model.StateID = oparent.State.State_ID;
+
+            //   model.Cities = _combos.GetCombosCities();
+            //   model.CityID = oparent.City.City_ID;
+            //  model.PlayerId = id;
+            //  model.PlayerName = oparent.Player_FullName;
+            ViewBag.EditFlag = "";
+            return View(model);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCorrectActions(CorrectActionViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    CorrectionAction ca = new()
+                    {
+                        //  Parent_ID = Guid.NewGuid().ToString(),
+                        Player = await (Player)_context.Players.FindAsync(model.PlayerId),
+                        PlayerId = model.PlayerId,
+                        CorrectionAction_Name = model.CorrectionAction_Name,
+                        Description = model.Description,
+                        Fecha = model.Fecha,
+                        CorrectionAction_Status = model.CorrectionAction_Status,
+                        PlayerName = model.PlayerName,
+
+                    };
+
+                    _context.Add(ca);
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        TempData["successPlayer"] = "Sanción agregada a " + ca.PlayerName + " !!";
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    /* Player player = await _context.Players
+                         .Include(c => c.State)
+                         .ThenInclude(s => s.Cities)
+                         .FirstOrDefaultAsync(c => c. == model.CountryID);*/
+                    return RedirectToAction(nameof(Details), new { Id = model.PlayerId });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe un tutor con el mismo nombre en este jugador");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+    
+            return View(model);
+
+        }
+
 
 
 

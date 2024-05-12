@@ -22,11 +22,11 @@ namespace xilopro2.Models
         [Display(Name = "Jornada:")]
         public string Jornada { get; set; }
 
-        [Display(Name = "Goles Local")]
-        public int? GoalsLocal { get; set; }
+        [Display(Name = "Goles Local:")]
+        public int GoalsLocal { get; set; }
 
-        [Display(Name = "Goles Visitante")]
-        public int? GoalsVisitor { get; set; }
+        [Display(Name = "Goles Visitante:")]
+        public int GoalsVisitor { get; set; }
 
         [Display(Name = "Is Closed?")]
         public bool IsClosed { get; set; }

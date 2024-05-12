@@ -202,6 +202,8 @@ namespace xilopro2.Controllers
             return View(model);
         }
 
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Torneos == null)
@@ -230,6 +232,7 @@ namespace xilopro2.Controllers
         }
 
 
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -806,7 +809,6 @@ namespace xilopro2.Controllers
         }
 
         [HttpPost]
-        
         public async Task<IActionResult> AddMatch(MatchViewModel model)
         {
             ModelState.Remove("Date");
@@ -822,18 +824,20 @@ namespace xilopro2.Controllers
                             Date = model.Date.ToUniversalTime(),
                             GoalsLocal = model.GoalsLocal,
                             GoalsVisitor = model.GoalsVisitor,
-                            //  Groups = await _context.Groups.FindAsync(model.GroupId),
                             IsClosed = model.IsClosed,
-                            // TeamLocal = await _context.Teams.FindAsync(model.LocalId),
-                            // TeamVisitor = await _context.Teams.FindAsync(model.VisitorId),
                             TeamLocalId = model.LocalId,
                             TeamVisitorId = model.VisitorId,
                             GroupsrId = model.GroupId,
                             Jornada = model.Jornada,
                             torneoid = model.torneoid,
+                            //  Groups = await _context.Groups.FindAsync(model.GroupId),
+                            // TeamLocal = await _context.Teams.FindAsync(model.LocalId),
+                            // TeamVisitor = await _context.Teams.FindAsync(model.VisitorId),
                         };
+
                         _context.Add(matchEntity);
                         await _context.SaveChangesAsync();
+
                         TempData["successTorneo"] = "Jornada agregada al grupo " + model.GroupName + " exitosamente!!";
                         return RedirectToAction(nameof(DetailsGroup), new { Id = model.GroupId });
                     }
@@ -908,7 +912,6 @@ namespace xilopro2.Controllers
         {
             if (ModelState.IsValid)
             {
-              //  var matchEntity = await _converterHelper.ToMatchEntityAsync(model, false);
                 var matchEntity = new Matchgame
                 {
                     Date = model.Date,
@@ -925,8 +928,11 @@ namespace xilopro2.Controllers
 
                 try
                 {
-                    _context.Update(matchEntity);
-                    await _context.SaveChangesAsync();
+                   // _context.Update(matchEntity);
+                   // await _context.SaveChangesAsync();
+                   //se guarda la edicion del partido y ambien se agregan datos a la tbla ranking
+                    SaveMatchgameWithGroupDetail(matchEntity);
+
                     TempData["successTorneo"] = "Jornada editada al grupo " + model.GroupName + " exitosamente!!";
                     return RedirectToAction(nameof(DetailsGroup), new { Id = model.GroupId });
                 }
@@ -939,6 +945,8 @@ namespace xilopro2.Controllers
 
             return View(model);
         }
+
+
 
         public async Task<IActionResult> DeleteMatch(int? id)
         {
@@ -984,8 +992,24 @@ namespace xilopro2.Controllers
            //   .Include(m => m.Groups)
               .FirstOrDefaultAsync(m => m.Match_ID == id);
 
+            //saber si existen mas de una jornada grabadas en tabla
+            var cantidadMachesporGroup = _context.GroupDetails.Where(k => k.groupId == matchEntity.GroupsrId);
+
+            //si existen borrar los datos de partidos y restarlos de la tabla
+          
             if (matchEntity != null)
             {
+                //borrar datos de tabla
+                if (cantidadMachesporGroup.Count() > 1)
+                {
+                    RestedSaveMatchgameWithGroupDetail(matchEntity);
+                }
+                else
+                {
+                    DeleteMatchgameAndRelatedGroupDetails(id);
+                }
+
+                //borrar match
                 _context.Matches.Remove(matchEntity);
             }
 
@@ -1018,12 +1042,18 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
+            var partido = _context.Matches.Where(m=>m.Match_ID == Match_ID);
+
             List<PlayerStatistics> statEntity =  _context.PlayerStatistics
                 
                 .Include(g => g.Player)
                 .Where(g => g.MatchId == Match_ID).ToList();
 
-            var partido = _context.Matches.Where(m=>m.Match_ID == Match_ID);
+            foreach (var playerStatistic in statEntity)
+            {
+                playerStatistic.MatchStatus = partido.FirstOrDefault().IsClosed;
+            }
+
 
             if (statEntity == null)
             {
@@ -1033,7 +1063,8 @@ namespace xilopro2.Controllers
             ViewData["idgroupdetails"] = DetailsGroup_ID;
             ViewData["idtorneo"] = Torneo_ID;
             ViewData["jornada"] = partido.FirstOrDefault().Jornada;
-            return View(statEntity);
+            ViewData["statusmach"] = partido.FirstOrDefault().IsClosed;
+            return View(statEntity); 
         }
 
 
@@ -1290,6 +1321,161 @@ namespace xilopro2.Controllers
             return RedirectToAction(nameof(ListStats), new { Id = statEntity.PlayerStatistic_ID, DetailsGroup_ID = statEntity.DetailsGroupId, Match_ID = statEntity.MatchId, Torneo_ID = statEntity.TorneoId });
         }
 
+
+        #endregion
+
+
+        #region Metodos
+
+         public bool guardarDatosdeTablaRanking(GroupDetailViewModel model)
+        {
+            //AddGroupDetail
+            try
+            {
+                try
+                {
+                    _context.SaveChanges();
+                    TempData["successTorneo"] = "Equipos agregados a Grupo " + model.GroupName + " exitosamente!!";
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                {
+                    ModelState.AddModelError(string.Empty, "Ya existe un equipo con el mismo nombre en este grupo");
+                    return false;
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return false;
+            }
+
+        }
+
+        public void SaveMatchgameWithGroupDetail(Matchgame matchgame)
+        {
+
+            // Obtener los GroupDetails de los equipos involucrados en el partido
+            var groupDetailLocal = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamLocalId && gd.groupId == matchgame.GroupsrId);
+            var groupDetailVisitor = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamVisitorId && gd.groupId == matchgame.GroupsrId);
+
+            // Actualizar las estadísticas de los equipos según el resultado del partido
+            groupDetailLocal.MatchesPlayed++;
+            groupDetailVisitor.MatchesPlayed++;
+
+            if (matchgame.GoalsLocal > matchgame.GoalsVisitor)
+            {
+                groupDetailLocal.MatchesWon++;
+                groupDetailVisitor.MatchesLost++;
+                matchgame.IsClosed = false;
+            }
+            else if (matchgame.GoalsLocal < matchgame.GoalsVisitor)
+            {
+                groupDetailLocal.MatchesLost++;
+                groupDetailVisitor.MatchesWon++;
+                matchgame.IsClosed = false;
+            }
+            else
+            {
+                groupDetailLocal.MatchesTied++;
+                groupDetailVisitor.MatchesTied++;
+                matchgame.IsClosed = false;
+            }
+
+            groupDetailLocal.GoalsFor += matchgame.GoalsLocal;
+            groupDetailLocal.GoalsAgainst += matchgame.GoalsVisitor;
+            groupDetailVisitor.GoalsFor += matchgame.GoalsVisitor;
+            groupDetailVisitor.GoalsAgainst += matchgame.GoalsLocal;
+
+                _context.GroupDetails.Update(groupDetailLocal);
+
+                _context.GroupDetails.Update(groupDetailVisitor);
+
+                //se guarda el estado del partido
+            _context.Matches.Update(matchgame);
+            _context.SaveChanges();
+
+        }
+
+        public void RestedSaveMatchgameWithGroupDetail(Matchgame matchgame)
+        {
+
+            // Obtener los GroupDetails de los equipos involucrados en el partido
+            var groupDetailLocal = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamLocalId && gd.groupId == matchgame.GroupsrId);
+            var groupDetailVisitor = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamVisitorId && gd.groupId == matchgame.GroupsrId);
+
+            // Actualizar las estadísticas de los equipos según el resultado del partido
+            groupDetailLocal.MatchesPlayed--;
+            groupDetailVisitor.MatchesPlayed--;
+
+            if (matchgame.GoalsLocal > matchgame.GoalsVisitor)
+            {
+                groupDetailLocal.MatchesWon--;
+                groupDetailVisitor.MatchesLost--;
+                matchgame.IsClosed = false;
+            }
+            else if (matchgame.GoalsLocal < matchgame.GoalsVisitor)
+            {
+                groupDetailLocal.MatchesLost--;
+                groupDetailVisitor.MatchesWon--;
+                matchgame.IsClosed = false;
+            }
+            else
+            {
+                groupDetailLocal.MatchesTied--;
+                groupDetailVisitor.MatchesTied--;
+                matchgame.IsClosed = false;
+            }
+
+            groupDetailLocal.GoalsFor -= matchgame.GoalsLocal;
+            groupDetailLocal.GoalsAgainst -= matchgame.GoalsVisitor;
+            groupDetailVisitor.GoalsFor -= matchgame.GoalsVisitor;
+            groupDetailVisitor.GoalsAgainst -= matchgame.GoalsLocal;
+
+            _context.GroupDetails.Update(groupDetailLocal);
+
+            _context.GroupDetails.Update(groupDetailVisitor);
+
+            _context.SaveChanges();
+
+        }
+
+
+        public void DeleteMatchgameAndRelatedGroupDetails(int? matchgameId)
+        {
+            // Buscar el Matchgame a eliminar
+            var matchgame = _context.Matches.FirstOrDefault(m => m.Match_ID == matchgameId);
+
+            if (matchgame != null)
+            {
+                // Buscar los GroupDetails relacionados con los equipos locales y visitantes
+                var groupDetailLocal = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamLocalId && gd.groupId == matchgame.GroupsrId);
+                var groupDetailVisitor = _context.GroupDetails.FirstOrDefault(gd => gd.teamId == matchgame.TeamVisitorId && gd.groupId == matchgame.GroupsrId);
+
+                if (groupDetailLocal != null && groupDetailVisitor != null)
+                {
+                    // Eliminar los GroupDetails relacionados
+                    _context.GroupDetails.Remove(groupDetailLocal);
+                    _context.GroupDetails.Remove(groupDetailVisitor);
+
+                    // Eliminar el Matchgame
+                    _context.Matches.Remove(matchgame);
+
+                }
+            }
+        }
 
         #endregion
 

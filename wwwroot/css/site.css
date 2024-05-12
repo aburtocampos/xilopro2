@@ -208,6 +208,11 @@ img.camisita {
     text-align:center;
 }
 
+.popover {
+    box-shadow: 2px 3px 7px 0px rgba(0, 0, 0, 0.4);
+}
+
+
 @media(max-width:768px) {
     .membresiastilo {
         display: flex;

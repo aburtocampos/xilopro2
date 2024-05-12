@@ -46,6 +46,9 @@ namespace xilopro2.Data.Entities
         public Matchgame? Matchgame { get; set; }
 
         [NotMapped]
+        public bool MatchStatus { get; set; }
+
+        [NotMapped]
         public List<Player> Players { get; set; }
 
    

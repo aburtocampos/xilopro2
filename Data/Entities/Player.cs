@@ -129,7 +129,7 @@ namespace xilopro2.Data.Entities
 
         public ICollection<PlayerFiles>? PlayerFiles { get; set; }
 
-
+        public ICollection<CorrectionAction>? CorrectionActions { get; set; }
     }
 
 

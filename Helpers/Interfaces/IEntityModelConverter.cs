@@ -89,7 +89,7 @@ namespace xilopro2.Helpers.Interfaces
                 Torneo_ID = isNew ? 0 : model.Torneo_ID,
                 Torneo_Status = model.Torneo_Status,
                 Torneo_Image = isNew ? _imageHelper.UploadImage(model.LogoFile, "Tournaments") : model.Torneo_Image,
-                Torneo_Name = model.Torneo_Name,
+                Torneo_Name = model.Torneo_Name.ToUpper(),
                 Torneo_StartDate = model.Torneo_StartDate.ToUniversalTime(),
                 Torneo_Season = model.Torneo_Season,
                 SelectedCategoryIds = model.SelectedCategoryIds,

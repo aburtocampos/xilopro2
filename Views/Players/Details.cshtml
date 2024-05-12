@@ -6,7 +6,7 @@
     var path = "/Content/Players/";
     var path2 = "/Content/Files/";
     var path3 = "/Content/Parents/";
-   
+
     var municipioList = ViewBag.MunicipioList;
     var departamentoList = ViewBag.DepartamentoList;
     var statList = ViewBag.StatList;
@@ -60,7 +60,25 @@
                     </div>
                     <div class="form-group mb-2">
                         <label class="control-label">Categoria:</label>
-                        <p class="text-primary">@ViewData["CatName"]</p>
+                        @{
+                            var elemento2 = ViewBag.CatName as String;
+                            <span class="@GetBadgebyClass(elemento2)"> @elemento2</span>
+                            @functions {
+                                private string GetBadgebyClass(string text)
+                                {
+                                    return text switch
+                                    {
+                                        "MAYOR" => "badge text-bg-secondary",
+                                        "U13 MASCULINO" => "badge text-bg-green",
+                                        "U15 MASCULINO" => "badge text-bg-yellow",
+                                        "U15 FEMENINO" => "badge text-bg-pink",
+                                        "U17 MASCULINO" => "badge text-bg-blue",
+                                        "U17 FEMENINO" => "badge text-bg-purple",
+                                        _ => "badge", // Default case
+                                    };
+                                }
+                            }
+                        }
                     </div>
                    
                     <div class="form-group mt-2">
@@ -134,13 +152,14 @@
                         {
                             <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
                             <a asp-action="AddParent" asp-route-id="@Model?.Player_ID" class="btn btn-primary"><i class="fa-solid fa-person-circle-plus"></i> Agregar Tutor</a>
-                            <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
                         }
                         else
                         {
                             <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-                            <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
+                           
                         }
+                        <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
+                        <a asp-action="AddCorrectActions" asp-route-id="@Model?.Player_ID" class="btn btn-outline-danger"><i class="fa-solid fa-skull"></i> Agregar Sanción</a>
 
                     </div>
 
@@ -163,6 +182,9 @@
                     <button class="nav-link fw-bold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
                 </li>
             }
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="ca-tab" data-bs-toggle="tab" data-bs-target="#ca-tab-pane" type="button" role="tab" aria-controls="ca-tab-pane" aria-selected="true">Sanciones:</button>
+            </li>
         </ul>
 
         <div class="tab-content" id="myTabContent">
@@ -247,6 +269,12 @@
                                             <thead>
                                                 <tr>
                                                     <th>
+                                                        Temporada
+                                                    </th>
+                                                    <th>
+                                                        Torneo
+                                                    </th>
+                                                    <th>
                                                         Jornada
                                                     </th>
                                                     <th>
@@ -280,31 +308,43 @@
                                                 @foreach (var item in statList)
                                                 {
                                                     <tr>
-                                                        <td style="vertical-align: middle;" class="imgZoom">
-                                                            @item.Match.Jornada
+                                                        <td style="vertical-align: middle;" class="text-capitalize">
+                                                           <span class="badge rounded-pill text-bg-secondary">@item.Torneo.Torneo_Season</span>
                                                         </td>
-                                                        <td style="vertical-align: middle;">
+                                                        <td style="vertical-align: middle;" class="text-capitalize">
+                                                            @item.Torneo.Torneo_Name
+                                                        </td>
+                                                        @{
+                                                            var teamList = ViewBag.TeamNames as List<xilopro2.Data.Entities.Team>;
+                                                            var teamName1 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamLocalId)?.Team_Name ?? "Equipo no encontrado";
+                                                            var teamName2 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamVisitorId)?.Team_Name ?? "Equipo no encontrado";
+                                                            var showteams = @$"{teamName1} vs {teamName2}";
+                                                            <td style="vertical-align: middle;text-align:center!important;" data-toggle="popover" data-bs-placement="top" title="Jornada: @item.Match.Jornada" data-bs-content="@showteams" data-trigger="hover">
+                                                                <span style="cursor:pointer;" class="badge rounded-pill text-bg-dark">@item.Match.Jornada</span>
+                                                        </td>
+                                                            }
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="">
                                                             <i class="fa-solid fa-futbol"></i> @item.PlayerStatistic.Goals
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
                                                             <i class="fa-solid fa-file text-warning"></i> @item.PlayerStatistic.YellowCards
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
                                                             @item.PlayerStatistic.Fouls
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
                                                             <i class="fa-solid fa-file text-danger"></i> @item.PlayerStatistic.RedCards
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
                                                             @item.PlayerStatistic.GoalkeeperSaves
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
                                                             @item.PlayerStatistic.GoalsConceded
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
                                                             @item.PlayerStatistic.Penalties
                                                         </td>
-                                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
                                                             @item.PlayerStatistic.CornerKicks
                                                         </td>
 
@@ -320,6 +360,7 @@
                                                 }
                                             </tbody>
                                         </table>
+                                            <div class="seleccionarT"></div>
                                     </div>
                                 }
                                 else
@@ -433,14 +474,82 @@
                      </div>
 
             }
-        
-            
+            <div class="ca-pane fade p-2" id="ca-tab-pane" role="tabpanel" aria-labelledby="ca-tab" tabindex="3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body p-1">
+                                @if (Model.CorrectionActions.Count > 0)
+                                {
+                                    <table class="table table-hover table-responsive table-striped" id="TablaCA">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().CorrectionAction_Name)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().Fecha)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().CorrectionAction_Status)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().Description)
+                                                </th>
+                                                <th class="text-end">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.CorrectionActions)
+                                            {
+                                                <tr>
+                                                    <td style="vertical-align: middle;" class="imgZoom">
+                                                        <a asp-action="DetailsCorrectionActions" asp-route-id="@item.CorrectionAction_ID" class="rowclick">
+                                                            @Html.DisplayFor(modelItem => item.CorrectionAction_Name)
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-uppercase" style="vertical-align: middle;">
+                                                            @Html.DisplayFor(modelItem => item.Fecha)
+                                                       
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.CorrectionAction_Status)
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.Description)
+                                                    </td>
+
+                                                 <td class="text-end" style="vertical-align: middle;">
+                                                        <div class="btn-group">
+                                                            <a asp-action="EditParent" asp-route-id="@item.CorrectionAction_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                            <a asp-action="DeleteParent" asp-route-id="@item.CorrectionAction_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
         </div>
 
 
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function () {
         $('#TablaPlayerFiles').DataTable({
             "language": {
@@ -462,6 +571,94 @@
                 ]
             })
 
+            $('#TablaCA').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ]
+            })
+
+            $('#tblStats').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ],
+                ///mostrar la suma de columnas
+                stateSave: true,
+
+                //sselect
+                  initComplete: function () {
+                    var api = this.api();
+                    api.columns([0]) // Especifica la primera columna
+                        .every(function () {
+                            var column = this;
+                          
+                            // Create select element and listener
+                            var select = $('<select><option value="">...</option></select>')
+                                .appendTo($(column.header()))
+                                .on('change', function () {
+                                    column
+                                        .search($(this).val(), { exact: true })
+                                        .draw();
+                                    updateColumnSum(api);
+                                });
+
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(
+                                        `<option value="${extractNumber(d)}">${extractNumber(d)}</option>`
+                                    );
+                                });
+                        });
+
+                },
+                 drawCallback: function () {
+                     var api = this.api();
+                     updateColumnSum(api);
+              }
+
+            })
+
+            function updateColumnSum(api) {
+                var totalSum = [];
+                var numColumns = api.columns()[0].length;
+                var rowData = api.rows({ search: 'applied' }).data(); // Obtener solo los datos de las filas visibles después de aplicar el filtro de búsqueda
+
+                for (var i = 3; i < numColumns - 1; i++) {
+                    var sum = 0;
+                    rowData.each(function (row) {
+                        var val = extractNumber(row[i]);
+                        if (!isNaN(val)) {
+                            sum += val;
+                        }
+                    });
+                    totalSum.push(sum);
+                }
+
+                var footerHtml = totalSum.map(function (sum) {
+                    return '<td class="bg-dark text-white" style="vertical-align: middle;text-align:center!important;">' + sum + '</td>';
+                }).join('');
+
+                $(api.table().footer()).html(`<td></td><td></td><td></td> ${footerHtml} <td></td>`);
+            }
+
+            function extractNumber(str) {
+                var num = str.match(/\d+/);
+                return num ? parseFloat(num[0]) : NaN;
+            }
+
+ 
+
     })
 </script>
 
@@ -469,7 +666,7 @@
     //calcular edad basado en el evento change del datepicker
     function calcularEdad() {
         var fechaNacimiento = document.getElementById('inputFNC').textContent;
-        console.log("-", fechaNacimiento);
+      //  console.log("-", fechaNacimiento);
             var fechaNacimientoObj = new Date(fechaNacimiento);
 
         // Obtiene la fecha actual
@@ -488,5 +685,9 @@
         calcularEdad()
     });
 
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
 </script>
 

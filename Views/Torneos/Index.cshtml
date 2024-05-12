@@ -74,20 +74,20 @@
                                                             var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
                                                         <span class="@GetBadgebyClass(elemento3.Text)"> @elemento3.Text</span>
                                                         @functions {
-                                                          private string GetBadgebyClass(string text)
-                                                            {
-                                                                return text switch
+                                                              private string GetBadgebyClass(string text)
                                                                 {
-                                                                    "MAYOR" => "badge text-bg-secondary",
-                                                                    "U13 MASCULINO" => "badge text-bg-green", 
-                                                                    "U15 MASCULINO" => "badge text-bg-yellow",
-                                                                    "U15 FEMENINO" => "badge text-bg-pink",
-                                                                    "U17 MASCULINO" => "badge text-bg-blue",
-                                                                    "U17 FEMENINO" => "badge text-bg-purple",
-                                                                      _ => "badge", // Default case
-                                                                };
-                                                            }
-                                                       }
+                                                                    return text switch
+                                                                    {
+                                                                        "MAYOR" => "badge text-bg-secondary",
+                                                                        "U13 MASCULINO" => "badge text-bg-green", 
+                                                                        "U15 MASCULINO" => "badge text-bg-yellow",
+                                                                        "U15 FEMENINO" => "badge text-bg-pink",
+                                                                        "U17 MASCULINO" => "badge text-bg-blue",
+                                                                        "U17 FEMENINO" => "badge text-bg-purple",
+                                                                          _ => "badge", // Default case
+                                                                    };
+                                                                }
+                                                         }
                                                         }
                                                   
                                                     </td>

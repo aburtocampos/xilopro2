@@ -12,16 +12,16 @@ namespace xilopro2.Data.Entities
         public int MatchesPlayed { get; set; }
 
         [Display(Name = "Victorias")]
-        public int MatchesWon { get; set; }
+        public int? MatchesWon { get; set; } = 0;
 
         [Display(Name = "Empates")]
-        public int MatchesTied { get; set; }
+        public int? MatchesTied { get; set; } = 0;
 
         [Display(Name = "Derrotas")]
-        public int MatchesLost { get; set; }
+        public int? MatchesLost { get; set; } = 0;
 
         [Display(Name = "Puntos")]
-        public int Points => MatchesWon * 3 + MatchesTied;
+        public int? Points => MatchesWon * 3 + MatchesTied;
 
         [Display(Name = "Goles a Favor")]
         public int GoalsFor { get; set; }

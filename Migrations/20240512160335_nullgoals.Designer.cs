@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xilopro2.Data;
 
@@ -11,9 +12,11 @@ using xilopro2.Data;
 namespace xilopro2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240512160335_nullgoals")]
+    partial class nullgoals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace xilopro2.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CorrectionActionPlayer", b =>
-                {
-                    b.Property<int>("CorrectionActionsCorrectionAction_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Player_ID")
-                        .HasColumnType("int");
-
-                    b.HasKey("CorrectionActionsCorrectionAction_ID", "Player_ID");
-
-                    b.HasIndex("Player_ID");
-
-                    b.ToTable("CorrectionActionPlayer");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -359,20 +347,6 @@ namespace xilopro2.Migrations
                     b.Property<bool>("CorrectionAction_Status")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PlayerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("CorrectionAction_ID");
 
                     b.ToTable("CorrectionActions");
@@ -545,9 +519,6 @@ namespace xilopro2.Migrations
 
                     b.HasIndex("TeamVisitorId");
 
-                    b.HasIndex("TeamLocalId", "TeamVisitorId", "GroupsrId")
-                        .IsUnique();
-
                     b.HasIndex("TeamLocalId", "TeamVisitorId", "Jornada", "GroupsrId")
                         .IsUnique();
 
@@ -699,6 +670,9 @@ namespace xilopro2.Migrations
                     b.Property<int>("Cityid")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CorrectionAction_ID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Countryid")
                         .HasColumnType("int");
 
@@ -763,6 +737,8 @@ namespace xilopro2.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Player_ID");
+
+                    b.HasIndex("CorrectionAction_ID");
 
                     b.HasIndex("Countryid");
 
@@ -976,21 +952,6 @@ namespace xilopro2.Migrations
                     b.ToTable("Torneos");
                 });
 
-            modelBuilder.Entity("CorrectionActionPlayer", b =>
-                {
-                    b.HasOne("xilopro2.Data.Entities.CorrectionAction", null)
-                        .WithMany()
-                        .HasForeignKey("CorrectionActionsCorrectionAction_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("xilopro2.Data.Entities.Player", null)
-                        .WithMany()
-                        .HasForeignKey("Player_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1141,6 +1102,10 @@ namespace xilopro2.Migrations
 
             modelBuilder.Entity("xilopro2.Data.Entities.Player", b =>
                 {
+                    b.HasOne("xilopro2.Data.Entities.CorrectionAction", null)
+                        .WithMany("Player")
+                        .HasForeignKey("CorrectionAction_ID");
+
                     b.HasOne("xilopro2.Data.Entities.Country", "Country")
                         .WithMany("Players")
                         .HasForeignKey("Countryid")
@@ -1203,6 +1168,11 @@ namespace xilopro2.Migrations
                         .IsRequired();
 
                     b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("xilopro2.Data.Entities.CorrectionAction", b =>
+                {
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("xilopro2.Data.Entities.Country", b =>

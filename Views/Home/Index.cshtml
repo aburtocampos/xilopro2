@@ -74,7 +74,7 @@
                     <div class="card-body">
                         <canvas id="golesxCategorias" style=""></canvas>
                         <div>
-                          
+
                         </div>
                     </div>
                 </div>
@@ -93,6 +93,28 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6 mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Agregar el select para filtrar por torneo -->
+                        <div class="form-group mb-3" >
+
+                            @if (ViewBag.TorneosLista != null)
+                            {
+                                <select asp-items="ViewBag.TorneosLista" class="form-select text-uppercase" id="torneoSelect">
+                                    <option value="">Seleccionar Torneo:</option>
+                                </select>
+                            }
+                        </div>
+                        <div class="mb-3 d-flex align-items-center gap-2">
+                            <label for="seasonSelect">Seleccionar Temporada:</label>
+                            <select id="seasonSelect" name="seasonSelect" class="form-select text-uppercase" style="width:auto;"  ></select>
+                        </div>
+                       
+                        <canvas id="golesportorneosytemporadas" style=""></canvas>
+                    </div>
+                </div>
+            </div>
         </div>  
     </section>
 
@@ -102,235 +124,279 @@
 
 <script>
 
-        $(document).ready(() => {
-            
+
+        $(document).ready(function () {
+
             golesxCategorias();
             jugadoresgoleadores();
             cantjugadoresxCategorias();
-           
-        })
 
 
-    function golesxCategorias() {
-        fetch("Home/golesxTorneo")
-            .then((response) => {
-                    console.log(';response', response);
-                return response.ok ? response.json() : Promise.reject(response);
-            })
-            .then((dataJson) => {
-              
-                const categorias = dataJson.map((item) => { return item.categorias.toUpperCase() })
-                const goles = dataJson.map((item) => { return item.cantidadGoles })
-             //   const temporada = dataJson.map((item) => { return item.temporada })
+            function cargarTemporadas(torneoName) {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("CargarTemporadas", "Home")',
+                    data: { torneoName: torneoName },
+                    success: function (data) {
+                        console.log('-',data);
+                        $('#seasonSelect').empty();
+                        $.each(data, function (index, temporada) {
+                            console.log('--', temporada.temporada);
+                            $('#seasonSelect').append('<option value="' + temporada.temporada + '">' + temporada.temporada + '</option>');
+                        });
+                    }
+                });
+            }
 
-                    var coloresa = ['#FF5733',
-                        '#FF33E6',
-                        '#334FFF',
-                        "#01AF40",
-                        '#33FFF3',
-                        '#0EBC31']
+            $('#torneoSelect').change(function () {
+                var torneoName = $("#torneoSelect option:selected").text(); //$('#torneoSelect').text();
+                let cutText = torneoName.split("-")[0].replace(/ (?=\s*$)/, '');
+                console.log(cutText);
+                if (cutText) {
+                    cargarTemporadas(cutText);
+                } else {
+                    $('#seasonSelect').empty();
+                    $('#seasonSelect').append('<option value="">Selecciona una Temporada</option>');
+                }
 
-                            const data = {
-                    labels: categorias,
-                    datasets: [{
-                        label: 'Goles',
-                            data: goles,
-                            backgroundColor: coloresa,
-                            borderColor: coloresa,
-                            borderWidth: 1,
-                        }
-                        ]
-                };
+                var season = $("#seasonSelect option:selected").text();
 
-               
-                const config = {
-                    type: 'bar',
-                    data: data,
-                    options: {
-                        responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Goles por Categoria'
-                                }  
-                            },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        },
-                           
-                    },
-                };
+                cargarGrafico(cutText,season);
 
+            });
 
-                const canvasBarras = document.getElementById("golesxCategorias");
-                const graficoBarras = new Chart(canvasBarras, config);
+            // Cargar temporadas cuando se carga el select por primera vez
+            var torneoName = $("#torneoSelect option:selected").text();
+            let cutText = torneoName.split("-")[0].replace(/ (?=\s*$)/, '');
+            console.log(cutText);
+            if (cutText) {
+                cargarTemporadas(cutText);
+            }
 
-            }).catch((error) => {
-                    console.log("error", error)
+            function golesxCategorias() {
+                fetch("Home/golesxCategorias")
+                    .then((response) => {
+                        // console.log(';response', response);
+                        return response.ok ? response.json() : Promise.reject(response);
+                    })
+                    .then((dataJson) => {
 
-            })
-    }
+                        const categorias = dataJson.map((item) => { return item.categorias.toUpperCase() })
+                        const goles = dataJson.map((item) => { return item.cantidadGoles })
+                        //   const temporada = dataJson.map((item) => { return item.temporada })
 
-        function jugadoresgoleadores() {
-          
-            fetch("Home/jugadoresgoleadores")
-                .then((response) => {
-                    //console.log('response', response);
-                    return response.ok ? response.json() : Promise.reject(response);
-                })
-                .then((dataJson) => {
+                        var coloresa = ['#FF5733',
+                            '#FF33E6',
+                            '#334FFF',
+                            "#01AF40",
+                            '#33FFF3',
+                            '#0EBC31']
 
-                 //   console.log('dataJson', dataJson);
-                    const categorias = dataJson.map((item) => { return item.categorias; })
-                    const goles = dataJson.map((item) => { return item.goles })
-                    const players = dataJson.map((item) => { return item.player })
-
-                    var coloresa = [
-                        '#4dc9f6',
-                        '#f67019',
-                        '#f53794',
-                        '#537bc4',
-                        '#acc236',
-                        '#166a8f',
-                        '#00a950',
-                        '#58595b',
-                        '#8549ba'
-                    ];
-                  //  console.log('labels', labels);
-                   // console.log('values', values);
-                  //  const labels = Utils.months({ count: 7 });
-                    const data = {
-                        labels: players,
-                        datasets: [
-                            {
+                        const data = {
+                            labels: categorias,
+                            datasets: [{
                                 label: 'Goles',
                                 data: goles,
+                                backgroundColor: coloresa,
                                 borderColor: coloresa,
-                                backgroundColor: coloresa,//['rgba(255, 99, 132, 0.2)'],
+                                borderWidth: 1,
                             }
-                        ]
-                    };
-         
+                            ]
+                        };
 
-                    const config = {
-                        type: 'bar',
-                        data: data,
-                        options: {
-                            elements: {
-                                bar: {
-                                    borderWidth: 2,
+
+                        const config = {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Goles por Categoria'
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+
+                            },
+                        };
+
+
+                        const canvasBarras = document.getElementById("golesxCategorias");
+                        const graficoBarras = new Chart(canvasBarras, config);
+
+                    }).catch((error) => {
+                        console.log("error", error)
+
+                    })
+            }
+
+            function jugadoresgoleadores() {
+
+                fetch("Home/jugadoresgoleadores")
+                    .then((response) => {
+                        //console.log('response', response);
+                        return response.ok ? response.json() : Promise.reject(response);
+                    })
+                    .then((dataJson) => {
+
+                        //   console.log('dataJson', dataJson);
+                        const categorias = dataJson.map((item) => { return item.categorias; })
+                        const goles = dataJson.map((item) => { return item.goles })
+                        const players = dataJson.map((item) => { return item.player })
+
+                        var coloresa = [
+                            '#4dc9f6',
+                            '#f67019',
+                            '#f53794',
+                            '#537bc4',
+                            '#acc236',
+                            '#166a8f',
+                            '#00a950',
+                            '#58595b',
+                            '#8549ba'
+                        ];
+                        //  console.log('labels', labels);
+                        // console.log('values', values);
+                        //  const labels = Utils.months({ count: 7 });
+                        const data = {
+                            labels: players,
+                            datasets: [
+                                {
+                                    label: 'Goles',
+                                    data: goles,
+                                    borderColor: coloresa,
+                                    backgroundColor: coloresa,//['rgba(255, 99, 132, 0.2)'],
+                                }
+                            ]
+                        };
+
+
+                        const config = {
+                            type: 'bar',
+                            data: data,
+                            options: {
+                                elements: {
+                                    bar: {
+                                        borderWidth: 2,
+                                    }
+                                },
+                                responsive: true,
+
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Goleadores por Categoria'
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                    }
                                 }
                             },
-                            responsive: true,
-                           
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Goleadores por Categoria'
-                                },
-                                tooltip: {
-                                    enabled: true,
+                        };
+
+                        const canvasBar2 = document.getElementById("jugadoresgoleadores");
+                        const graficoBar2 = new Chart(canvasBar2, config)
+
+                    }).catch((error) => {
+                        console.log("error", error)
+
+                    })
+
+
+            }
+
+            function cantjugadoresxCategorias() {
+
+                fetch("Home/cantjugadoresxCategorias")
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response);
+                    })
+                    .then((dataJson) => {
+
+                        const labels = dataJson.map((item) => { return item.categorias })
+                        const values = dataJson.map((item) => { return item.cantidadJugadores })
+
+
+                        // console.log('dataJson', dataJson);
+                        //    console.log('values', values);
+                        //   console.log(typeof values);
+
+                        var coloresa = [
+                            '#4dc9f6',
+                            '#f67019',
+                            '#f53794',
+                            '#537bc4',
+                            '#acc236',
+                            '#166a8f',
+                            '#00a950',
+                            '#58595b',
+                            '#8549ba'
+                        ];
+                        var randomItem = coloresa[(Math.random() * coloresa.length)]
+
+
+                        const data = {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Nº Jugadores',
+                                data: values,
+                                backgroundColor: randomItem,
+                                hoverOffset: 4
+                            }]
+                        };
+
+
+                        const config = {
+                            type: 'doughnut',
+                            data: data,
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Jugadores por Categoria'
+                                    }
                                 }
                             }
-                        },
-                    };
-
-                    const canvasBar2 = document.getElementById("jugadoresgoleadores");
-                    const graficoBar2 = new Chart(canvasBar2, config)
-
-                }).catch((error) => {
-                    console.log("error",error)
-
-                })
-
-         
-        }
-
-        function cantjugadoresxCategorias() {
-
-            fetch("Home/jugadoresxCat")
-                .then((response) => {
-                    return response.ok ? response.json() : Promise.reject(response);
-                })
-                .then((dataJson) => {
-
-                    const labels = dataJson.map((item) => { return item.categorias })
-                    const values = dataJson.map((item) => { return item.cantidadJugadores })
+                        };
 
 
-                   // console.log('dataJson', dataJson);
-                   //    console.log('values', values);
-                    //   console.log(typeof values);
+                        const canvasdona = document.getElementById("cantjugadoresxCategorias");
 
-                    var coloresa = [
-                        '#4dc9f6',
-                        '#f67019',
-                        '#f53794',
-                        '#537bc4',
-                        '#acc236',
-                        '#166a8f',
-                        '#00a950',
-                        '#58595b',
-                        '#8549ba'
-                    ];
-                    var randomItem = coloresa[(Math.random() * coloresa.length)]
+                        const graficodona = new Chart(canvasdona, config)
+
+                    }).catch((error) => {
+                        console.log("error")
+
+                    })
 
 
-                    const data = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Nº Jugadores',
-                            data: values,
-                            backgroundColor: randomItem,
-                            hoverOffset: 4
-                        }]
-                    };
+            }
+
+            function cargarGrafico(cutText, season) {
+
+            }
 
 
-                    const config = {
-                        type: 'doughnut',
-                        data: data,
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Jugadores por Categoria'
-                                }
-                            }
-                        }
-                    };
-
-
-                    const canvasdona = document.getElementById("cantjugadoresxCategorias");
-
-                    const graficodona = new Chart(canvasdona, config)
-
-                }).catch((error) => {
-                    console.log("error")
-
-                })
-
-
-        }
-
-
-
-       
+        });
+  
 
 </script>
 }

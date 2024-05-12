@@ -22,7 +22,6 @@ namespace xilopro2.Data
             await checkCategoriesAsync();
             await checkPositionsAsync();
             await checkTeamsAsync();
-            await checkCorrectionActionAsync();
             await checkRolesAsync();
             //creacion de usuarios con roles
             await checkUserAsync("super", "man", "eabucam@gmail.com", "eabucam@gmail.com", "88503574", "calle luna", "Admin");
@@ -217,32 +216,6 @@ namespace xilopro2.Data
 
         }
 
-        private async Task checkCorrectionActionAsync()
-        {
-            if (!_context.CorrectionActions.Any())
-            {
-                _context.CorrectionActions.Add(new CorrectionAction
-                {
-                    CorrectionAction_Name = "VERBAL",
-                    CorrectionAction_Status = true,
-
-                });
-                _context.CorrectionActions.Add(new CorrectionAction
-                {
-                    CorrectionAction_Name = "ESCRITO",
-                    CorrectionAction_Status = true,
-
-                });
-                _context.CorrectionActions.Add(new CorrectionAction
-                {
-                    CorrectionAction_Name = "DE BAJA",
-                    CorrectionAction_Status = true,
-
-                });
-                await _context.SaveChangesAsync();
-            }
-
-        }
 
         private async Task checkUserAsync(string firstName, string lastName, string username, string email, string phone, string address, string userType)
         {

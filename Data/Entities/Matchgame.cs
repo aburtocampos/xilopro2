@@ -23,10 +23,10 @@ namespace xilopro2.Data.Entities
 
 
         [Display(Name = "Goles Local")]
-        public int? GoalsLocal { get; set; }
+        public int GoalsLocal { get; set; } = 0;
 
         [Display(Name = "Goles Visitante")]
-        public int? GoalsVisitor { get; set; }
+        public int GoalsVisitor { get; set; } = 0;
 
         [Display(Name = "Is Closed?")]
         public bool IsClosed { get; set; }

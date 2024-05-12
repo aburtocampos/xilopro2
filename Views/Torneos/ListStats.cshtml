@@ -12,9 +12,22 @@
         <div class="d-flex justify-content-between align-items-center gap-2">
             <a asp-action="DetailsGroup" asp-route-id="@ViewData["idgroupdetails"]" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
             <h3>Estadisticas de la Jornada @ViewData["jornada"]</h3>
-            <a asp-action="AddStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]" class="btn btn-dark">
-                    <i class="fa-regular fa-pen-to-square"></i> Agregar Estadistica
-                </a>
+            @{
+                if (ViewData["statusmach"] != null) 
+                {
+                    bool status = (bool)ViewData["statusmach"];
+                    if (status || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="AddStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]" class="btn btn-dark">
+                            <i class="fa-regular fa-pen-to-square"></i> Agregar Estadistica
+                        </a>
+                    }
+                   
+                }
+            }
+            
+            
+            
         </div>
 
         <hr />
