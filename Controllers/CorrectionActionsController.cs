@@ -24,7 +24,8 @@ namespace xilopro2.Controllers
         public async Task<IActionResult> Index()
         {
             IActionResult response = _context.CorrectionActions != null ? 
-                          View(await _context.CorrectionActions.ToListAsync()) :
+                          View(await _context.CorrectionActions
+                           .Include(cp => cp.Player).ToListAsync()) :
                           Problem("Entity set 'DataContext.CorrectionActions'  is null.");
             return response;
         }

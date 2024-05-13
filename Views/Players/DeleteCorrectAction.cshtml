@@ -1,0 +1,58 @@
+﻿@model xilopro2.Data.Entities.CorrectionAction
+   
+@{
+    ViewData["Title"] = "Delete";
+    var path1 = "/Content/Parents/";
+    var path2 = "/Content/Files/";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model?.PlayerId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Eliminando Sancion de: <span class="badge bg-danger text-white text-uppercase">@Model.PlayerName</span></h2>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="control-label fw-bold mb-2">Tipo de Sanción:</span>
+                        <p>@Model.CorrectionAction_Name</p>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label fw-bold mb-2">Fecha:</span>
+                        <p>@Model.Fecha</p>
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label fw-bold mb-2">Estado:</span>
+                        @if (Model.CorrectionAction_Status)
+                        {
+                            <h5 class="badge bg-success d-inline">Activo</h5>
+                        }
+                        else
+                        {
+                            <h5 class="badge bg-danger d-inline">Inactivo</h5>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mt-4">
+                        <span class="control-label fw-bold d-flex mb-2">Descripción:</span>
+                        <p> @Model.Description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="DeleteCorrectAction" enctype="multipart/form-data">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model?.PlayerId" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

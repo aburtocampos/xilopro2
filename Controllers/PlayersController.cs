@@ -1171,9 +1171,6 @@ namespace xilopro2.Controllers
         #region CorrectActions
 
 
-
-
-
         public async Task<IActionResult> AddCorrectActions(int? id)
         {
             if (id == null)
@@ -1219,7 +1216,7 @@ namespace xilopro2.Controllers
                     CorrectionAction ca = new()
                     {
                         //  Parent_ID = Guid.NewGuid().ToString(),
-                        Player = await (Player)_context.Players.FindAsync(model.PlayerId),
+                       // Player = await _context.Players.FindAsync(model.PlayerId),
                         PlayerId = model.PlayerId,
                         CorrectionAction_Name = model.CorrectionAction_Name,
                         Description = model.Description,
@@ -1267,7 +1264,140 @@ namespace xilopro2.Controllers
         }
 
 
+        public async Task<IActionResult> EditCorrectAction(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            CorrectionAction ca = await _context.CorrectionActions.FindAsync(id);
+            ca.Player = _context.Players.FirstOrDefault(cp => cp.Player_ID == ca.PlayerId);
+            if (ca == null)
+            {
+                return NotFound();
+            }
+            CorrectActionViewModel model = new()
+            {
+                //  Parent_ID = Guid.NewGuid().ToString(),
+                // Player = await _context.Players.FindAsync(model.PlayerId),
+                PlayerId = ca.PlayerId,
+                CorrectionAction_Name = ca.CorrectionAction_Name,
+                Description = ca.Description,
+                Fecha = ca.Fecha,
+                CorrectionAction_Status = ca.CorrectionAction_Status,
+                PlayerName = ca.PlayerName,
+
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCorrectAction(CorrectActionViewModel model)
+        {
+            if (model.CorrectionAction_ID == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                      CorrectionAction ca = new()
+                        {
+                          PlayerId = model.PlayerId,
+                          CorrectionAction_Name = model.CorrectionAction_Name,
+                          Description = model.Description,
+                          Fecha = model.Fecha,
+                          CorrectionAction_Status = model.CorrectionAction_Status,
+                          PlayerName = model.PlayerName,
+                      };
+                        _context.Update(ca);
+                        await _context.SaveChangesAsync();
+
+                        TempData["successPlayer"] = "Tutor " + ca.CorrectionAction_Name + " editado!!";
+                        return RedirectToAction(nameof(Details), new { Id = model.PlayerId });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al buscar CA: {ex.Message}");
+                }
+                // return RedirectToAction(nameof(Index));
+            }
+            // ViewBag.Genero = _combos.GetComboGeneros();
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> DeleteCorrectAction(int? id)
+        {
+            if (id == null || _context.CorrectionActions == null)
+            {
+                return NotFound();
+            }
+
+            var ca = await _context.CorrectionActions.FindAsync(id);
+            ca.Player = _context.Players.FirstOrDefault(cp => cp.Player_ID == ca.PlayerId);
+            // parent.Par = _context.Parents.FirstOrDefault(cp => cp.Parent_ID == parent.PlayerId);
+
+            if (ca == null)
+            {
+                return NotFound();
+            }
+
+            return View(ca);
+        }
+
+
+        [HttpPost, ActionName("DeleteCorrectAction")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedCorrectAction(int? id)
+        {
+            if (_context.CorrectionActions == null)
+            {
+                return Problem("Entity set 'DataContext.CorrectionActions'  is null.");
+            }
+            var ca = await _context.CorrectionActions.FindAsync(id);
+            if (ca != null)
+            {
+                _context.CorrectionActions.Remove(ca);
+
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["successPlayer"] = "Tutor " + ca.CorrectionAction_Name + " eliminado!!";
+            return RedirectToAction(nameof(Details), new { Id = ca.PlayerId });
+        }
+
+        public async Task<IActionResult> DetailsCorrectAction(int? id)
+        {
+
+            if (id == null || _context.CorrectionActions == null)
+            {
+                return NotFound();
+            }
+
+            CorrectionAction ca = await _context.CorrectionActions
+                .Include(cp => cp.Player)
+                .FirstOrDefaultAsync(m => m.CorrectionAction_ID == id);
+
+            if (ca == null)
+            {
+                return NotFound();
+            }
+
+            /* string depname = _context.States.Where(c => c.State_ID == parent.StateID).Select(y => y.State_Name).FirstOrDefault();
+             string munname = _context.Cities.Where(c => c.City_ID == parent.CityID).Select(y => y.City_Name).FirstOrDefault();
+
+             ViewBag.Depa = depname;
+             ViewBag.Muni = munname;*/
+            ViewBag.Cats = _combos.GetCategorias();
+            return View(ca);
+
+        }
 
         #endregion
 

@@ -5,7 +5,7 @@ namespace xilopro2.Models
 {
     public class CorrectActionViewModel
     {
-        [Key]
+       
         public int CorrectionAction_ID { get; set; }
 
         [Display(Name = "Accion Correctiva:")]
@@ -25,11 +25,10 @@ namespace xilopro2.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime Fecha { get; set; }
 
-
-        public ICollection<Player>? Player { get; set; }
-
         public int PlayerId { get; set; }
 
+
+        [Display(Name = "Jugador:")]
         public virtual string PlayerName { get; set; }
 
 

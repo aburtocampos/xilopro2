@@ -46,10 +46,16 @@
                 </div>
 
                 <div class="col-md-4 mt-3">
-                    <div class="form-group my-2">
-                        <label class="control-label">Cedula:</label>
-                        <p class="text-primary text-uppercase"> @Model.Player_Cedula</p>
-                    </div>
+                    @{
+                    var elemento0 = ViewBag.CatName as String;
+                        if (elemento0 == "MAYOR"){
+                         <div class="form-group my-2">
+                            <label class="control-label">Cedula:</label>
+                            <p class="text-primary text-uppercase"> @Model.Player_Cedula</p>
+                        </div>
+                        }
+                    }
+                   
                     <div class="form-group my-2">
                         <label class="control-label">Jugador:</label>
                         <p class="text-primary text-uppercase"> @Model.Player_FullName</p>
@@ -504,7 +510,7 @@
                                             {
                                                 <tr>
                                                     <td style="vertical-align: middle;" class="imgZoom">
-                                                        <a asp-action="DetailsCorrectionActions" asp-route-id="@item.CorrectionAction_ID" class="rowclick">
+                                                        <a asp-action="DetailsCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="rowclick">
                                                             @Html.DisplayFor(modelItem => item.CorrectionAction_Name)
                                                         </a>
                                                     </td>
@@ -513,16 +519,32 @@
                                                        
                                                     </td>
                                                     <td style="vertical-align: middle;">
-                                                        @Html.DisplayFor(modelItem => item.CorrectionAction_Status)
+                                                        @if (item.CorrectionAction_Status)
+                                                        {
+                                                            <h5 class="badge bg-success d-inline">Activa</h5>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5 class="badge bg-danger d-inline">Inactiva</h5>
+                                                        }
                                                     </td>
                                                     <td style="vertical-align: middle;">
-                                                        @Html.DisplayFor(modelItem => item.Description)
+                                                        @{
+                                                            <p>@TruncateText(item.Description,50)</p>
+                                                            @functions{
+                                                                private string TruncateText(string text, int maxLength)
+                                                                {
+                                                                    if (string.IsNullOrEmpty(text)) return text;
+                                                                    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+                                                                }
+                                                            }
+                                                        }
                                                     </td>
 
                                                  <td class="text-end" style="vertical-align: middle;">
                                                         <div class="btn-group">
-                                                            <a asp-action="EditParent" asp-route-id="@item.CorrectionAction_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
-                                                            <a asp-action="DeleteParent" asp-route-id="@item.CorrectionAction_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                            <a asp-action="EditCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                            <a asp-action="DeleteCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
                                                         </div>
                                                     </td>
                                                 </tr>

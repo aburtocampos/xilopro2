@@ -25,9 +25,10 @@ namespace xilopro2.Data.Entities
 
         public int PlayerId { get; set; } = 0;
 
+        [Display(Name = "Jugador:")]
         public virtual string PlayerName { get; set; } = string.Empty;
 
 
-        public ICollection<Player>? Player { get; set; }
+        public Player? Player { get; set; }
     }
 }
