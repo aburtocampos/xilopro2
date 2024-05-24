@@ -1,0 +1,32 @@
+﻿@model xilopro2.Data.Entities.Category
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container">
+    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Creando Nueva Categoria</h2>
+    <hr />
+    <div class="card border-success" style="width: 60%;margin:0 auto;">
+        <form asp-action="Create">
+            <div class="card-body">
+                <div class="row">
+                    <partial name="_FormCategorias" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-success">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

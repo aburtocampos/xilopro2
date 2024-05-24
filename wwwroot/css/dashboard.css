@@ -1,0 +1,8 @@
+﻿.bg-purple {
+    --bs-bg-opacity: 1;
+    background-color: #6f42c1 !important;
+}
+.border-purple {
+    --bs-border-opacity: 1;
+    border-color: #6f42c1 !important;
+}

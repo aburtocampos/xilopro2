@@ -1,0 +1,34 @@
+﻿@model xilopro2.Models.UserViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+    var path = "/Content/Users/";
+}
+<link rel="stylesheet" href="~/css/User.css" asp-append-version="true" />
+
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-0">
+        <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Eliminando Usuario: <span class="badge bg-danger text-white">@Model.User_FirstName @Model.User_LastName</span></h3>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <h2 class="text-center">Confirme eliminar el Usuario: <span class="text-danger">@Model.User_FirstName @Model.User_LastName</span> ?</h2>
+            <div class="d-flex justify-content-center flex-column align-items-center my-4">
+                <img src="@(!string.IsNullOrEmpty(Model.User_Image) ? Url.Content(path+Model.User_Image) : Url.Content("~/images/noimage.png"))" class="rounded" alt="Image" style="width:300px;height:300px;max-width: 100%; height: auto;" />
+                <span class="text-danger my-2 fs-4">@Model.Email</span>
+            </div>
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="DeleteUserConfirmed">
+                <div class="form-group d-flex justify-content-between">
+                    <input type="hidden" asp-for="Id" />
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,173 @@
+﻿@model xilopro2.Data.Entities.Torneo
+
+@{
+    ViewData["Title"] = "Details";
+    var path = "/Content/Tournaments/";
+}
+<partial name="_Notifications">
+
+    <div class="container pt-3">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+            <h3 class="m-0 text-end">Torneo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Torneo_Name</span></h3>
+        </div>
+        <hr />
+        <div class="card border-dark row" style="width: 100%;margin:0 auto;">
+
+            <div class="card-body row">
+                <div class="col-md-6 text-center">
+                    <div class="form-group mb-2">
+                        <div class="d-flex justify-content-between">
+                            <div class="estadoplayer">
+                                <label class="form-check-label d-inline">Estado:</label>
+                                @if (Model.Torneo_Status)
+                                {
+                                    <h5 class="badge bg-success d-inline">Activo</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="badge bg-danger d-inline">Inactivo</h5>
+                                }
+                            </div>
+                        </div>
+
+                        <img src="@(!string.IsNullOrEmpty(Model.Torneo_Image) ? Url.Content(path+Model.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded imgsized " alt="Image" />
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label class="control-label">Nombre de Torneo:</label>
+                        <p class="text-primary text-uppercase fw-bold"> @Model.Torneo_Name</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Fecha de Inicio:</label>
+                        <p class="text-primary text-uppercase fw-bold"> @Model.Torneo_StartDateLocal</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label asp-for="Torneo_EndDateLocal" class="control-label">Fecha de Finalizacion:</label>
+                                <p class="text-primary fw-bold">@Model.Torneo_EndDateLocal</p>
+                    </div>
+              
+                        </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                        <label class="control-label ">Categoria:</label>
+                                <p class="text-primary fw-bold">@ViewData["CatName"]</p>
+                                </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label ">Temporada:</label>
+                                <p class="text-primary fw-bold">@Model.Torneo_Season</p>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Número de Grupos:</label>
+                                <p class="text-primary fw-bold">@Model.Groups.Count</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer card-footer-dark">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> <span class="d-none d-sm-inline-block">Cancelar</span></a>
+                      <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model?.Torneo_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                        <a asp-action="AddGroup" asp-route-id="@Model.Torneo_ID" class="btn btn-primary"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Agregar Grupo</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Grupos</h3>
+                    </div>
+                    <hr />
+                    <div class="panel-body">
+                        @if (Model.Groups.Count > 0)
+                         {
+                             <div class="table-responsive">
+                          <table class="table table-hover table-striped" id="tblGrupos">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        # Equipos
+                                    </th>
+                                    <th>
+                                        # Partidos
+                                    </th>
+                                        <th class="text-end">Acciones:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Groups.OrderBy(g => g.Group_Name))
+                                {
+                                    <tr>
+                                        <td>
+                                           <a asp-action="DetailsGroup" asp-route-id="@item.Group_ID" class="btn btn-link fw-bold">
+                                            @Html.DisplayFor(modelItem => item.Group_Name)
+                                            </a>
+                                        </td>
+                                            <td style="vertical-align: middle;">
+                                            @Html.DisplayFor(modelItem => item.GroupDetails.Count)
+                                        </td>
+                                            <td style="vertical-align: middle;">
+                                            @Html.DisplayFor(modelItem => item.Matches.Count)
+                                        </td>
+                                            <td class="text-end" style="vertical-align: middle;">
+                                            <div class="btn-group">
+                                               <a asp-action="EditGroup" asp-route-id="@item.Group_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                               <a asp-action="DeleteGroup" asp-route-id="@item.Group_ID" class="btn btn-danger" ><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Eliminar</span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                        }
+                        else
+                        {
+                            <div class="card-body">
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay grupos activos
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+       <script type="text/javascript">
+        $(document).ready(function () {
+                $('#tblGrupos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                    },
+                    "aLengthMenu": [
+                        [5, 25, 50, 100, 200, -1],
+                        [5, 25, 50, 100, 200, "Todos"]
+                    ]
+                })
+
+        });
+    </script>
+}
+

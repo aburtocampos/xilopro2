@@ -1,0 +1,34 @@
+﻿@model xilopro2.Data.Entities.Team
+
+@{
+    ViewData["Title"] = "Delete";
+    var path = "/Content/Teams/";
+}
+
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Eliminando el Equipo: <span class="badge bg-danger text-white">@Model.Team_Name</span></h2>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <h2 class="text-center mb-0">Confirme eliminar el Equipo: <span class="text-danger">@Model.Team_Name</span> ?</h2>
+            <div class="d-flex justify-content-center flex-column align-items-center my-4">
+                <img src="@(!string.IsNullOrEmpty(Model.Team_Image) ? Url.Content(path+Model.Team_Image) : Url.Content("~/images/noimage.png"))" class="rounded" alt="Image" style="width:300px;height:300px;max-width: 100%; height: auto;" />
+                <p class="fw-bold fs-4 m-0">Estadio: <span class="text-danger my-2 fs-4">@Model.Team_Estadio</span></p>
+            </div>
+        </div>
+        <div class="card-footer card-footer-danger ">
+            <form asp-action="Delete">
+                <div class="form-group d-flex justify-content-between">
+                    <input type="hidden" asp-for="Team_ID" />
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+﻿@model xilopro2.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Inicio de Sesion";
+}
+<link rel="stylesheet" href="~/css/Login.css" />
+<section class="container ">
+    <partial name="_Notifications">
+        <div class="centrarLoginFixed row">
+
+
+
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <figure class="text-center">
+                            <img src="~/images/Asset1.png" class="img-fluid logologin" />
+                            <!--<h1 class="logintitle">Bienvenido al sistema de logistica del Club Xilotepelt.</h1>-->
+                        </figure>
+                        <h3 class="card-title">Bienvenido</h3>
+                    </div>
+                    <form asp-action="Login" class="card-body p-0">
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fw-bold d-flex align-items-center menser" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation fa-2x"></i>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+           
+                        <div class="form-group my-2 pb-2">
+                            <!--   <label asp-for="Username" class="control-label">Email:</label>-->
+                            <input asp-for="Username" class="form-control inlogin" placeholder="Email o Usuario" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group my-2">
+                            <!--  <label asp-for="Password" class="control-label">Contraseña:</label>-->
+                            <input asp-for="Password" type="password" class="form-control inlogin" placeholder="Contraseña" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <div class="form-check">
+                                <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label text-white"></label>
+                            </div>
+                            <span asp-validation-for="RememberMe" class="text-warning"></span>
+                        </div>
+                        <div class="form-group mt-2 d-flex flex-column gap-2">
+                            <input type="submit" value="Iniciar Sesión" class="btn btn-primary inlogin" />
+                            <!--<a href="/" class="btn btn-secondary">Cancelar</a>-->
+                            <p class="text-center"><a asp-action="ForgetPassword" class="text-white">¿Olvidaste tu contraseña?</a></p>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

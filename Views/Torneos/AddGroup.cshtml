@@ -1,0 +1,37 @@
+﻿@model xilopro2.Models.GroupViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model.Torneoid" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Creando Nuevo Grupo para Torneo: <span class="badge bg-dark fs-4 text-uppercase">@Model.TorneoName</span></h3>
+    </div>
+    <hr />
+    <div class="card border-success" style="width: 100%;margin:0 auto;">
+        <form asp-action="AddGroup" enctype="multipart/form-data" >
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" asp-for="Torneoid" />
+                    <input type="hidden" asp-for="TorneoName" />
+                    <partial name="_FormGroup" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-success">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model.Torneoid" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

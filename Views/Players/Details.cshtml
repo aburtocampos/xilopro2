@@ -1,0 +1,715 @@
+﻿@using xilopro2.Data.Entities
+@model xilopro2.Data.Entities.Player
+
+@{
+    ViewData["Title"] = "Details";
+    var path = "/Content/Players/";
+    var path2 = "/Content/Files/";
+    var path3 = "/Content/Parents/";
+
+    var municipioList = ViewBag.MunicipioList;
+    var departamentoList = ViewBag.DepartamentoList;
+    var statList = ViewBag.StatList;
+}
+    <partial name="_Notifications">
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+            <h2 class="m-0 text-end">@(Model.Player_Genero == "Masculino" ? "Jugador:" : "Jugadora:") <span class="badge bg-dark fs-4 text-uppercase">@Model.Player_FullName</span></h2>
+    </div>
+    <hr />
+
+        <div class="card border-dark row" style="width: 100%;margin:0 auto;">
+
+            <div class="card-body row">
+                <div class="col-md-4 text-center">
+                    <div class="form-group mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="mb-2 d-block">FIFA ID: <span class="text-primary fw-bold" >@Model.Player_fifaid</span></span>
+                            <div class="estadoplayer">
+                                <label class="form-check-label d-inline">Estado:</label>
+                                @if (Model.Player_Status)
+                                {
+                                    <h5 class="badge bg-success d-inline">Activo</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="badge bg-danger d-inline">Inactivo</h5>
+                                }
+                            </div>
+                        </div>
+                         
+                          <img src="@(!string.IsNullOrEmpty(Model.Player_Image) ? Url.Content(path+Model.Player_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" alt="Image" />
+                    </div>
+                 
+                </div>
+
+                <div class="col-md-4 mt-3">
+                    @{
+                    var elemento0 = ViewBag.CatName as String;
+                        if (elemento0 == "MAYOR"){
+                         <div class="form-group my-2">
+                            <label class="control-label">Cedula:</label>
+                            <p class="text-primary text-uppercase"> @Model.Player_Cedula</p>
+                        </div>
+                        }
+                    }
+                   
+                    <div class="form-group my-2">
+                        <label class="control-label">Jugador:</label>
+                        <p class="text-primary text-uppercase"> @Model.Player_FullName</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label asp-for="Player_PhoneNumber" class="control-label"></label>
+                        <p class="text-primary">@Model.Player_PhoneNumber</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Categoria:</label>
+                        @{
+                            var elemento2 = ViewBag.CatName as String;
+                            <span class="@GetBadgebyClass(elemento2)"> @elemento2</span>
+                            @functions {
+                                private string GetBadgebyClass(string text)
+                                {
+                                    return text switch
+                                    {
+                                        "MAYOR" => "badge text-bg-secondary",
+                                        "U13 MASCULINO" => "badge text-bg-green",
+                                        "U15 MASCULINO" => "badge text-bg-yellow",
+                                        "U15 FEMENINO" => "badge text-bg-pink",
+                                        "U17 MASCULINO" => "badge text-bg-blue",
+                                        "U17 FEMENINO" => "badge text-bg-purple",
+                                        _ => "badge", // Default case
+                                    };
+                                }
+                            }
+                        }
+                    </div>
+                   
+                    <div class="form-group mt-2">
+                        <label asp-for="Player_Address" class="control-label"></label>
+                        <p class="text-primary">@Model.Player_Address</p>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4 mt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-2 ">
+                                <label class="form-check-label ">Genero:</label>
+                                @if (Model.Player_Genero=="Masculino")
+                                {
+                                    <p class="text-primary ">Masculino</p>
+                                }
+                                else
+                                {
+                                    <p class="text-primary ">Femenino</p>
+                                }
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Posición:</label>
+                                <p class="text-primary">@ViewData["Pos"]</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-2 d-flex justify-content-end align-items-center gap-1">
+                                <label class="control-label d-inline">Dorsal:</label>
+                                <p class="numerito">@Model.Player_Dorsal</p>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Equipo:</label>
+                                <p class="text-primary">@ViewData["team"]</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group mb-2">
+                        <label class="control-label">Fecha de Nacimiento:</label>
+                        <div class="d-flex align-items-end gap-3">
+                            <p class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</p>
+                            <p id="labelEDAD" class="d-inline text-primary ">-</p>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="form-group mb-2">
+                        <label class="control-label">Pais:</label>
+                        <p class="text-primary">@ViewData["PaisName"]</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Departamento:</label>
+                        <p class="text-primary">@ViewData["DepartamentoName"]</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Municipio:</label>
+                        <p class="text-primary">@ViewData["MunicipioName"]</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer card-footer-dark">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div class="btn-group">
+                        @if (ViewData["CatName"].ToString() != "MAYOR")
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                            <a asp-action="AddParent" asp-route-id="@Model?.Player_ID" class="btn btn-primary"><i class="fa-solid fa-person-circle-plus"></i> Agregar Tutor</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model?.Player_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                           
+                        }
+                        <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
+                        <a asp-action="AddCorrectActions" asp-route-id="@Model?.Player_ID" class="btn btn-outline-danger"><i class="fa-solid fa-skull"></i> Agregar Sanción</a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <hr />
+       
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Archivos:</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="stat-tab" data-bs-toggle="tab" data-bs-target="#stat-tab-pane" type="button" role="tab" aria-controls="stat-tab-pane" aria-selected="true">Estadisticas:</button>
+            </li>
+            @if (ViewData["CatName"].ToString() != "MAYOR")
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
+                </li>
+            }
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="ca-tab" data-bs-toggle="tab" data-bs-target="#ca-tab-pane" type="button" role="tab" aria-controls="ca-tab-pane" aria-selected="true">Sanciones:</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+             <div class="tab-pane fade show active p-2" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body p-1">
+                                @if(Model.PlayerFiles.Count > 0){
+                                <table class="table table-hover table-responsive table-striped" id="TablaPlayerFiles">
+                                    <thead>
+                                        <tr>
+                                             <th style="vertical-align: middle; text-align:center;">
+                                                ID
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Name)
+                                            </th>
+                                            <th>
+                                                    @Html.DisplayNameFor(model => model.PlayerFiles.FirstOrDefault().PlayerFiles_Image)
+                                            </th>
+                                            <th class="text-end">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.PlayerFiles)
+                                        {
+                                            <tr>
+                                                <td style="vertical-align: middle; text-align:center;">
+                                                   @Html.DisplayFor(modelItem => item.PlayerFiles_ID)
+                                                </td>
+                                                <td style="vertical-align: middle;">
+                                                    <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                                        @Html.DisplayFor(modelItem => item.PlayerFiles_Name)
+                                                    </a>
+                                                </td>
+                                                <td style="vertical-align: middle;" class="imgZoom">
+                                                    <a asp-action="DetailsPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="rowclick">
+                                                        
+                                                         @if (item.PlayerFiles_Image != null && item.PlayerFiles_Image.Contains(".pdf"))
+                                                         {
+                                                             <i class="fa-solid fa-file-pdf" style=" font-size: 3.2rem;color: #000;" ></i>
+                                                           //<embed id="viewpreview2" type="application/pdf" src="@(!string.IsNullOrEmpty(item.PlayerFiles_Image) ? Url.Content(path+item.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" style="width:50px;height:50px;max-width: 100%; height: auto;"  />
+                                                         }
+                                                         else
+                                                         {
+                                                           <img src="@(!string.IsNullOrEmpty(item.PlayerFiles_Image) ? Url.Content(path2+item.PlayerFiles_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:50px;height:50px;max-width: 100%; height: auto;"  />
+                                                         }                         
+                                                    </a>
+                                                </td>
+                                                <td class="text-end" style="vertical-align: middle;text-align:right!important;" >
+                                                     <div class="btn-group">
+                                                    <a asp-action="EditPlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
+                                                    <a asp-action="DeletePlayerFiles" asp-route-id="@item.PlayerFiles_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay archivos
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            <div class="tab-pane fade" id="stat-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                @if (statList.Count > 0)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped display" id="tblStats">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Temporada
+                                                    </th>
+                                                    <th>
+                                                        Torneo
+                                                    </th>
+                                                    <th>
+                                                        Jornada
+                                                    </th>
+                                                    <th>
+                                                        Goles
+                                                    </th>
+                                                    <th>
+                                                       Tarjetas amarillas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Faltas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Tarjetas Rojas
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Goles Atajados
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Goles Concedidos
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Penaltis
+                                                    </th>
+                                                    <th class="d-none d-md-table-cell">
+                                                        Tiros de Esquina
+                                                    </th>
+                                                    <th class="text-end">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in statList)
+                                                {
+                                                    <tr>
+                                                        <td style="vertical-align: middle;" class="text-capitalize">
+                                                           <span class="badge rounded-pill text-bg-secondary">@item.Torneo.Torneo_Season</span>
+                                                        </td>
+                                                        <td style="vertical-align: middle;" class="text-capitalize">
+                                                            @item.Torneo.Torneo_Name
+                                                        </td>
+                                                        @{
+                                                            var teamList = ViewBag.TeamNames as List<xilopro2.Data.Entities.Team>;
+                                                            var teamName1 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamLocalId)?.Team_Name ?? "Equipo no encontrado";
+                                                            var teamName2 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamVisitorId)?.Team_Name ?? "Equipo no encontrado";
+                                                            var showteams = @$"{teamName1} vs {teamName2}";
+                                                            <td style="vertical-align: middle;text-align:center!important;" data-toggle="popover" data-bs-placement="top" title="Jornada: @item.Match.Jornada" data-bs-content="@showteams" data-trigger="hover">
+                                                                <span style="cursor:pointer;" class="badge rounded-pill text-bg-dark">@item.Match.Jornada</span>
+                                                        </td>
+                                                            }
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="">
+                                                            <i class="fa-solid fa-futbol"></i> @item.PlayerStatistic.Goals
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
+                                                            <i class="fa-solid fa-file text-warning"></i> @item.PlayerStatistic.YellowCards
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
+                                                            @item.PlayerStatistic.Fouls
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell">
+                                                            <i class="fa-solid fa-file text-danger"></i> @item.PlayerStatistic.RedCards
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
+                                                            @item.PlayerStatistic.GoalkeeperSaves
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
+                                                            @item.PlayerStatistic.GoalsConceded
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
+                                                            @item.PlayerStatistic.Penalties
+                                                        </td>
+                                                        <td style="vertical-align: middle;text-align:center!important;" class="d-none d-md-table-cell ">
+                                                            @item.PlayerStatistic.CornerKicks
+                                                        </td>
+
+
+                                                        <td style="vertical-align: middle;" class="text-end">
+
+                                                            <div class="btn-group">
+                                                                <a asp-action="EditStats" class="btn btn-warning" asp-route-id="@item.PlayerStatistic.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@item.PlayerStatistic.MatchId" asp-route-Torneo_ID="@item.PlayerStatistic.TorneoId"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
+                                                                <a asp-action="DeleteStats" class="btn btn-danger" asp-route-id="@item.PlayerStatistic.PlayerStatistic_ID" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]"><i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Borrar</span></a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                            <div class="seleccionarT"></div>
+                                    </div>
+                                }
+                                else
+                                {
+                                        <div class="alert alert-warning" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay estadisticas registradas
+                                        </div> 
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            @if (ViewData["CatName"] != "MAYOR")
+            {
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="2">
+                      <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body p-1">
+                                      @if(Model.Parents.Count > 0){
+                                    <table class="table table-hover table-responsive table-striped" id="TablaParents">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_Image)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_FullName)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().Parent_Cedula)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Parents.FirstOrDefault().PhoneNumber)
+                                                </th>
+                                            
+                                                <th>
+                                                    @Html.DisplayName("Departamento")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("Municipio")
+                                                </th>
+                                                <th class="text-end">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Parents)
+                                            {
+                                                <tr>
+                                                      <td style="vertical-align: middle;" class="imgZoom">
+                                                        <a asp-action="DetailsParent" asp-route-id="@item.Parent_ID" class="rowclick">
+                                                            <img src="@(!string.IsNullOrEmpty(item.Parent_Image) ? Url.Content(path3+item.Parent_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" />
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-uppercase" style="vertical-align: middle;">
+                                                        <a asp-action="DetailsParent" asp-route-id="@item.Parent_ID" class="rowclick">
+                                                            @Html.DisplayFor(modelItem => item.Parent_FullName)
+                                                        </a>
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.Parent_Cedula)
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                                    </td>
+                                                  
+                                                     <td style="vertical-align: middle;">
+
+                                                                @foreach (var nome in departamentoList)
+                                                                {
+                                                                    if (Convert.ToInt32(nome.Value) == item.StateID)
+                                                                    {
+                                                                       @nome.Text
+                                                                    }
+                                                                }
+                                                    </td>
+                                                     <td style="vertical-align: middle;">
+                                                            @foreach (var nome in municipioList)
+                                                            {
+                                                                 if (Convert.ToInt32(nome.Value) == item.CityID)
+                                                                 {
+                                                                    @nome.Text
+                                                                 }
+                                                            }
+                                                           
+                                                    </td>
+             
+                                                    <td class="text-end" style="vertical-align: middle;"  >
+                                                        <div class="btn-group">
+                                                         <a asp-action="EditParent" asp-route-id="@item.Parent_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a> 
+                                                          <a asp-action="DeleteParent" asp-route-id="@item.Parent_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                    }else
+                                    { 
+                                            <div class="alert alert-warning" role="alert">
+                                                <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                            </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     </div>
+
+            }
+            <div class="ca-pane fade p-2" id="ca-tab-pane" role="tabpanel" aria-labelledby="ca-tab" tabindex="3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body p-1">
+                                @if (Model.CorrectionActions.Count > 0)
+                                {
+                                    <table class="table table-hover table-responsive table-striped" id="TablaCA">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().CorrectionAction_Name)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().Fecha)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().CorrectionAction_Status)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.CorrectionActions.FirstOrDefault().Description)
+                                                </th>
+                                                <th class="text-end">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.CorrectionActions)
+                                            {
+                                                <tr>
+                                                    <td style="vertical-align: middle;" class="imgZoom">
+                                                        <a asp-action="DetailsCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="rowclick">
+                                                            @Html.DisplayFor(modelItem => item.CorrectionAction_Name)
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-uppercase" style="vertical-align: middle;">
+                                                            @Html.DisplayFor(modelItem => item.Fecha)
+                                                       
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @if (item.CorrectionAction_Status)
+                                                        {
+                                                            <h5 class="badge bg-success d-inline">Activa</h5>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5 class="badge bg-danger d-inline">Inactiva</h5>
+                                                        }
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @{
+                                                            <p>@TruncateText(item.Description,50)</p>
+                                                            @functions{
+                                                                private string TruncateText(string text, int maxLength)
+                                                                {
+                                                                    if (string.IsNullOrEmpty(text)) return text;
+                                                                    return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+                                                                }
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                 <td class="text-end" style="vertical-align: middle;">
+                                                        <div class="btn-group">
+                                                            <a asp-action="EditCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                                            <a asp-action="DeleteCorrectAction" asp-route-id="@item.CorrectionAction_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay registros
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#TablaPlayerFiles').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+            },
+            "aLengthMenu": [
+                [5, 25, 50, 100, 200, -1],
+                [5, 25, 50, 100, 200, "Todos"]
+            ]
+        })
+
+         $('#TablaParents').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ]
+            })
+
+            $('#TablaCA').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ]
+            })
+
+            $('#tblStats').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [5, 25, 50, 100, 200, -1],
+                    [5, 25, 50, 100, 200, "Todos"]
+                ],
+                ///mostrar la suma de columnas
+                stateSave: true,
+
+                //sselect
+                  initComplete: function () {
+                    var api = this.api();
+                    api.columns([0]) // Especifica la primera columna
+                        .every(function () {
+                            var column = this;
+                          
+                            // Create select element and listener
+                            var select = $('<select><option value="">...</option></select>')
+                                .appendTo($(column.header()))
+                                .on('change', function () {
+                                    column
+                                        .search($(this).val(), { exact: true })
+                                        .draw();
+                                    updateColumnSum(api);
+                                });
+
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(
+                                        `<option value="${extractNumber(d)}">${extractNumber(d)}</option>`
+                                    );
+                                });
+                        });
+
+                },
+                 drawCallback: function () {
+                     var api = this.api();
+                     updateColumnSum(api);
+              }
+
+            })
+
+            function updateColumnSum(api) {
+                var totalSum = [];
+                var numColumns = api.columns()[0].length;
+                var rowData = api.rows({ search: 'applied' }).data(); // Obtener solo los datos de las filas visibles después de aplicar el filtro de búsqueda
+
+                for (var i = 3; i < numColumns - 1; i++) {
+                    var sum = 0;
+                    rowData.each(function (row) {
+                        var val = extractNumber(row[i]);
+                        if (!isNaN(val)) {
+                            sum += val;
+                        }
+                    });
+                    totalSum.push(sum);
+                }
+
+                var footerHtml = totalSum.map(function (sum) {
+                    return '<td class="bg-dark text-white" style="vertical-align: middle;text-align:center!important;">' + sum + '</td>';
+                }).join('');
+
+                $(api.table().footer()).html(`<td></td><td></td><td></td> ${footerHtml} <td></td>`);
+            }
+
+            function extractNumber(str) {
+                var num = str.match(/\d+/);
+                return num ? parseFloat(num[0]) : NaN;
+            }
+
+ 
+
+    })
+</script>
+
+<script>
+    //calcular edad basado en el evento change del datepicker
+    function calcularEdad() {
+        var fechaNacimiento = document.getElementById('inputFNC').textContent;
+      //  console.log("-", fechaNacimiento);
+            var fechaNacimientoObj = new Date(fechaNacimiento);
+
+        // Obtiene la fecha actual
+        var fechaActual = new Date();
+
+        // Calcula la diferencia en milisegundos
+        var diferencia = fechaActual - fechaNacimientoObj;
+
+        // Convierte la diferencia a años
+        var edad = Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25));
+
+        // Muestra la edad en algún lugar de la página
+        document.getElementById('labelEDAD').innerText = "- "+edad + " años";
+    }
+    window.addEventListener("load", function () {
+        calcularEdad()
+    });
+
+
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+</script>
+

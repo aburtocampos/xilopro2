@@ -1,0 +1,47 @@
+﻿@model xilopro2.Data.Entities.Team
+
+@{
+    ViewData["Title"] = "Details";
+    var path = "/Content/Teams/";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Teams" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras </a>
+        <h2 class="m-0 text-end">Detalles del Equipo: <span class="badge bg-dark fs-4">@Model.Team_Name</span></h2>
+    </div>
+    <hr />
+    <div class="card border-dark " style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mt-4">
+                        <span class="fw-bold">Nombre:</span>
+                        <h3 class="text-primary">@Model.Team_Name</h3>
+                    </div>
+                    <div class="form-group mt-4">
+                        <span class="fw-bold">Estadio:</span>
+                        <h3 class="text-primary">@Model.Team_Estadio</h3>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mt-4">
+                        <span class="fw-bold d-block">Imagen:</span>
+                        <img src="@(!string.IsNullOrEmpty(Model.Team_Image) ? Url.Content(path+Model.Team_Image) : Url.Content("~/images/noimage.png"))" class="rounded" alt="Image" style="width:300px;height:300px;max-width: 100%; height: auto;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer card-footer-dark">
+            <div class="form-group d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                <div class="btn-group" >
+                    <a asp-action="Edit" asp-route-id="@Model?.Team_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                    <a asp-action="Delete" asp-route-id="@Model?.Team_ID" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Borrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+﻿@model xilopro2.Models.GroupDetailViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="GroupId" />
+<input type="hidden" asp-for="GroupName" />
+<input type="hidden" asp-for="GroupDetailID" />
+<input type="hidden" asp-for="Teams" />
+<input type="hidden" asp-for="TeamName" />
+
+<div class="col-md-6">
+ 
+        @if (Model.GroupDetailID != 0)
+        {
+         <div class="form-group">
+            <label asp-for="TeamId" class="control-label"></label>
+            <select asp-for="TeamId" asp-items="Model.Teams" class="form-select"></select>
+            <span asp-validation-for="TeamId" class="text-danger"></span>
+        </div>
+        }
+        else
+        {
+        <div class="row">
+            <div class="col-9">
+                <div class="form-group">
+                    <label asp-for="TeamId" class="control-label"></label>
+                    <select asp-for="TeamId" asp-items="Model.Teams" class="form-select"></select>
+                    <span asp-validation-for="TeamId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label class="control-label"></label>
+                    <a asp-action="Create" asp-controller="Teams" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Nuevo Equipo</a>
+                </div>
+            </div>
+        </div>
+        }
+    @if (User.IsInRole("Admin"))
+    {
+           <div class="form-group">
+            <label asp-for="MatchesPlayed" class="control-label"></label>
+            <input asp-for="MatchesPlayed" class="form-control" />
+            <span asp-validation-for="MatchesPlayed" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MatchesWon" class="control-label"></label>
+            <input asp-for="MatchesWon" class="form-control" />
+            <span asp-validation-for="MatchesWon" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MatchesTied" class="control-label"></label>
+            <input asp-for="MatchesTied" class="form-control" />
+            <span asp-validation-for="MatchesTied" class="text-danger"></span>
+        </div>
+    }
+ 
+
+
+</div>
+ @if (User.IsInRole("Admin"))
+{
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="MatchesLost" class="control-label"></label>
+            <input asp-for="MatchesLost" class="form-control" />
+            <span asp-validation-for="MatchesLost" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GoalsFor" class="control-label"></label>
+            <input asp-for="GoalsFor" class="form-control" />
+            <span asp-validation-for="GoalsFor" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GoalsAgainst" class="control-label"></label>
+            <input asp-for="GoalsAgainst" class="form-control" />
+            <span asp-validation-for="GoalsAgainst" class="text-danger"></span>
+        </div>
+</div>
+
+}

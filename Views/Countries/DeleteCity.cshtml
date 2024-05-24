@@ -1,0 +1,29 @@
+﻿@model xilopro2.Data.Entities.City
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="DetailsState" asp-route-id="@Model.State.State_ID" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras </a>
+        <h3 class="m-0">Eliminando el Municipio: <span class="badge bg-danger text-white text-uppercase">@Model.City_Name</span> del Departamento de @Model.State.State_Name</h3>
+    </div>
+
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <form asp-action="DeleteCity">
+            <div class="card-body">
+                <h2 class="text-center">Confirme eliminar el Municipio: <span class="text-danger">@Model.City_Name</span> ?</h2>
+            </div>
+       
+        <div class="card-footer card-footer-danger">
+            <div class="form-group my-2 d-flex justify-content-between">
+                <input type="hidden" asp-for="City_ID" />
+                <a asp-action="DetailsState" asp-route-id="@Model.State.State_ID" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>

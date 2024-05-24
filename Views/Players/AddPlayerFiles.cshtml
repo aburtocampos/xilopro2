@@ -1,0 +1,38 @@
+﻿@model xilopro2.Models.PlayerFilesViewModel
+
+@{
+    ViewData["Title"] = "Archivos";
+}
+
+<link rel="stylesheet" href="~/css/Players.css" asp-append-version="true" />
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model.PlayerId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Creando Nuevo Archivo para el Jugador: <span class="badge bg-primary text-uppercase">@Model.PlayerName</span></h2>
+    </div>
+    <hr class="" />
+    <div class="card border-primary" style="width: 100%;margin:0 auto;">
+        <form asp-action="AddPlayerFiles" enctype="multipart/form-data">
+            <div class="card-body">
+
+                    <input type="hidden" asp-for="PlayerName" />
+                    <partial name="_FormPlayerFiles" />
+
+            </div>
+            <div class="card-footer card-footer-primary">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model.PlayerId" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

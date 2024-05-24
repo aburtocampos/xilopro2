@@ -1,0 +1,289 @@
+﻿@model xilopro2.Models.UserViewModel
+@{
+
+    var path = "/Content/Users/";
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+<input type="hidden" asp-for="Id" />
+<input type="hidden" asp-for="FotoFile" />
+<input type="hidden" asp-for="UserType" />
+<input type="hidden" asp-for="Categories" />
+<input type="hidden" asp-for="Countries" />
+<input type="hidden" asp-for="States" />
+<input type="hidden" asp-for="Cities" />
+
+
+		<div class="col-md-3">
+			<div class="form-group mb-2 text-center">
+        <label asp-for="FotoFile" class="control-label d-block text-start fw-bold"></label>
+                <img src="@(!string.IsNullOrEmpty(Model.User_Image) ? Url.Content(path+Model.User_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="imgpreviewForm" />
+			</div>
+
+			<div class="input-group">
+        <input asp-for="FotoFile" class="form-control fw-bold" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
+				<button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearInput()">Limpiar</button>
+			</div>
+            <span asp-validation-for="FotoFile" class="text-danger"></span>
+		</div>
+
+		<div class="col-md-3">
+			<div class="form-group mb-2">
+        <label asp-for="User_FirstName" class="control-label fw-bold"></label>
+				<input asp-for="User_FirstName" class="form-control" placeholder="Primer Nombre" />
+				<span asp-validation-for="User_FirstName" class="text-danger"></span>
+			</div>
+			<div class="form-group mb-2">
+        <label asp-for="User_LastName" class="control-label fw-bold"></label>
+				<input asp-for="User_LastName" class="form-control" placeholder="Primer Apellido" />
+				<span asp-validation-for="User_LastName" class="text-danger"></span>
+			</div>
+            <div class="row">
+               <div class="col-md-5">
+                <div class="form-group mb-2">
+                    <label asp-for="PhoneNumber" class="control-label fw-bold"></label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="0000-0000" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+               </div>
+                <div class="col-md-7">
+            <div class="form-group mb-2">
+                <label for="User_Genero" class="control-label fw-bold">Genero:</label>
+                <select asp-for="User_Genero" asp-items="ViewBag.Genero" class="form-select"></select>
+                <span asp-validation-for="User_Genero" class="text-danger"></span>
+            </div>
+                </div>
+            </div>
+			
+			<div class="form-group mb-2">
+              <label asp-for="User_Address" class="control-label fw-bold"></label>
+                <textarea asp-for="User_Address" class="form-control" placeholder="Dirección..." ></textarea>
+				<span asp-validation-for="User_Address" class="text-danger"></span>
+			</div>
+		</div>
+
+        <div class="col-md-3">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group mb-2">
+                <label asp-for="User_FNC" class="control-label fw-bold"></label>
+                <input asp-for="User_FNC" class="form-control" type="date" pattern="\d{4}-\d{2}-\d{2}" id="inputFNC" onchange="calcularEdad()" />
+                <span asp-validation-for="User_FNC" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-2">
+                <label asp-for="User_Edad" class="control-label fw-bold"></label>
+                <h4 id="labelEDAD">00</h4>
+            </div>
+        </div>
+    </div>
+
+            <div class="form-group mb-2">
+                 <label asp-for="Email" class="control-label fw-bold"></label>
+                <input asp-for="Email" class="form-control" placeholder="email@mail.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                  <label asp-for="User_Cedula" class="control-label fw-bold"></label>
+                <input asp-for="User_Cedula" class="form-control" placeholder="XXX-XXXXXX-XXXXXX" />
+                <span asp-validation-for="User_Cedula" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="UserTypeof" class="control-label fw-bold"></label>
+                <select asp-for="UserTypeof" asp-items="Model.UserType" class="form-select"></select>
+                <span asp-validation-for="UserTypeof" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                 <label asp-for="SelectedCategoryIds" class="control-label fw-bold"></label>
+                <!--<select asp-for="Categoryid" asp-items="Model.Categories" class="form-select"></select>-->
+               
+                    @foreach (var category in Model.Categories)
+                    {
+                        <div class="form-check form-switch ms-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="SelectedCategoryIds" value="@category.Value"
+                        @(Model.SelectedCategoryIds != null && Model.SelectedCategoryIds.Contains(Convert.ToInt32(category.Value)) ? "checked" : "")>
+                            <label class="form-check-label ms-1" for="flexSwitchCheckDefault">@category.Text</label>
+                        </div>
+                    }
+                  <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-3">
+                <div class="form-group mb-2">
+                    <label asp-for="Countryid" class="control-label fw-bold"></label>
+        <select asp-for="Countryid" asp-items="Model.Countries" class="form-select" id="countrySelect"></select>
+                     <span asp-validation-for="Countryid" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-2">
+                    <label asp-for="Stateid" class="control-label fw-bold"></label>
+        <select asp-for="Stateid" class="form-select" id="stateSelect"></select>
+                      <span asp-validation-for="Stateid" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-2">
+        <label asp-for="Cityid" class="control-label fw-bold"></label>
+        <select asp-for="Cityid" class="form-select" id="citySelect"></select>
+                     <span asp-validation-for="Cityid" class="text-danger"></span>
+                </div>
+
+            <div class="form-check mt-4">
+        <label asp-for="Status" class="form-check-label d-block mb-2 fw-bold"></label>
+        <input asp-for="Status" type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js" ></script>
+
+<script type="text/javascript">
+
+    function showimagepreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+
+    }
+
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
+        document.getElementById("inputGroupFile03").value = "";
+    }
+
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> Activa'
+    });
+
+    //calcular edad basado en el evento change del datepicker
+    function calcularEdad() {
+        var fechaNacimiento = document.getElementById('inputFNC').value;
+
+        var fechaNacimientoObj = new Date(fechaNacimiento);
+
+        // Obtiene la fecha actual
+        var fechaActual = new Date();
+
+        // Calcula la diferencia en milisegundos
+        var diferencia = fechaActual - fechaNacimientoObj;
+
+        // Convierte la diferencia a años
+        var edad = Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25));
+
+        // Muestra la edad en algún lugar de la página
+        document.getElementById('labelEDAD').innerText = edad;
+    }
+    window.addEventListener("load", function () {
+        calcularEdad()
+    });
+       
+
+    document.addEventListener('DOMContentLoaded', function () {
+ 
+        var valorSeleccionadoCountry = $('#countrySelect').val();
+        var valorSeleccionadoState = $('#stateSelect').val();
+        var valorSeleccionadoCity = $('#citySelect').val();
+        var valorModelState = @Model.Stateid;
+        var valorModelCity = @Model.Cityid;
+
+     //   console.log('El valor seleccionado Stateid es ', valorModelState);
+     //   console.log('El valor seleccionado Cityid es ', valorModelCity);
+     //   console.log('El valor seleccionado valorSeleccionadoCountry es ', valorSeleccionadoCountry);
+
+        if (valorSeleccionadoCountry !== '0') {
+            $('#stateSelect').attr('disabled', false);
+            $('#citySelect').attr('disabled', false);
+
+
+            $('#stateSelect').append('<option>Seleccionar Departamento...</option>');
+            $.ajax({
+                url: '/Players/StateDrop?id=' + valorSeleccionadoCountry,
+                success: function (result) {
+                    $.each(result, function (i, data) {
+                        var selected = (data.state_ID == valorModelState) ? ' selected' : '';
+                        $('#stateSelect').append('<option value="' + data.state_ID + '"' + selected + '>' + data.state_Name + '</option>');
+                    });
+                }
+            });
+
+
+            $('#citySelect').append('<option>Seleccionar Municipio...</option>');
+            $.ajax({
+                url: '/Players/CityDrop?id=' + valorModelState,
+                success: function (result) {
+                    $.each(result, function (i, data) {
+                        var selected = (data.city_ID == valorModelCity) ? ' selected' : '';
+                        $('#citySelect').append('<option value="' + data.city_ID + '"' + selected + '>' + data.city_Name + '</option>');
+                    });
+                }
+            });
+
+
+
+        } else {
+            var valorSeleccionadoCountry = $('#countrySelect').val();
+            console.log('El valor seleccionado es :', valorSeleccionadoCountry);
+
+            $('#stateSelect').attr('disabled', true);
+            $('#citySelect').attr('disabled', true);
+        }
+
+
+        //changes eventos
+
+        $('#countrySelect').change(function () {
+            $('#stateSelect').attr('disabled', false);
+            var id = $(this).val();
+            $('#stateSelect').empty();
+            $('#stateSelect').append('<option>Seleccionar Departamento...</option>');
+            $.ajax({
+                url: '/Players/StateDrop?id=' + id,
+                success: function (result) {
+                    $.each(result, function (i, data) {
+                        $('#stateSelect').append('<option value=' + data.state_ID + '>' + data.state_Name + '</option>');
+                    });
+                }
+            });
+        });
+
+
+        $('#stateSelect').change(function () {
+            $('#citySelect').attr('disabled', false);
+            var idd = $(this).val();
+            $('#citySelect').empty();
+            $('#citySelect').append('<option>Seleccionar Municipio...</option>');
+            $.ajax({
+                url: '/Players/CityDrop?id=' + idd,
+                success: function (result) {
+                    $.each(result, function (i, data) {
+                        $('#citySelect').append('<option value=' + data.city_ID + '>' + data.city_Name + '</option>');
+                    });
+                }
+            });
+        });
+
+
+
+
+
+
+    });
+
+</script>
+
+

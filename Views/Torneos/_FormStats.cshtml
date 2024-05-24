@@ -1,0 +1,108 @@
+﻿@model xilopro2.Models.PlayerStatisticViewModel
+@{
+    var path = "/Content/Players/";
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+<input type="hidden" asp-for="MatchId" />
+<input type="hidden" asp-for="DetailsGroupId" />
+<input type="hidden" asp-for="TorneoId" />
+<input type="hidden" asp-for="PlayerStatistic_ID" />
+
+<div class="col-md-4">
+    <div class="form-group">
+        <label class="control-label">Jugador:</label>
+        <div class=" mb-2 d-flex align-items-center">
+            <select id="player_select" class="form-select" asp-for="PlayerId">
+                <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un jugador</option>
+                @foreach (var equipo in Model.Players)
+                {
+                    <option value="@equipo.Player_ID" data-img="@(!string.IsNullOrEmpty(equipo.Player_Image) ? Url.Content(path+equipo.Player_Image) : Url.Content("~/images/noimage.png"))">@equipo.Player_FullName</option>
+                }
+            </select>
+        </div>
+        <span asp-validation-for="PlayerId" class="text-danger"></span>
+    </div>
+
+ 
+    <div class="form-group mb-2">
+        <label asp-for="YellowCards" class="control-label"></label>
+        <input asp-for="YellowCards" class="form-control" />
+        <span asp-validation-for="YellowCards" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="RedCards" class="control-label"></label>
+        <input asp-for="RedCards" class="form-control" type="number" />
+        <span asp-validation-for="RedCards" class="text-danger"></span>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="form-group mb-2">
+        <label asp-for="Fouls" class="control-label"></label>
+        <input asp-for="Fouls" class="form-control" />
+        <span asp-validation-for="Fouls" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Goals" class="control-label"></label>
+        <input asp-for="Goals" class="form-control" />
+        <span asp-validation-for="Goals" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="CornerKicks" class="control-label"></label>
+        <input asp-for="CornerKicks" class="form-control" />
+        <span asp-validation-for="CornerKicks" class="text-danger"></span>
+    </div>
+ 
+</div>
+<div class="col-md-4">
+    <div class="form-group mb-2">
+        <label asp-for="Penalties" class="control-label"></label>
+        <input asp-for="Penalties" class="form-control" />
+        <span asp-validation-for="Penalties" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="GoalkeeperSaves" class="control-label"></label>
+        <input asp-for="GoalkeeperSaves" class="form-control" />
+        <span asp-validation-for="GoalkeeperSaves" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="GoalsConceded" class="control-label"></label>
+        <input asp-for="GoalsConceded" class="form-control" />
+        <span asp-validation-for="GoalsConceded" class="text-danger"></span>
+    </div>
+
+  
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<!-- Agrega estos enlaces en tu sección de <head> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" defer />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js " defer></script>
+<script type="text/javascript">
+    var ruta = '@Url.Content("/Content/Teams/")';
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Finalizado',
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> Proximo'
+    });
+
+    $(document).ready(function () {
+        function formatEquipo(equipo) {
+            if (!equipo.id) { return equipo.text; }
+            //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+            var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+            return $equipo;
+        };
+
+        $("#player_select").select2({
+            templateResult: formatEquipo,
+            templateSelection: formatEquipo
+        });
+
+    });
+
+
+
+</script>

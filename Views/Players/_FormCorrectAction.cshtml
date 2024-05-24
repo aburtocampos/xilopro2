@@ -1,0 +1,62 @@
+﻿@model xilopro2.Models.CorrectActionViewModel
+@{
+    var path2 = "/Content/Players/";
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+<input type="hidden" asp-for="PlayerId" />
+<input type="hidden" asp-for="PlayerName" />
+
+
+
+<div class="col-md-4">
+    <div class="form-group">
+        <label class="control-label fw-bold">Tipo de Sanción:</label>
+        <div class=" mb-2 d-flex align-items-center">
+            <select id="tipo_select" class="form-select" asp-for="CorrectionAction_Name">
+                <option value="0" selected >Seleccione un tipo</option>
+                <option value="VERBAL" >VERBAL</option>
+                <option value="ESCRITO" >ESCRITO</option>
+                <option value="TERMINACION" >TERMINACION</option>
+            </select>
+        </div>
+        <span asp-validation-for="CorrectionAction_Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Fecha" class="control-label fw-bold"></label>
+        <input asp-for="Fecha" class="form-control"  />
+        <span asp-validation-for="Fecha" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-check p-0">
+        <label asp-for="CorrectionAction_Status" class="d-block mb-1 fw-bold">Estado de la Sanción:</label>
+        <input asp-for="CorrectionAction_Status" checked type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+        <span asp-validation-for="CorrectionAction_Status" class="text-danger"></span>
+    </div>
+
+</div>
+
+
+
+
+<div class="col">
+    <div class="form-group mb-2">
+        <label asp-for="Description" class="control-label fw-bold"></label>
+        <textarea class="form-control" asp-for="Description" cols="20" id="Description" name="Description" rows="2" placeholder="Describa situación..."></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script type="text/javascript">
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactivo',
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> Activo'
+    });
+
+</script>

@@ -1,0 +1,30 @@
+﻿@model xilopro2.Data.Entities.Country
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-route-id="@Model.Country_ID" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Eliminando el País: <span class="badge bg-danger text-white">@Model.Country_Name</span></h3>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <form asp-action="Delete">
+            <div class="card-body">
+                <h2 class="text-center">Confirme eliminar el País: <span class="text-danger">@Model.Country_Name</span> ?</h2>
+
+            </div>
+            <div class="card-footer card-footer-danger">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <input type="hidden" asp-for="Country_ID" />
+                    <a asp-action="Index" asp-route-id="@Model.Country_ID" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

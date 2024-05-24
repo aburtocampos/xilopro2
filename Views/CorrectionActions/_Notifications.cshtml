@@ -1,0 +1,23 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+@if (TempData["successCorrectionActions"] != null)
+{
+    <script type="text/javascript">
+        toastr.success('@TempData["successCorrectionActions"]');
+    </script>
+}
+
+@if (TempData["warningCorrectionActions"] != null)
+{
+    <script type="text/javascript">
+        toastr.warning('@TempData["warningCorrectionActions"]');
+    </script>
+}
+
+@if (TempData["errorCorrectionActions"] != null)
+{
+    <script type="text/javascript">
+        toastr.error('@TempData["errorCorrectionActions"]');
+    </script>
+}

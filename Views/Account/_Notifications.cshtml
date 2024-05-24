@@ -1,0 +1,30 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+@if (TempData["successRole"] != null)
+{
+    <script type="text/javascript">
+        toastr.success('@TempData["successRole"]');
+    </script>
+}
+
+@if (TempData["warningRole"] != null)
+{
+    <script type="text/javascript">
+        toastr.warning('@TempData["warningRole"]');
+    </script>
+}
+
+@if (TempData["errorRole"] != null)
+{
+    <script type="text/javascript">
+        toastr.error('@TempData["errorRole"]');
+    </script>
+}
+
+@if (TempData["successAccount"] != null)
+{
+    <script type="text/javascript">
+        toastr.success('@TempData["successAccount"]');
+    </script>
+}

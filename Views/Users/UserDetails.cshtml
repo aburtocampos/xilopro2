@@ -1,0 +1,147 @@
+﻿@using System.Globalization
+@model xilopro2.Models.UserViewModel
+
+
+@{
+    ViewData["Title"] = "Detalle de Usuario";
+    var path = "/Content/Users/";
+}
+<link rel="stylesheet" href="~/css/User.css" asp-append-version="true" />
+
+
+
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Index" asp-controller="Users" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Usuario: <span class="badge bg-primary fs-4">@Model.Email</span></h3>
+    </div>
+
+    <hr />
+    <input type="hidden" asp-for="Id" />
+    <div class="card border-primary" style="width: 100%;margin:0 auto;">
+        <form class="profile">
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <span class="mb-2 d-block fw-bold">Imagen:</span>
+                        <img src="@(!string.IsNullOrEmpty(Model.User_Image) ? Url.Content(path+Model.User_Image) : Url.Content("~/images/noimage.png"))" class="rounded" alt="Image" style="width:300px;height:300px;max-width: 100%; height: auto;" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mb-2">
+                            <label asp-for="User_FirstName" class="control-label fw-bold"></label>
+                            <h4 class="text-primary">@Model.User_FirstName @Model.User_LastName</h4>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="PhoneNumber" class="control-label fw-bold"></label>
+                            <h4 class="text-primary">@Model.PhoneNumber</h4>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="Email" class="control-label fw-bold"></label>
+                            <h4 class="text-primary">@Model.Email</h4>
+                        </div>
+                        <div class="form-group mb-2">
+                            
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label asp-for="User_FNC" class="control-label fw-bold"></label>
+                                    <h4 class="text-primary">@Model.User_FNC.ToString("dd/MM/yyyy", new CultureInfo("es-ES"))</h4>
+                                </div>
+                                <div>
+                                    <label class="control-label fw-bold">Edad:</label>
+                                    <h4 class="text-primary">@ViewBag.Edad</h4>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Status" class="form-check-label fw-bold"></label>
+                            @if (Model.Status)
+                            {
+                                <h4 class="text-primary">Activo</h4>
+                            }
+                            else
+                            {
+                                <h4 class="text-red">Inactivo</h4>
+                            }
+
+                        </div>
+
+
+
+                        <div class="form-group mb-2">
+                            <label class="control-label fw-bold">Rol:</label>
+                            <h4 class="text-primary">@ViewData["RoleName"]</h4>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            @if (Enumerable.Count(ViewBag.CatNames) > 1)
+                            {
+                                <label class="control-label mb-2 fw-bold">Categorias:</label>
+                            }
+                            else
+                            {
+                                <label class="control-label mb-2 fw-bold">Categoria:</label>
+                            }
+                            <ul class="list-group list-group-flush">
+                                @foreach (var nombre in ViewBag.CatNames)
+                                {
+                                    <li class="list-group-item text-primary fw-bold">@nombre</li>
+                                }
+                               
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mb-2">
+                            <label class="control-label fw-bold">Pais:</label>
+                            <h4 class="text-primary">@ViewData["PaisName"]</h4>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="control-label fw-bold">Departamento:</label>
+                            <h4 class="text-primary">@ViewData["DepartamentoName"]</h4>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="control-label fw-bold">Municipio:</label>
+                            <h4 class="text-primary">@ViewData["MunicipioName"]</h4>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label asp-for="User_Address" class="control-label fw-bold"></label>
+                        <h4 class="text-primary">@Model.User_Address</h4>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card-footer card-footer-primary">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" asp-controller="Users" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <div>
+                        <a asp-action="DeleteUser" class="btn btn-danger" asp-route-id="@Model?.Id"><i class="fa-solid fa-delete-left" onclick=""></i> Eliminar</a> |
+                        <a asp-action="EditUser" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+       
+    </script>
+}

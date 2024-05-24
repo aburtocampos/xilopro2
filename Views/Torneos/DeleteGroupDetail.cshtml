@@ -1,0 +1,28 @@
+﻿@model xilopro2.Models.GroupDetailViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end">Eliminando el equipo <span class="badge bg-danger text-white text-uppercase">@Model.TeamName</span> del Grupo: @Model.GroupName</h3>
+    </div>
+    <hr />
+    <div class="card border-danger" style="width: 100%;margin:0 auto;">
+        <div class="card-body">
+            <h2 class="text-center">Confirme eliminar <span class="text-danger">@Model.TeamName</span> del Grupo: @Model.GroupName ?</h2>
+        </div>
+        <div class="card-footer card-footer-danger">
+            <form asp-action="DeleteGroupDetail">
+                <div class="form-group d-flex justify-content-between">
+                    <input type="hidden" asp-for="GroupDetailID" />
+                    <a asp-action="DetailsGroup" asp-route-id="@Model?.GroupId" asp-controller="Torneos" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Borrar" class="btn btn-danger"><i class="fa-solid fa-delete-left"></i> Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model xilopro2.Data.Entities.CorrectionAction
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+<input type="hidden" asp-for="Player" />
+<div class="col-md-6">
+    <div class="form-group">
+        <label asp-for="CorrectionAction_Name" class="control-label"></label>
+        <input asp-for="CorrectionAction_Name" class="form-control lowerinput" placeholder="Ingrese Accion Correctiva..." />
+        <span asp-validation-for="CorrectionAction_Name" class="text-danger"></span>
+    </div>
+
+</div>
+<div class="col-md-6">
+    <div class="form-group">
+        <div class="form-check py-3" >
+            <label class="form-check-label me-4" asp-for="CorrectionAction_Status"></label>
+            <input asp-for="CorrectionAction_Status" type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+            <span asp-validation-for="CorrectionAction_Status" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<script type="text/javascript">
+
+    $('#chckStaus').checkboxpicker({
+        html: true,
+        offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
+        onLabel: '<i class="fa-regular fa-thumbs-up"/> ACTIVA'
+    });
+
+</script>

@@ -1,0 +1,40 @@
+﻿@model xilopro2.Models.StateViewModel
+
+@{
+    ViewData["Title"] = "Departamento";
+}
+
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@Model.CountryId" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h3 class="m-0 text-end" >Creando Nuevo Departamento para el País: <span class="badge bg-primary">@Model.CountryName</span></h3>
+    </div>
+   
+    <hr />
+    <div class="card border-primary" style="width: 100%;margin:0 auto;">
+        <form asp-action="AddState">
+            <div class="card-body">
+                <div class="col-md-12">
+
+                    <input type="hidden" asp-for="CountryName" />
+                    <partial name="_FormState" />
+
+                </div>
+            </div>
+            <div class="card-footer card-footer-primary">
+                <div class="form-group my-2 d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@Model.CountryId" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

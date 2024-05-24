@@ -1,0 +1,33 @@
+﻿@model xilopro2.Data.Entities.Groups
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <h2><a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-arrow-left"></i> Atras</a> | Editando el Grupo: <span class="badge bg-warning text-dark">@Model.Group_Name</span> </h2>
+
+    <hr />
+    <div class="card border-warning" style="width: 60%;margin:0 auto;">
+        <form asp-action="Edit">
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" asp-for="Group_ID" />
+                    <partial name="_FormGroups" />
+                </div>
+            </div>
+            <div class="card-footer card-footer-warning">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-default"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-warning"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

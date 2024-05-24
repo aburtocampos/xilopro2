@@ -1,0 +1,145 @@
+﻿@model xilopro2.Models.UserViewModel
+@{
+    ViewData["Title"] = "Pérfil";
+    var path = "/Content/Users/";
+
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+
+
+<div class="container pt-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Profile" asp-route-id="@Model?.Email" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <div class="d-flex gap-4 justify-content-center align-items-center">
+            <div class="flex-column">
+                <p class="text-end fw-bold mb-1">Activo desde:</p>
+                <span class="text-end d-flex" id="idtimi"></span>
+            </div>
+            <span class="badge bg-dark fs-4">@Model.Email</span>
+        </div>
+
+    </div>
+
+    <hr />
+    <div class="card border-warning" style="width: 100%;margin:0 auto;">
+        <form asp-action="EditProfile" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Categories" />
+            <input type="hidden" asp-for="UserType" />
+            <input type="hidden" asp-for="UserTypeof" />
+            <input type="hidden" asp-for="Cities" />
+            <input type="hidden" asp-for="Cityid" />
+            <input type="hidden" asp-for="States" />
+            <input type="hidden" asp-for="Countryid" />
+            <input type="hidden" asp-for="Countries" />
+            <input type="hidden" asp-for="Stateid" />
+            <input type="hidden" asp-for="User_Genero" />
+            <input type="hidden" asp-for="Status" />
+     
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <figure>
+                            <img src="@(!string.IsNullOrEmpty(Model.User_Image) ? Url.Content(path+Model.User_Image) : Url.Content("~/images/noimage.png"))" alt="Imagen de Perfil" id="inputProfileImg" class="w-50" />
+                        </figure>
+                        
+                        <div class="input-group">
+                            <input asp-for="FotoFile" class="form-control" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
+                            <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearInput()">Limpiar</button>
+                        </div>
+                        <span asp-validation-for="FotoFile" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <label asp-for="User_FirstName" class="control-label"></label>
+                                    <input asp-for="User_FirstName" class="form-control" placeholder="Primer Nombre" />
+                                    <span asp-validation-for="User_FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <label asp-for="User_LastName" class="control-label"></label>
+                                    <input asp-for="User_LastName" class="form-control" placeholder="Primer Apellido" />
+                                    <span asp-validation-for="User_LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="email@mail.com" type="text" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <label asp-for="User_Cedula" class="control-label"></label>
+                                    <input asp-for="User_Cedula" class="form-control" placeholder="XXX-XXXXXX-XXXXXX" />
+                                    <span asp-validation-for="User_Cedula" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2">
+                                    <label asp-for="PhoneNumber" class="control-label"></label>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="0000-0000" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-2">
+                            <label asp-for="User_Address" class="control-label"></label>
+                            <input asp-for="User_Address" class="form-control" placeholder="Dirección..."  />
+                            <span asp-validation-for="User_Address" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="form-group d-flex justify-content-between">
+                    <a asp-action="Profile" asp-route-id="@Model?.Email" class="btn btn-light"><i class="fa-solid fa-ban"></i> Cancelar</a>
+                    <button type="submit" value="Save" class="btn btn-success"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script type="text/javascript">
+    function showimagepreview(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var imagePreview = document.getElementById("inputProfileImg");
+                imagePreview.setAttribute("src", e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+            input.files.removeAttribute("required");
+        }
+
+    }
+
+    function clearInput() {
+        document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
+        document.getElementById("inputGroupFile03").value = "";
+    }
+
+
+
+
+
+
+
+</script>

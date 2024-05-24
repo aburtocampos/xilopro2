@@ -1,0 +1,13 @@
+﻿@model xilopro2.Models.StateViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
+
+<input type="hidden" asp-for="State_ID" />
+<input type="hidden" asp-for="CountryId" />
+<input type="hidden" asp-for="CountryName" />
+
+<div class="form-group my-2">
+    <label asp-for="State_Name" class="control-label mb-2">Departamento:</label>
+    <input asp-for="State_Name" class="form-control text-uppercase lowerinput" placeholder="Ingrese Departamento para el pais @Model.CountryName" />
+    <span asp-validation-for="State_Name" class="text-danger "></span>
+</div>
