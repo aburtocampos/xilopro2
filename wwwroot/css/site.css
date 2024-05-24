@@ -309,8 +309,26 @@ div.dt-container div.dt-search {
     margin-right: 1rem;
     margin-left: 1rem;
 }
+
+.centerbox {
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+
+
+
+
+
+
+
+
 /************************RESPONSIVE****************************/
 @media (min-width: 768px) {
+    .centerbox {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
     .rolepo {
         
     }
@@ -355,5 +373,15 @@ html {
     .navbar-nav {
         margin-top: 0rem;
         padding: 0 1rem;
+    }
+}
+
+@media (min-width: 992px) {
+    
+}
+@media (min-width: 1200px) {
+    .centerbox {
+        padding-left: 5rem;
+        padding-right: 5rem;
     }
 }

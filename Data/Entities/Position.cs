@@ -9,7 +9,7 @@ namespace xilopro2.Data.Entities
    //     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Position_ID { get; set; }
 
-        [Display(Name = "Posición de Juego:")]
+        [Display(Name = "Posición:")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
         public string Position_Name { get; set; }

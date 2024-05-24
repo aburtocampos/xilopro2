@@ -24,7 +24,7 @@ namespace xilopro2.Data.Entities
         [Range(1, 30, ErrorMessage = "El campo {0} debe tener un valor maximo de {1} y un minimo de {2}")]
         public int Player_Dorsal { get; set; } = 0;
 
-        [Display(Name = "Fecha de Nacimiento")]
+        [Display(Name = "FNC")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime Player_FNC { get; set; }

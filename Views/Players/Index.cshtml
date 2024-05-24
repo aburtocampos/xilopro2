@@ -4,16 +4,17 @@
 @{
     ViewData["Title"] = "Index";
     var path = "/Content/Players/";
+    var path3 = "/Content/Teams/";
 }
 
 
-<div class="container pt-3">
+<div class="container-fluid pt-3 mb-4 centerbox">
    <div class="row" >
         <div class="col-md-12">
             <div class="card rounded-0">
                 <div class="card-header d-flex justify-content-between align-content-center mb-2">
                     <h3 class="">Jugadores</h3>
-                    <a asp-action="Create" class="btn btn-success"><i class="fa-solid fa-plus"></i> Crear Nuevo Jugador</a>
+                    <a asp-action="Create" class="btn btn-success"><i class="fa-solid fa-plus"></i> <span class="d-none d-md-inline-block">Crear Nuevo Jugador</span></a>
                 </div>
                 <div class="card-body p-2">
 
@@ -28,7 +29,6 @@
                         <div class="tab-pane fade show active p-2 my-1" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
                             @if (Model.Count(item => item.Player_Status) > 0)
                             {
-                            //@Html.Partial("_ListPlayers", Model, new ViewDataDictionary(this.ViewData) { { "param1", true } })
                                 <div class="table-responsive">
                                     <table class="table table-hover table-striped" id="tblPlayersActivos">
                                         <thead>
@@ -39,10 +39,10 @@
                                                 <td class="fw-bold">
                                                     @Html.DisplayNameFor(model => model.Player_Dorsal)
                                                 </td>
-                                                <th class="fw-bold">
+                                                <th class="fw-bold ">
                                                     @Html.DisplayNameFor(model => model.Player_FullName)
                                                 </th>
-                                                <td class="fw-bold">
+                                                <td class="fw-bold d-none d-md-table-cell">
                                                     @Html.DisplayNameFor(model => model.Player_FNC)
                                                 </td>
                                                 <td class="fw-bold">
@@ -53,6 +53,9 @@
                                                 </td>
                                                 <td class="fw-bold">
                                                     @Html.DisplayNameFor(model => model.Player_Status)
+                                                </td>
+                                                <td class="fw-bold">
+                                                    Equipo
                                                 </td>
                                                 <th class="text-end fw-bold">Acciones</th>
                                             </tr>
@@ -74,22 +77,37 @@
                                                             @Html.DisplayFor(modelItem => item.Player_FullName)
                                                         </a>
                                                     </td>
-                                                    <td style="vertical-align: middle;">
+                                                    <td style="vertical-align: middle;" class="d-none d-md-table-cell">
                                                         @Html.DisplayFor(modelItem => item.Player_FNC) |
                                                         (@Html.DisplayFor(modelItem => item.Player_Edad) años)
                                                     </td>
                                                     <td style="vertical-align: middle;">
                                                         @Html.DisplayFor(modelItem => item.Position.Position_Name)
                                                     </td>
-                                                    <td style="vertical-align: middle;">
-                                                        @{
-                                                            var elemento2 = ViewBag.Cats as IEnumerable<SelectListItem>;
-                                                            var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
-                                                            <span>@elemento3.Text</span>
-                                                        }
+                                                    @{
+                                                        var elemento2 = ViewBag.Cats as IEnumerable<SelectListItem>;
+                                                        var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
+                                                        <td class="@GetBadgebyClass(elemento3.Text) fs-6" style="vertical-align: middle!important;display: table-cell;text-align: center !important;">
+                                                           @elemento3.Text
 
+                                                            @functions {
+                                                                private string GetBadgebyClass(string text)
+                                                                {
+                                                                    return text switch
+                                                                    {
+                                                                        "MAYOR" => "badge text-bg-secondary",
+                                                                        "U13 MASCULINO" => "badge text-bg-green",
+                                                                        "U15 MASCULINO" => "badge text-bg-yellow",
+                                                                        "U15 FEMENINO" => "badge text-bg-pink",
+                                                                        "U17 MASCULINO" => "badge text-bg-blue",
+                                                                        "U17 FEMENINO" => "badge text-bg-purple",
+                                                                        _ => "badge", // Default case
+                                                                    };
+                                                                }
+                                                            }
                                                     </td>
-                                                    <td style="vertical-align: middle;">
+                                                    }
+                                                    <td style="vertical-align: middle;text-align:center!important;" class="">
                                                         @if (item.Player_Status)
                                                         {
                                                             <i class="fa-solid fa-thumbs-up text-success"></i>
@@ -109,21 +127,25 @@
                                                             }
                                                         }
                                                     </td>
+                                                    <td style="vertical-align: middle;" class="">
+                                                        <img src="@(!string.IsNullOrEmpty(item.Team.Team_Image) ? Url.Content(path3+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:45px" />
+                                                       @item.Team.Team_Name
+                                                    </td>
                                                     <td style="vertical-align: middle;" class="text-end">
                                                         <div class="btn-group">
                                                             <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Player_ID">
-                                                                <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span>
+                                                                <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-md-inline-block">Editar</span>
                                                             </a>
 
                                                             <a asp-action="@(item.Player_Status ? "DarBaja" : "DarAlta")" class="btn @(item.Player_Status ? "btn-outline-dark" : "btn-outline-primary")" asp-route-id="@item.Player_ID">
                                                                 <i class="fa-regular @(item.Player_Status ? "fa-circle-down" : "fa-circle-up")"></i>
-                                                                <span class="d-none d-sm-inline-block">@((item.Player_Status ? "Dar Baja" : "Dar Alta"))</span>
+                                                                <span class="d-none d-md-inline-block">@((item.Player_Status ? "Dar Baja" : "Dar Alta"))</span>
                                                             </a>
 
                                                             @if (User.IsInRole("Admin"))
                                                             {
                                                                 <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Player_ID">
-                                                                    <i class="fa-solid fa-delete-left"></i> <span class="d-none d-sm-inline-block">Eliminar</span>
+                                                                    <i class="fa-solid fa-delete-left"></i> <span class="d-none d-md-inline-block">Eliminar</span>
                                                                 </a>
                                                             }
                                                         </div>
@@ -150,7 +172,134 @@
                             @if (Model.Count(item => !item.Player_Status) > 0)
                             {
 
-                                @Html.Partial("_ListPlayers")
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover table-striped" id="tblPlayersInactivos">
+                                        <thead>
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    @Html.DisplayNameFor(model => model.Player_Image)
+                                                </td>
+                                                <td class="fw-bold">
+                                                    @Html.DisplayNameFor(model => model.Player_Dorsal)
+                                                </td>
+                                                <th class="fw-bold ">
+                                                    @Html.DisplayNameFor(model => model.Player_FullName)
+                                                </th>
+                                                <td class="fw-bold d-none d-md-table-cell">
+                                                    @Html.DisplayNameFor(model => model.Player_FNC)
+                                                </td>
+                                                <td class="fw-bold">
+                                                    @Html.DisplayNameFor(model => model.Position.Position_Name)
+                                                </td>
+                                                <td class="fw-bold">
+                                                    @Html.DisplayName("Categoria")
+                                                </td>
+                                                <td class="fw-bold">
+                                                    @Html.DisplayNameFor(model => model.Player_Status)
+                                                </td>
+                                                <td class="fw-bold">
+                                                    Equipo
+                                                </td>
+                                                <th class="text-end fw-bold">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Where(item => item.Player_Status == false))
+                                            {
+                                                <tr>
+                                                    <td style="vertical-align: middle;" class="imgZoom">
+                                                        <a asp-action="Details" asp-route-id="@item.Player_ID" class="rowclick">
+                                                            <img src="@(!string.IsNullOrEmpty(item.Player_Image) ? Url.Content(path+item.Player_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" />
+                                                        </a>
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.Player_Dorsal)
+                                                    </td>
+                                                    <td style="vertical-align: middle;text-transform:uppercase;">
+                                                        <a asp-action="Details" asp-route-id="@item.Player_ID" class="rowclick">
+                                                            @Html.DisplayFor(modelItem => item.Player_FullName)
+                                                        </a>
+                                                    </td>
+                                                    <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                        @Html.DisplayFor(modelItem => item.Player_FNC) |
+                                                        (@Html.DisplayFor(modelItem => item.Player_Edad) años)
+                                                    </td>
+                                                    <td style="vertical-align: middle;">
+                                                        @Html.DisplayFor(modelItem => item.Position.Position_Name)
+                                                    </td>
+                                                    @{
+                                                        var elemento2 = ViewBag.Cats as IEnumerable<SelectListItem>;
+                                                        var elemento3 = elemento2.ToList().Where(e => Convert.ToInt32(e.Value) == item.SelectedCategoryIds.FirstOrDefault()).FirstOrDefault();
+                                                        <td class="@GetBadgebyClass(elemento3.Text) fs-6" style="vertical-align: middle!important;display: table-cell;text-align: center !important;">
+                                                            @elemento3.Text
+
+                                                            @functions {
+                                                      /* private string GetBadgebyClass(string text)
+                                                        {
+                                                            return text switch
+                                                            {
+                                                                "MAYOR" => "badge text-bg-secondary",
+                                                                "U13 MASCULINO" => "badge text-bg-green",
+                                                                "U15 MASCULINO" => "badge text-bg-yellow",
+                                                                "U15 FEMENINO" => "badge text-bg-pink",
+                                                                "U17 MASCULINO" => "badge text-bg-blue",
+                                                                "U17 FEMENINO" => "badge text-bg-purple",
+                                                                _ => "badge", // Default case
+                                                            };
+                                                        }*/
+                                                    }
+                                                </td>
+                                                    }
+                                                    <td style="vertical-align: middle;text-align:center!important;" class="">
+                                                        @if (item.Player_Status)
+                                                        {
+                                                            <i class="fa-solid fa-thumbs-up text-success"></i>
+                                                            @if ((item.PlayerFiles?.Count > 0) || (item.Parents?.Count > 0))
+                                                            {
+                                                                <i class="fa-solid fa-paperclip"></i>
+
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fa-solid fa-thumbs-down text-danger"></i>
+                                                            @if ((item.PlayerFiles?.Count > 0) || (item.Parents?.Count > 0))
+                                                            {
+                                                                <i class="fa-solid fa-paperclip"></i>
+
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td style="vertical-align: middle;" class="">
+                                                        <img src="@(!string.IsNullOrEmpty(item.Team.Team_Image) ? Url.Content(path3+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:45px" />
+                                                        @item.Team.Team_Name
+                                                    </td>
+                                                    <td style="vertical-align: middle;" class="text-end">
+                                                        <div class="btn-group">
+                                                            <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Player_ID">
+                                                                <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-md-inline-block">Editar</span>
+                                                            </a>
+
+                                                            <a asp-action="@(item.Player_Status ? "DarBaja" : "DarAlta")" class="btn @(item.Player_Status ? "btn-outline-dark" : "btn-outline-primary")" asp-route-id="@item.Player_ID">
+                                                                <i class="fa-regular @(item.Player_Status ? "fa-circle-down" : "fa-circle-up")"></i>
+                                                                <span class="d-none d-md-inline-block">@((item.Player_Status ? "Dar Baja" : "Dar Alta"))</span>
+                                                            </a>
+
+                                                            @if (User.IsInRole("Admin"))
+                                                            {
+                                                                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Player_ID">
+                                                                    <i class="fa-solid fa-delete-left"></i> <span class="d-none d-md-inline-block">Eliminar</span>
+                                                                </a>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
 
                             }
                             else
@@ -190,7 +339,9 @@
                     [8, 15,25, 50, 100, 200, "Todos"]
                 ],
                 dom: 'Bfrtip',
-                
+                columnDefs: [
+                    { targets: [4, 5, 7], orderable: false } // Deshabilita la ordenación para las columnas 4, 5 y 7
+                ],
                 buttons: [
                     'pageLength',
                     //columnas
@@ -233,9 +384,58 @@
                         className: 'btn-light'
 
                     }, 
-                ]
-            })
+                ],
 
+                initComplete: function () {
+                    this.api().columns([4, 5, 7]).every(function (index) {
+                            var column = this;
+                        var columnHeader = "";
+                        switch (index) {
+                            case 4:
+                                columnHeader = "Categorías";
+                                break;
+                            case 5:
+                                columnHeader = "Posiciones";
+                                break;
+                            case 7:
+                                columnHeader = "Equipos";
+                                break;
+                            default:
+                                columnHeader = "";
+                                break;
+                        }
+                        var select = $('<select class="form-select d-inline-block"><option value="">' + columnHeader + '...</option></select>')
+                       
+                            .appendTo($(column.header()).empty())
+                                .on('change', function () {
+                                console.log("--", $(this).val())
+                                    column
+                                        .search($(this).val(), { exact: false })
+                                        .draw();
+                                });
+
+                            // Add list of options
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                var teamName = extractTextAfterImg(d);
+                                    if (column.search() === '^' + d + '$') {
+                                    select.append(`<option value="${teamName}" selected="selected"  >${teamName}</option>`);
+                                    } else {
+                                    select.append(`<option value="${teamName}">${teamName}</option>`);
+                                    }
+                                });
+                        });
+                }
+
+            });
+
+            function extractTextAfterImg(str) {
+                var textWithoutHTML = str.replace(/<[^>]*>/g, '').trim();
+                return textWithoutHTML;
+            }
 
 
             $('#tblPlayersInactivos').DataTable({
@@ -247,7 +447,9 @@
                     [8, 15, 25, 50, 100, 200, "Todos"]
                 ],
                 dom: 'Bfrtip',
-
+                columnDefs: [
+                    { targets: [4, 5, 7], orderable: false } // Deshabilita la ordenación para las columnas 4, 5 y 7
+                ],
                 buttons: [
                     'pageLength',
                     //columnas
@@ -290,8 +492,52 @@
                         className: 'btn-light'
 
                     },
-                ]
-            })
+                ],
+
+                initComplete: function () {
+                    this.api().columns([4, 5, 7]).every(function (index) {
+                        var column = this;
+                        var columnHeader = "";
+                        switch (index) {
+                            case 4:
+                                columnHeader = "Categorías";
+                                break;
+                            case 5:
+                                columnHeader = "Posiciones";
+                                break;
+                            case 7:
+                                columnHeader = "Equipos";
+                                break;
+                            default:
+                                columnHeader = "";
+                                break;
+                        }
+                        var select = $('<select class="form-select d-inline-block"><option value="">' + columnHeader + '...</option></select>')
+
+                            .appendTo($(column.header()).empty())
+                            .on('change', function () {
+                                console.log("--", $(this).val())
+                                column
+                                    .search($(this).val(), { exact: false })
+                                    .draw();
+                            });
+
+                        // Add list of options
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                var teamName = extractTextAfterImg(d);
+                                if (column.search() === '^' + d + '$') {
+                                    select.append(`<option value="${teamName}" selected="selected"  >${teamName}</option>`);
+                                } else {
+                                    select.append(`<option value="${teamName}">${teamName}</option>`);
+                                }
+                            });
+                    });
+                }
+            });
 
 
 
