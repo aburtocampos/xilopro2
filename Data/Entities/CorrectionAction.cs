@@ -18,6 +18,12 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Descripción:")]
         public string Description { get; set; } = string.Empty;
 
+        [Display(Name = "Inicio:")]
+        public int? JornadasInicio { get; set; }
+
+        [Display(Name = "Fin:")]
+        public int? JornadasFin { get; set; }
+
         [Display(Name = "Fecha")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]

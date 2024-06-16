@@ -1,5 +1,225 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<xilopro2.Models.PlayerStatisticReportViewModel>
 @{
+    ViewData["Title"] = "Estadisticas";
+    var path = "/Content/Players/";
+var path3 = "/Content/Teams/";
+}    
+<div class="container-fluid pt-3 mb-4 ">
+    <partial name="_Notifications">
+        <div class="row" >
+              <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading d-flex justify-content-between align-content-center mb-2">
+                    <h3 class="panel-title">Estadisticas de Jugadores</h3>
+                </div>
+                <hr />
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped display" id="tblStats">
+                            <thead>
+                                <tr>
+                                    <th>
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.Player.Player_FullName)
+                                    </th>
+                                     <th>
+                                           Torneo
+                                     </th>
+                                     <th>
+                                            Temporada
+                                    </th>
+                                    <th>
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.Goals)
+                                    </th>
+                                    <th>
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.YellowCards)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.Fouls)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.RedCards)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.GoalkeeperSaves)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.GoalsConceded)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.Penalties)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            @Html.DisplayNameFor(model => model.PlayerStatistics.CornerKicks)
+                                    </th>
+                                    <th class="d-none d-md-table-cell">
+                                            Equipo
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="vertical-align: middle;" class="imgZoom">
+                                                <a asp-action="Details" asp-controller="Players" asp-route-id="@item.PlayerStatistics.Player.Player_ID" class="rowclick">
+                                                    <img src="@(!string.IsNullOrEmpty(item.PlayerStatistics.Player.Player_Image) ? Url.Content(path+item.PlayerStatistics.Player.Player_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded me-3" />
+                                                    @Html.DisplayFor(modelItem => item.PlayerStatistics.Player.Player_FullName)
+                                                </a>
+                                        </td>
+                                        <td style="vertical-align: middle;text-transform:uppercase;">
+                                                @Html.DisplayFor(modelItem => item.Torneo.Torneo_Name)
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                                @Html.DisplayFor(modelItem => item.Torneo.Torneo_Season)
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.Goals)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.YellowCards)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.Fouls)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.RedCards)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.GoalkeeperSaves)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.GoalsConceded)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.Penalties)
+                                        </td>
+                                        <td style="vertical-align: middle;" class="d-none d-md-table-cell">
+                                                @Html.DisplayFor(modelItem => item.PlayerStatistics.CornerKicks)
+                                        </td>
+                                        <td style="vertical-align: middle;font-size:0.7rem;" class="d-none d-md-table-cell">
+                                                <img src="@(!string.IsNullOrEmpty(item.Teams.Team_Image) ? Url.Content(path3+item.Teams.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:30px" />
+                                                @Html.DisplayFor(modelItem => item.Teams.Team_Name)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tblStats').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [10, 25, 50, 100, 200, -1],
+                    [10, 25, 50, 100, 200, "Todos"]
+                ],
+                dom: 'Bfrtip',
+                columnDefs: [
+                    { targets: [1, 2], orderable: false } // Deshabilita la ordenación para las columnas 4, 5 y 7
+                ],
+                buttons: [
+                    'pageLength',
+                    //columnas
+                    {
+                        extend: 'colvis',
+                        text: 'Columnas',
+                        className: 'btn-export-colvis',
+
+                    },
+                    //excel
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Exportar Excel',
+                        filename: 'Jugadores',
+                        title: 'Lista de Jugadores',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        className: 'btn-exportar-excel',
+
+                    },
+                    //pdf
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Exportar PDF',
+                        filename: 'Jugadores',
+                        title: 'Lista de Jugadores',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        className: 'btn-exportar-pdf',
+                    },
+                    //print
+                    {
+                        extend: 'print',
+                        title: 'Lista de Jugadores',
+                        exportOptions: {
+                            columns: [1, 2, 3, 4, 5, 6]
+                        },
+                        className: 'btn-light'
+
+                    },
+                ],
+
+                initComplete: function () {
+                    this.api().columns([1, 2]).every(function (index) {
+                        var column = this;
+                        var columnHeader = "";
+                        switch (index) {
+                            case 1:
+                                columnHeader = "Torneos";
+                                break;
+                            case 2:
+                                columnHeader = "Temporadas";
+                                break;
+                            default:
+                                columnHeader = "";
+                                break;
+                        }
+                        var select = $('<select class="form-select d-inline-block"><option value="">' + columnHeader + '...</option></select>')
+
+                            .appendTo($(column.header()).empty())
+                            .on('change', function () {
+                                console.log("--", $(this).val())
+                                column
+                                    .search($(this).val(), { exact: false })
+                                    .draw();
+                            });
+
+                        // Add list of options
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                var teamName = extractTextAfterImg(d);
+                                if (column.search() === '^' + d + '$') {
+                                    select.append(`<option value="${teamName}" selected="selected"  >${teamName}</option>`);
+                                } else {
+                                    select.append(`<option value="${teamName}">${teamName}</option>`);
+                                }
+                            });
+                    });
+                },
+
+            });
+            function extractTextAfterImg(str) {
+                var textWithoutHTML = str.replace(/<[^>]*>/g, '').trim();
+                return textWithoutHTML;
+            }
+        })
+    </script>
 }

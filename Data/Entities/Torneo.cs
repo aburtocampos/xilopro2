@@ -53,7 +53,7 @@ namespace xilopro2.Data.Entities
 
         //relations
         public ICollection<Groups>? Groups { get; set; }
-
+        public ICollection<Player>? Players { get; set; }
 
     }
 }

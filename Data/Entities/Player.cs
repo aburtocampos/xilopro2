@@ -105,6 +105,11 @@ namespace xilopro2.Data.Entities
         [NotMapped]
         public bool toogleBoolean { get; set; }
 
+        public int? torneoid { get; set; }
+
+     
+        public string? season { get; set; }
+
         public Team? Team { get; set; }
         public int Teamid { get; set; }
 

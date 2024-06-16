@@ -19,6 +19,7 @@
                 <option value="VERBAL" >VERBAL</option>
                 <option value="ESCRITO" >ESCRITO</option>
                 <option value="TERMINACION" >TERMINACION</option>
+                <option value="DEPORTIVO">DEPORTIVO</option>
             </select>
         </div>
         <span asp-validation-for="CorrectionAction_Name" class="text-danger"></span>
@@ -42,6 +43,18 @@
 
 
 <div class="col">
+    <div class="input-group mb-3">
+        <div class="form-group mb-2">
+            <label asp-for="JornadasInicio" class="control-label fw-bold"></label>
+            <select asp-for="JornadasInicio" asp-items="ViewBag.Jornadas" class="form-select" id="countrySelect"></select>
+            <span asp-validation-for="JornadasInicio" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="JornadasFin" class="control-label fw-bold"></label>
+            <select asp-for="JornadasFin" asp-items="ViewBag.Jornadas" class="form-select" id="countrySelect"></select>
+            <span asp-validation-for="JornadasFin" class="text-danger"></span>
+        </div>
+    </div>
     <div class="form-group mb-2">
         <label asp-for="Description" class="control-label fw-bold"></label>
         <textarea class="form-control" asp-for="Description" cols="20" id="Description" name="Description" rows="2" placeholder="Describa situación..."></textarea>

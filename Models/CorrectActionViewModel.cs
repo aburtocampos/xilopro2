@@ -20,6 +20,12 @@ namespace xilopro2.Models
         [Display(Name = "Descripción:")]
         public string Description { get; set; }
 
+        [Display(Name = "Inicio:")]
+        public int? JornadasInicio { get; set; }
+
+        [Display(Name = "Fin:")]
+        public int? JornadasFin { get; set; }
+
         [Display(Name = "Fecha")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
@@ -30,6 +36,8 @@ namespace xilopro2.Models
 
         [Display(Name = "Jugador:")]
         public virtual string PlayerName { get; set; }
+
+
 
 
     }

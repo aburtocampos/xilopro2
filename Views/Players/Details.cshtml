@@ -324,7 +324,7 @@
                                                             var teamList = ViewBag.TeamNames as List<xilopro2.Data.Entities.Team>;
                                                             var teamName1 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamLocalId)?.Team_Name ?? "Equipo no encontrado";
                                                             var teamName2 = teamList?.FirstOrDefault(t => t.Team_ID == item.Match.TeamVisitorId)?.Team_Name ?? "Equipo no encontrado";
-                                                            var showteams = @$"{teamName1} vs {teamName2}";
+                                                            var showteams = $"{teamName1} vs {teamName2}";
                                                             <td style="vertical-align: middle;text-align:center!important;" data-toggle="popover" data-bs-placement="top" title="Jornada: @item.Match.Jornada" data-bs-content="@showteams" data-trigger="hover">
                                                                 <span style="cursor:pointer;" class="badge rounded-pill text-bg-dark">@item.Match.Jornada</span>
                                                         </td>

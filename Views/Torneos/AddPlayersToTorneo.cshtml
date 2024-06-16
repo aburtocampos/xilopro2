@@ -1,0 +1,266 @@
+﻿@model xilopro2.Models.AddPlayersToTorneoViewModel
+@using System.Globalization
+@{
+    var path = "/Content/Tournaments/";
+    var path2 = "/Content/Players/";
+}
+<partial name="_Notifications">
+
+    <div class="container pt-3 mb-4">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+            <div class="d-flex gap-3">
+                <a asp-action="Details" asp-route-id="@Model.Torneo.Torneo_ID" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+                <h3 class="m-0 text-end"> Asignando Jugadores</h3>
+            </div>
+            <h3 class="m-0 text-end">Torneo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Torneo.Torneo_Name</span></h3>
+        </div>
+
+        <hr />
+
+        <div class="card border-dark row" style="width: 100%;margin:0 auto;">
+            <div class="card-body row">
+                <div class="col-1">
+                    <div class="form-group mb-2">
+                        <div class="d-flex justify-content-between">
+                            <div class="estadoplayer">
+                                @if (Model.Torneo.Torneo_Status)
+                                {
+                                    <h5 class="badge bg-success d-inline">Activo</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="badge bg-danger d-inline">Inactivo</h5>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col">
+                            <div class="form-group mb-2">
+                                <label class="control-label">Nombre de Torneo:</label>
+                                <p class="text-primary text-uppercase fw-bold mb-0"> <img src="@(!string.IsNullOrEmpty(Model.Torneo.Torneo_Image) ? Url.Content(path+Model.Torneo.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" style="width:40px;" alt="Image" /> @Model.Torneo.Torneo_Name</p>
+                            </div>
+                    </div>
+
+                <div class="col-3">
+                        <div class="form-group mb-2">
+                            <label class="control-label">Fecha de Inicio:</label>
+                        <p class="text-primary text-uppercase fw-bold mb-0"> @Model.Torneo.Torneo_StartDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
+                        </div>
+              
+                    </div>
+
+                <div class="col-3">
+                    <div class="form-group mb-2">
+                        <label class="control-label">Fecha de Finalizacion:</label>
+                        <p class="text-primary text-uppercase fw-bold mb-0">@Model.Torneo.Torneo_EndDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="form-group mb-2">
+                        <label class="control-label ">Categoria:</label>
+                        <p class="text-primary fw-bold mb-0">@ViewData["CatName"]</p>
+                    </div>
+                </div>
+
+                <div class="col-1">
+                    <div class="form-group mb-2">
+                        <label class="control-label ">Temporada:</label>
+                        <p class="text-primary fw-bold mb-0">@Model.Torneo.Torneo_Season</p>
+                    </div>
+
+                </div>
+
+                <div class="col-1">
+                    <div class="form-group mb-2">
+                        <label class="control-label">Nº Grupos:</label>
+                        <p class="text-primary fw-bold mb-0">@Model.Grupos.Count</p>
+                    </div>
+                </div>
+            </div>
+
+         </div>
+
+        <hr />
+
+        <div class="card">
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="card-body">
+                    <h3> Jugadores Activos</h3>
+                       
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dorsal</th>
+                                    <th scope="col">Nombres</th>
+                                    <th scope="col">Posición</th>
+                                    <th scope="col">Acción:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 @if(Model.Players.Count > 0){
+                                        @foreach (var player in Model.Players)
+                                        {
+                                            <tr>
+                                                <td>@player.Player_Dorsal</td>
+                                                <td >@player.Player_FullName</td>
+                                                <td>@player.Position.Position_Name</td>
+                                                <td>
+                                                <form id="form1" action="@Url.Action("AddPlayer", "Torneos")" method="post">
+                                                    <input type="hidden" name="playerId" value="@player.Player_ID" />
+                                                    <input type="hidden" name="newTorneoId" value="@Model.torneoid" />
+                                                    <button type="submit" class="btn btn-outline-primary">Agregar <i class="fa-solid fa-circle-arrow-right ms-2"></i> </button>
+                                                </form>
+                                               
+                                                </td>
+                                            </tr>
+                                        }
+                                }else{
+                                     <tr>
+                                        <td colspan="4">
+                                        <div class="alert alert-warning p-1" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores creados en la categoria @ViewData["CatName"]
+                                        </div>
+                                        </td>
+                                    </tr>
+                                }
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <h3> Jugadores en Torneo</h3>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Acción:</th>
+                                    <th scope="col">Dorsal</th>
+                                    <th scope="col">Nombres</th>
+                                    <th scope="col">Posición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Model.PlayersTorneo.Count > 0){
+                                    @foreach (var player in Model.PlayersTorneo)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <form id="form2" action="@Url.Action("RemovePlayer", "Torneos")" method="post">
+                                                    <input type="hidden" name="playerId" value="@player.Player_ID" />
+                                                    <input type="hidden" name="newTorneoId" value="@Model.torneoid" />
+                                                    <button type="submit" class="btn btn-outline-danger"><i class="fa-solid fa-circle-arrow-left me-2"></i> Remover</button>
+                                                </form>
+                                            </td>
+                                            <td>@player.Player_Dorsal</td>
+                                            <td>@player.Player_FullName</td>
+                                            <td>@player.Position.Position_Name</td>
+                                        </tr>
+                                    }
+                                }else{
+                                    <tr>
+                                        <td colspan="4">
+                                        <div class="alert alert-warning p-1" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores agregados
+                                        </div>
+                                        </td>
+                                      </tr>
+                                }
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+         
+
+        </div>
+
+           
+        </div>
+
+
+
+      
+     </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                // AJAX para agregar jugador
+                $("#form1").submit(function (e) {
+                    e.preventDefault();
+
+                    console.log("jkjh")
+
+                    var $form = $(this);
+                    var url = $form.attr("action");
+                    var data = $form.serialize();
+
+                    var playerId = $form.find("input[name='playerId']").val();
+                    var newTorneoId = $form.find("input[name='newTorneoId']").val();
+
+                    console.log(`playerid: ${playerId} - torneo: ${newTorneoId}`)
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: data,
+                        success: function () {
+                            // Recargar la vista de jugadores.
+                            console.log(`funciono`)
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("Error al agregar jugador.");
+                        }
+                    });
+                });
+
+                // AJAX para remover jugador
+                $("#form2").submit(function (e) {
+                    e.preventDefault();
+
+                    console.log("jkjh")
+
+                    var $form = $(this);
+                    var url = $form.attr("action");
+                    var data = $form.serialize();
+
+                    var playerId = $form.find("input[name='playerId']").val();
+                    var newTorneoId = $form.find("input[name='newTorneoId']").val();
+
+                    console.log(`playerid: ${playerId} - torneo: ${newTorneoId}`)
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: data,
+                        success: function () {
+                            // Recargar la vista de jugadores.
+                            console.log(`funciono`)
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("Error al remover jugador.");
+                        }
+                    });
+                });
+
+
+            });
+        </script>
+    }

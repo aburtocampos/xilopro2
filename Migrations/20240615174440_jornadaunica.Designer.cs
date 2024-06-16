@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xilopro2.Data;
 
@@ -11,9 +12,11 @@ using xilopro2.Data;
 namespace xilopro2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240615174440_jornadaunica")]
+    partial class jornadaunica
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -786,12 +789,6 @@ namespace xilopro2.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Teamid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("season")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("torneoid")
                         .HasColumnType("int");
 
                     b.HasKey("Player_ID");

@@ -49,10 +49,9 @@
                                 Reportes
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="nav-link text-dark" >Usuarios</a></li>
-                                <li><a class="nav-link text-dark">Jugadores</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PlayerStatistics" asp-action="Index">Estadisticas</a></li>
+                                <li><a class="nav-link text-dark" asp-controller="CorrectionActions" asp-action="Index">Sanciones</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="IndexParents">Tutores</a></li>
-                                <li><a class="nav-link text-dark" >Torneos</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -75,6 +74,7 @@
                                 Reportes
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PlayerStatistics" asp-action="Index">Estadisticas</a></li>
                                 <li><a class="nav-link text-dark" asp-controller="CorrectionActions" asp-action="Index">Sanciones</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="IndexParents">Tutores</a></li>
                             </ul>

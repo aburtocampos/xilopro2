@@ -208,6 +208,7 @@ namespace xilopro2.Data
 
             /*********************************************MATCHGAME************************************************/
             builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamLocalId, gd.TeamVisitorId, gd.Jornada, gd.GroupsrId }).IsUnique();//no repetir jornada y local ni visitante
+            builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamVisitorId, gd.TeamLocalId, gd.Jornada, gd.GroupsrId }).IsUnique();
             builder.Entity<Matchgame>().HasIndex(gd => new { gd.TeamLocalId, gd.TeamVisitorId, gd.GroupsrId }).IsUnique();
             //fix llamar Team dos veces en Matches
             builder.Entity<Matchgame>()

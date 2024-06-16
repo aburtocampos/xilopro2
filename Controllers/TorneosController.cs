@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using xilopro2.Data;
@@ -263,6 +264,103 @@ namespace xilopro2.Controllers
 
         #endregion
 
+        #region JugadoresATorneos
+
+        [HttpGet]
+        public async Task<IActionResult> AddPlayersToTorneo(int? id)
+        {
+            if (id == null)
+            { 
+                return NotFound();
+            }
+
+            var torneo = await _context.Torneos
+                 .Include(t => t.Groups)
+                 .FirstOrDefaultAsync(t => t.Torneo_ID == id);
+
+            var cate = _combos.GetCategoriasPorIds(torneo.SelectedCategoryIds);
+            int cateID = Convert.ToInt32(cate.FirstOrDefault().Value);
+            ViewData["CatName"] = cate.FirstOrDefault().Text;
+
+            var playersList = _context.Players
+                .Include(t=>t.Position)
+                .AsEnumerable()
+                .Where(player => player.SelectedCategoryIds.Contains(cateID))
+                .Where(player => player.torneoid == null)
+                .ToList();
+
+            var playersListOntorneo = _context.Players
+                .Include(t => t.Position)
+                .AsEnumerable()
+                .Where(player => player.SelectedCategoryIds.Contains(cateID))
+                .Where(player => player.torneoid == id)
+                .ToList();
+
+
+            if (torneo == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AddPlayersToTorneoViewModel
+            {
+                torneoid = torneo.Torneo_ID,
+                season = torneo.Torneo_Season,
+               // playerid = (int)(torneo.Players.FirstOrDefault()?.Player_ID),
+                Players = playersList,
+                Torneo = torneo,
+                Grupos = torneo.Groups,
+                PlayersTorneo = playersListOntorneo,
+            };
+
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPlayer(int playerId, int newTorneoId)
+        {
+            var player = await _context.Players.FindAsync(playerId);
+            if (player != null)
+            {
+                try
+                {
+                    player.torneoid = newTorneoId;
+                    _context.Update(player);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(AddPlayersToTorneo), new { id = newTorneoId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemovePlayer(int playerId, int newTorneoId)
+        {
+            var player = await _context.Players.FindAsync(playerId);
+            if (player != null)
+            {
+                try
+                {
+                    player.torneoid = null;
+                    _context.Update(player);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            };
+            return RedirectToAction(nameof(AddPlayersToTorneo), new { id = newTorneoId });
+        }
+
+
+        #endregion
 
         #region Grupos
 
@@ -277,6 +375,7 @@ namespace xilopro2.Controllers
          //   List<string> catnames = _context.Categories.Where(e => user.SelectedCategoryIds.Contains(e.Category_ID)).Select(e => e.Category_Name).ToList();
 
             Torneo tournamentEntity = await _context.Torneos
+                .Include(t => t.Players)
                 .Include(t => t.Groups)
                 .ThenInclude(t => t.Matches)
                 .ThenInclude(t => t.TeamLocal)
@@ -808,6 +907,37 @@ namespace xilopro2.Controllers
             return View(model);
         }
 
+
+        private void ValidateMatchgames()
+        {
+            var matchgames = _context.ChangeTracker.Entries<Matchgame>()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+                .Select(e => e.Entity);
+
+            foreach (var matchgame in matchgames)
+            {
+                // Check rule 3
+                var jornadaExists = matchgames.Any(m =>
+                    m.Jornada == matchgame.Jornada &&
+                    m.GroupsrId == matchgame.GroupsrId);
+
+                if (jornadaExists)
+                {
+                    throw new InvalidOperationException("A matchgame with the same jornada and groupsrId already exists.");
+                }
+            }
+        }
+
+        private bool MatchgameWithSameJornadaExists(Matchgame matchgame)
+        {
+            return _context.Matches.Any(m =>
+                m.Match_ID != matchgame.Match_ID && // Excluir el mismo Matchgame que se está modificando
+                m.Jornada == matchgame.Jornada &&
+                m.GroupsrId == matchgame.GroupsrId);
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> AddMatch(MatchViewModel model)
         {
@@ -818,7 +948,6 @@ namespace xilopro2.Controllers
                 {
                     if (model.LocalId != model.VisitorId)
                     {
-                        //       var matchEntity = await _converterHelper.ToMatchEntityAsync(model, true);
                         var matchEntity = new Matchgame
                         {
                             Date = model.Date.ToUniversalTime(),
@@ -830,16 +959,23 @@ namespace xilopro2.Controllers
                             GroupsrId = model.GroupId,
                             Jornada = model.Jornada,
                             torneoid = model.torneoid,
-                            //  Groups = await _context.Groups.FindAsync(model.GroupId),
-                            // TeamLocal = await _context.Teams.FindAsync(model.LocalId),
-                            // TeamVisitor = await _context.Teams.FindAsync(model.VisitorId),
                         };
 
-                        _context.Add(matchEntity);
-                        await _context.SaveChangesAsync();
+                        if (!MatchgameWithSameJornadaExists(matchEntity))
+                        {
+                            _context.Add(matchEntity);
+                            await _context.SaveChangesAsync();
+                            TempData["successTorneo"] = "Jornada agregada al grupo " + model.GroupName + " exitosamente!!";
+                            return RedirectToAction(nameof(DetailsGroup), new { Id = model.GroupId });
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Ya existe esta jornada en este grupo");
+                        }
+                       
 
-                        TempData["successTorneo"] = "Jornada agregada al grupo " + model.GroupName + " exitosamente!!";
-                        return RedirectToAction(nameof(DetailsGroup), new { Id = model.GroupId });
+                      
+                       
                     }
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -1089,6 +1225,8 @@ namespace xilopro2.Controllers
                .AsEnumerable()
                .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
                 .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) // filtra por equipos cargados en el partido
+                .Where(player => player.torneoid == Torneo_ID)
+                 .Where(player => player.Player_Status == true)
                .ToList();
 
 

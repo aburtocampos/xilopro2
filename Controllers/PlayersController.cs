@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
@@ -75,6 +76,7 @@ namespace xilopro2.Controllers
                    // .Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any())
                    .Where(player => player.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
                   .ToList();
+
                 if (filteredPlayers == null)
                 {
                     Problem("Entity set 'DataContext.Players'  is null.");
@@ -1171,7 +1173,52 @@ namespace xilopro2.Controllers
         #endregion
 
 
-        #region CorrectActions
+        #region CORRECTACTIONS
+
+        public async Task<IEnumerable<SelectListItem>> GetJornadas(int playerId)
+        {
+            // Encuentra al jugador por ID
+            Player player = await _context.Players.FindAsync(playerId);
+            if (player == null)
+            {
+                throw new Exception("Player not found");
+            }
+
+            // Encuentra el equipo del jugador
+            var teamId = player.Teamid;
+            var team = await _context.Teams.FindAsync(teamId);
+            if (team == null)
+            {
+                throw new Exception("Player not found");
+            }
+
+            // Encuentra los partidos en los que el equipo ha participado
+            var matchgames = await _context.Matches
+                .Where(m => m.TeamLocalId == teamId || m.TeamVisitorId == teamId)
+                .ToListAsync();
+
+            if (matchgames == null || matchgames.Count == 0)
+            {
+                throw new Exception("No matches found for the player's team");
+            }
+
+            // Suponiendo que todos los partidos tienen el mismo torneoid y groupid
+            var torneoId = matchgames.FirstOrDefault().torneoid;
+            var groupId = matchgames.First().GroupsrId;
+
+            // Filtra los partidos por torneoid y groupid y selecciona las jornadas únicas
+            var jornadas = matchgames
+                .Where(m => m.torneoid == torneoId && m.GroupsrId == groupId)
+                 .Select(m => new SelectListItem
+                 {
+                     Value = m.Match_ID.ToString(),
+                     Text = m.Jornada
+                 })
+                .Distinct()
+                .ToList();
+
+            return jornadas;
+        }
 
 
         public async Task<IActionResult> AddCorrectActions(int? id)
@@ -1181,6 +1228,7 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
             Player player = await _context.Players.FindAsync(id);
+            
 
             if (player == null)
             {
@@ -1204,9 +1252,14 @@ namespace xilopro2.Controllers
             //  model.PlayerId = id;
             //  model.PlayerName = oparent.Player_FullName;
             ViewBag.EditFlag = "";
+
+           ViewBag.Jornadas = GetJornadas(player.Player_ID);
             return View(model);
 
         }
+
+      
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -1216,6 +1269,7 @@ namespace xilopro2.Controllers
             {
                 try
                 {
+
                     CorrectionAction ca = new()
                     {
                         //  Parent_ID = Guid.NewGuid().ToString(),
@@ -1226,6 +1280,7 @@ namespace xilopro2.Controllers
                         Fecha = model.Fecha,
                         CorrectionAction_Status = model.CorrectionAction_Status,
                         PlayerName = model.PlayerName,
+
 
                     };
 
@@ -1276,6 +1331,7 @@ namespace xilopro2.Controllers
 
             CorrectionAction ca = await _context.CorrectionActions.FindAsync(id);
             ca.Player = _context.Players.FirstOrDefault(cp => cp.Player_ID == ca.PlayerId);
+
             if (ca == null)
             {
                 return NotFound();

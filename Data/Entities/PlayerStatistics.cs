@@ -15,13 +15,13 @@ namespace xilopro2.Data.Entities
         [Display(Name = "Goles:")]
         public int Goals { get; set; }
 
-        [Display(Name = "Tarjetas Amarillas:")]
+        [Display(Name = "Amarillas:")]
         public int YellowCards { get; set; }
 
         [Display(Name = "Faltas:")]
         public int Fouls { get; set; }
 
-        [Display(Name = "Tarjetas Rojas:")]
+        [Display(Name = "Rojas:")]
         public int RedCards { get; set; }
 
         [Display(Name = "Goles Atajados:")]
