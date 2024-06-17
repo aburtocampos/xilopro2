@@ -78,6 +78,36 @@ namespace xilopro2.Helpers
             return list;
         }
 
+        public IEnumerable<SelectListItem> GetJornadaas()
+        {
+            List<SelectListItem> list = _dataContext.Matches.Select(x => new SelectListItem
+            {
+                Text = x.Jornada,
+                Value = $"{x.Match_ID}"
+            })
+                .OrderBy(x => x.Text)
+                .ToList();
+            return list;
+        }
+
+        public IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid)
+        {
+            var list = _dataContext.Matches
+             .Include(m => m.Groups)
+             .Where(t => t.torneoid == torneoid)
+             .Select(x => new SelectListItem
+             {
+                 Text = x.Jornada,
+                 Value = $"{x.Match_ID}",
+                 Group = new SelectListGroup { Name = x.Groups.Group_Name } // Suponiendo que hay una propiedad Name en Groups
+             })
+             .OrderBy(x => x.Group.Name) // Ordenar por grupo
+             .ThenBy(x => x.Text) // Luego ordenar por el texto del item
+             .ToList();
+
+            return list.GroupBy(x => x.Group.Name);
+        }
+
         public IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids)
         {
             List<SelectListItem> list = _dataContext.Categories

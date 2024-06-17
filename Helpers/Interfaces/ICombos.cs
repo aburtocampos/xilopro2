@@ -7,6 +7,10 @@ namespace xilopro2.Helpers.Interfaces
     {
         IEnumerable<SelectListItem> GetComboCategorias();
 
+        public IEnumerable<SelectListItem> GetJornadaas();
+
+        IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid);
+
         IEnumerable<SelectListItem> GetCategorias();
         IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids);
         List<Player> GetCombosPlayersbyCat(List<int> ids);

@@ -882,7 +882,7 @@ namespace xilopro2.Controllers
 
       
 
-        public async Task<IActionResult> AddMatch(int? id)
+        public async Task<IActionResult> AddMatch(int? id)//lleva el id del grupo
         {
             if (id == null)
             {
@@ -1036,7 +1036,7 @@ namespace xilopro2.Controllers
              VisitorId = matchEntity.TeamVisitorId,
              MatchID = matchEntity.Match_ID,
              Teams = _combos.GetCombosEquiposPorIds(matchEntity.GroupsrId),
-            
+            torneoid = matchEntity.torneoid,
             };
 
             return View(model);
@@ -1059,6 +1059,7 @@ namespace xilopro2.Controllers
                     TeamLocalId = model.LocalId,
                     TeamVisitorId = model.VisitorId,
                     Match_ID = model.MatchID,
+                    torneoid = model.torneoid,
                 };
 
 

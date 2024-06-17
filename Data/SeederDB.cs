@@ -32,6 +32,8 @@ namespace xilopro2.Data
             // await checkUserAsync( "Tecnico",  "Tecnico",        "pruetesjuan@gmail.com", "88503574", "calle luna", UserType.Dt);
         }
 
+   
+
         private async Task checkPositionsAsync()
         {
             if (!_context.Positions.Any())

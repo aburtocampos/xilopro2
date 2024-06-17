@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using xilopro2.Data.Entities;
 
 namespace xilopro2.Models
@@ -20,16 +21,18 @@ namespace xilopro2.Models
         [Display(Name = "Descripción:")]
         public string Description { get; set; }
 
-        [Display(Name = "Inicio:")]
-        public int? JornadasInicio { get; set; }
-
-        [Display(Name = "Fin:")]
-        public int? JornadasFin { get; set; }
 
         [Display(Name = "Fecha")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime Fecha { get; set; }
+
+        [Display(Name = "Jornadas a Suspender:")]
+        public List<string>? Jornadasasancionar { get; set; }
+
+       // public IEnumerable<SelectListItem>? Matche { get; set; }
+
+        public IEnumerable<IGrouping<string, SelectListItem>>? Matche { get; set; }
 
         public int PlayerId { get; set; }
 

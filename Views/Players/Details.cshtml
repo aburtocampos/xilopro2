@@ -165,7 +165,10 @@
                            
                         }
                         <a asp-action="AddPlayerFiles" asp-route-id="@Model?.Player_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Agregar Archivo</a>
-                        <a asp-action="AddCorrectActions" asp-route-id="@Model?.Player_ID" class="btn btn-outline-danger"><i class="fa-solid fa-skull"></i> Agregar Sanción</a>
+                        @if(Model.torneoid != null){
+                            <a asp-action="AddCorrectActions" asp-route-id="@Model?.Player_ID" class="btn btn-outline-danger"><i class="fa-solid fa-skull"></i> Agregar Sanción</a>
+                        }
+                       
 
                     </div>
 
@@ -188,9 +191,11 @@
                     <button class="nav-link fw-bold" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Tutores:</button>
                 </li>
             }
+             @if(Model.torneoid != null){
             <li class="nav-item" role="presentation">
                 <button class="nav-link fw-bold" id="ca-tab" data-bs-toggle="tab" data-bs-target="#ca-tab-pane" type="button" role="tab" aria-controls="ca-tab-pane" aria-selected="true">Sanciones:</button>
             </li>
+             }
         </ul>
 
         <div class="tab-content" id="myTabContent">

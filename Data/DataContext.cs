@@ -154,6 +154,8 @@ namespace xilopro2.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
             );
 
+         
+
             /************************************************************POSITION****************************************************/
             builder.Entity<Position>().HasIndex(p => p.Position_Name).IsUnique();
          
@@ -233,6 +235,15 @@ namespace xilopro2.Data
 
             /**************************************MEMBERSHIP****************************************************/
             builder.Entity<Membership>().HasIndex(p => p.Membership_FullName).IsUnique();
+
+
+            /***************************************************CORRECACTION**************************************************/
+            builder.Entity<CorrectionAction>()
+            .Property(u => u.Jornadasasancionar)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+            );
 
 
         }
