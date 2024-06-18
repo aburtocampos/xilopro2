@@ -10,6 +10,7 @@ using xilopro2.Data;
 using xilopro2.Data.Entities;
 using xilopro2.Enums;
 using xilopro2.Helpers.Interfaces;
+using xilopro2.Models;
 
 namespace xilopro2.Helpers
 {
@@ -90,7 +91,7 @@ namespace xilopro2.Helpers
             return list;
         }
 
-        public IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid)
+      /*  public IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid)
         {
             var list = _dataContext.Matches
              .Include(m => m.Groups)
@@ -106,6 +107,34 @@ namespace xilopro2.Helpers
              .ToList();
 
             return list.GroupBy(x => x.Group.Name);
+        }*/
+
+        public List<GroupedMatchViewModel> GetJornadas(int? torneoid)
+        {
+            var list = _dataContext.Matches
+                .Include(m => m.Groups)
+                .Where(t => t.torneoid == torneoid)
+                .Select(x => new SelectListItem
+                {
+                    Text = x.Jornada,
+                    Value = $"{x.Match_ID}",
+                    Group = new SelectListGroup { Name =  x.Groups.Group_Name } // Suponiendo que hay una propiedad Name en Groups
+                })
+                .OrderBy(x => x.Group.Name) // Ordenar por grupo
+                .ThenBy(x => x.Text) // Luego ordenar por el texto del item
+                .ToList();
+
+               var groupedMatches = list.GroupBy(x => x.Group.Name)
+                .Select(group => new GroupedMatchViewModel
+                {
+                    GroupName = group.Key,
+                    Matches = group.ToList(),
+                    
+                })
+                .OrderBy(x => x.GroupName)
+                .ToList();
+
+            return groupedMatches;
         }
 
         public IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids)

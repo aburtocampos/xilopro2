@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using xilopro2.Data.Entities;
+using xilopro2.Models;
 
 namespace xilopro2.Helpers.Interfaces
 {
@@ -9,7 +10,9 @@ namespace xilopro2.Helpers.Interfaces
 
         public IEnumerable<SelectListItem> GetJornadaas();
 
-        IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid);
+        // IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid);
+
+        List<GroupedMatchViewModel> GetJornadas(int? torneoid);
 
         IEnumerable<SelectListItem> GetCategorias();
         IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids);

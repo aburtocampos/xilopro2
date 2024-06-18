@@ -4,10 +4,11 @@
 }
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
-
+<input type="hidden" asp-for="CorrectionAction_ID" />
 <input type="hidden" asp-for="PlayerId" />
 <input type="hidden" asp-for="PlayerName" />
-
+<input type="hidden" asp-for="Player" />
+<input type="hidden" asp-for="groupId" id="inputhiddengid" />
 
 
 <div class="col-md-4">
@@ -47,7 +48,7 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 </div>
-<div class="input-group mb-3" id="selectsJornadas">
+<div class="mb-3" id="selectsJornadas">
 
     <div class="form-group my-3">
         <label asp-for="Jornadasasancionar" class="control-label fw-bold mb-2"></label>
@@ -58,18 +59,19 @@
             {
                 <div class="group">
                     <span>
-                        Fase / Grupo: <span class="badge text-bg-secondary">@group.Key </span><i class="fa-solid fa-arrow-right ms-2"></i><span>
-                            <!-- El nombre del grupo, por ejemplo, la liga -->
-                            @foreach (var mat in group)
-                            {
-                                <div class="form-check form-switch ms-4 d-inline-block">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="Jornadasasancionar" value="@mat.Value"
-                                    @(Model.Jornadasasancionar != null && Model.Jornadasasancionar.Contains(mat.Value) ? "checked" : "") style="cursor:pointer;">
-                                    <label class="form-check-label ms-1" for="flexSwitchCheckDefault">@mat.Text</label>
-                                </div>
-                            }
+                        Fase / Grupo: <span class="badge text-bg-secondary">@group.GroupName</span><i class="fa-solid fa-arrow-right ms-2"></i>
+                    </span>
+                    <!-- El nombre del grupo, por ejemplo, la liga -->
+                    @foreach (var mat in group.Matches)
+                    {
+                        <div class="form-check form-switch ms-4 d-inline-block">
+                            <input class="form-check-input jornada-checkbox" type="checkbox" role="switch" id="flexSwitchCheckDefault_@mat.Value" name="Jornadasasancionar" value="@mat.Value"
+                            @(Model.Jornadasasancionar != null && Model.Jornadasasancionar.Contains(mat.Value) ? "checked" : "") style="cursor:pointer;" onchange="updateHiddenInput('@mat.Value', this.checked);">
+                            <label class="form-check-label ms-1" for="flexSwitchCheckDefault_@mat.Value">@mat.Text</label>
+                            <input type="hidden" name="GroupNames" value="@group.GroupName" />
+                        </div>
+                    }
                 </div>
-
             }
         }
         else
@@ -87,6 +89,7 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
 <script type="text/javascript">
+   
 
     $('#chckStaus').checkboxpicker({
         html: true,
@@ -94,18 +97,37 @@
         onLabel: '<i class="fa-regular fa-thumbs-up"/> Activo'
     });
 
-    $('#selectsJornadas').hide();
 
-    $('#tipo_select').change(function () {
-        var selectedOption = $(this).val();
-        var elementToHide = $('#selectsJornadas');
 
-        if (selectedOption === 'DEPORTIVO') {
-            elementToHide.show();
-        } else {
-             elementToHide.hide();
+        // Función para verificar y mostrar/ocultar según la opción seleccionada inicialmente
+        function toggleSelectsJornadas(selectedOption) {
+            var elementToHide = $('#selectsJornadas');
+
+            if (selectedOption === 'DEPORTIVO') {
+                elementToHide.show();
+            } else {
+                elementToHide.hide();
+            }
         }
-    });
 
+        // Al cargar la página, verificar la opción seleccionada inicialmente
+        var selectedOption = $('#tipo_select').val();
+        toggleSelectsJornadas(selectedOption);
 
+        // Evento change en el select
+        $('#tipo_select').change(function () {
+            var selectedOption = $(this).val();
+            toggleSelectsJornadas(selectedOption);
+        });
+
+    function updateHiddenInput(matValue, isChecked) {
+        var hiddenInput = document.getElementById('inputhiddengid');
+        if (isChecked) {
+            hiddenInput.value = matValue;
+        } else {
+            // Clear the value if checkbox is unchecked (if needed)
+            hiddenInput.value = '';
+        }
+    }
+  
 </script>

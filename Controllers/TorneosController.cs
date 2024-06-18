@@ -1220,27 +1220,38 @@ namespace xilopro2.Controllers
               .Where(player => player.Team != null && player.Team.Team_Name == "XILOTEPELT FC")
                .ToList();*/
             var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); // suponiendo que tienes el Id de la entidad Match
-           // var match = _context.Matches.Where(m => m.Match_ID == Match_ID);
+
+            var crra = _context.CorrectionActions.Where(m => m.groupId == match.GroupsrId).ToList();
+            var playerIdsInCrra = crra.Select(ca => ca.PlayerId).ToList();
 
             List<Player> filteredPlayers = _context.Players
-               .AsEnumerable()
-               .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
-                .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) // filtra por equipos cargados en el partido
-                .Where(player => player.torneoid == Torneo_ID)
+                 .Include(t => t.CorrectionActions)
+                 .AsEnumerable()
+                 .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+                 .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) // filtra por equipos cargados en el partido
+                 .Where(player => player.torneoid == Torneo_ID)
                  .Where(player => player.Player_Status == true)
-               .ToList();
+             .Where(player =>
+             {
+                 if (player.CorrectionActions == null) return true; // Si no tiene acciones correctivas, se incluye
 
+                 // Si tiene acciones correctivas, verificar si alguna contiene la jornada
+                  return !player.CorrectionActions.Any(ca => ca.Jornadasasancionar != null && ca.Jornadasasancionar.Contains(match.Jornada.ToString()));
+             })
+                 .ToList();
+            var filteredPlayersAfterExclusion = filteredPlayers.Where(player => !playerIdsInCrra.Contains(player.Player_ID)).ToList();
 
+            /* */
             var model = new PlayerStatisticViewModel
             {
                 MatchId = Match_ID,
                 DetailsGroupId = DetailsGroup_ID,
-                Players = filteredPlayers,
+                Players = filteredPlayersAfterExclusion,
                 TorneoId = Torneo_ID,
                 Jornada = match.Jornada,
 
             };
-
+           
             return View(model);
         }
 

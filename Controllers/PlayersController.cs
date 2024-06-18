@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using NuGet.Packaging.Signing;
 using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
@@ -18,6 +19,7 @@ namespace xilopro2.Controllers
         private readonly ICombos _combos;
         private readonly ISwithUsers _swithUsers;
         private readonly IImageHelper _imageHelper;
+       
 
         AppUser usuarioensesion = null;
 
@@ -1190,11 +1192,16 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
+            // IEnumerable<IGrouping<string, SelectListItem>>? MatcheTemp;
+            // MatcheTemp = _combos.GetJornadas(player.torneoid);
+            
+
             CorrectActionViewModel model = new()
             {
                 PlayerId = player.Player_ID,
                 PlayerName = player.Player_FullName,
                 Matche = _combos.GetJornadas(player.torneoid), //_combos.GetJornadaas(),
+               
             };
 
            // model.Countries = _combos.GetCombosCountries();
@@ -1214,35 +1221,40 @@ namespace xilopro2.Controllers
 
         }
 
-      
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCorrectActions(CorrectActionViewModel model)
         {
+
+            ModelState.Remove("Matches");
+            ModelState.Remove("GroupName");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var match = _context.Matches.FirstOrDefault(x => x.Match_ID == model.groupId);
 
-                    CorrectionAction ca = new()
-                    {
-                        //  Parent_ID = Guid.NewGuid().ToString(),
-                       // Player = await _context.Players.FindAsync(model.PlayerId),
-                        PlayerId = model.PlayerId,
-                        CorrectionAction_Name = model.CorrectionAction_Name,
-                        Description = model.Description,
-                        Fecha = model.Fecha,
-                        CorrectionAction_Status = model.CorrectionAction_Status,
-                        PlayerName = model.PlayerName,
-                        Jornadasasancionar = model.Jornadasasancionar,
-
-                    };
-
-                    _context.Add(ca);
                     try
                     {
+                        CorrectionAction ca = new()
+                        {
+                            //  Parent_ID = Guid.NewGuid().ToString(),
+                            // Player = await _context.Players.FindAsync(model.PlayerId),
+                            PlayerId = model.PlayerId,
+                            CorrectionAction_Name = model.CorrectionAction_Name,
+                            Description = model.Description,
+                            Fecha = model.Fecha,
+                            CorrectionAction_Status = model.CorrectionAction_Status,
+                            PlayerName = model.PlayerName,
+                            Jornadasasancionar = model.Jornadasasancionar,
+                            groupId = match.GroupsrId,
+                            //Matche = model.Matche,
+                        };
+                       // ca.groupId = idgrupo;
+
+                        _context.Add(ca);
                         await _context.SaveChangesAsync();
                         TempData["successPlayer"] = "Sanción agregada a " + ca.PlayerName + " !!";
                     }
@@ -1296,6 +1308,7 @@ namespace xilopro2.Controllers
             {
                 //  Parent_ID = Guid.NewGuid().ToString(),
                 // Player = await _context.Players.FindAsync(model.PlayerId),
+                CorrectionAction_ID = ca.CorrectionAction_ID,
                 PlayerId = ca.PlayerId,
                 CorrectionAction_Name = ca.CorrectionAction_Name,
                 Description = ca.Description,
@@ -1303,7 +1316,7 @@ namespace xilopro2.Controllers
                 CorrectionAction_Status = ca.CorrectionAction_Status,
                 PlayerName = ca.PlayerName,
                 Jornadasasancionar = ca.Jornadasasancionar,
-
+                Matche = _combos.GetJornadas(ca.Player.torneoid),
             };
 
             return View(model);
@@ -1322,8 +1335,10 @@ namespace xilopro2.Controllers
             {
                 try
                 {
-                      CorrectionAction ca = new()
+                    var match = _context.Matches.FirstOrDefault(x => x.Match_ID == model.groupId);
+                    CorrectionAction ca = new()
                         {
+                        CorrectionAction_ID = model.CorrectionAction_ID,
                           PlayerId = model.PlayerId,
                           CorrectionAction_Name = model.CorrectionAction_Name,
                           Description = model.Description,
@@ -1331,6 +1346,7 @@ namespace xilopro2.Controllers
                           CorrectionAction_Status = model.CorrectionAction_Status,
                           PlayerName = model.PlayerName,
                           Jornadasasancionar = model.Jornadasasancionar,
+                          groupId = match.GroupsrId
                       };
                         _context.Update(ca);
                         await _context.SaveChangesAsync();
@@ -1406,14 +1422,31 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            /* string depname = _context.States.Where(c => c.State_ID == parent.StateID).Select(y => y.State_Name).FirstOrDefault();
-             string munname = _context.Cities.Where(c => c.City_ID == parent.CityID).Select(y => y.City_Name).FirstOrDefault();
+            Player player = await _context.Players.FindAsync(ca.PlayerId);
 
-             ViewBag.Depa = depname;
-             ViewBag.Muni = munname;*/
+            var gname = _context.Groups.FirstOrDefault(m => m.Group_ID == ca.groupId);
+
+            List<string> namesMatch = new List<string>();
+
+            if (ca.Jornadasasancionar != null)
+            {
+                namesMatch = await _context.Matches.Where(m => ca.Jornadasasancionar.Contains(m.Match_ID.ToString())).Select(m => m.Jornada).ToListAsync();
+            }
+
+            var viewModel = new CorrectActionViewModel
+            {
+                PlayerId = ca.PlayerId,
+                PlayerName = ca.PlayerName,
+                Jornadasasancionar = namesMatch, // _combos.GetJornadas(player.torneoid), 
+                Player = player,
+                groupId = gname?.Group_ID,
+                groupName = gname?.Group_Name,
+                CorrectionAction_Name = ca.CorrectionAction_Name,
+                Description = ca.Description,
+            };
+
             ViewBag.Cats = _combos.GetCategorias();
-            return View(ca);
-
+            return View(viewModel);
         }
 
         #endregion

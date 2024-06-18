@@ -92,8 +92,8 @@
                 <div class="col-md-6">
                     <div class="card-body">
                     <h3> Jugadores Activos</h3>
-                       
-                        <table class="table">
+                       @if(Model.Players.Count > 0){
+                        <table class="table table-hover table-striped" id="tblJac">
                             <thead>
                                 <tr>
                                     <th scope="col">Dorsal</th>
@@ -103,7 +103,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 @if(Model.Players.Count > 0){
+
                                         @foreach (var player in Model.Players)
                                         {
                                             <tr>
@@ -120,63 +120,62 @@
                                                 </td>
                                             </tr>
                                         }
-                                }else{
-                                     <tr>
-                                        <td colspan="4">
-                                        <div class="alert alert-warning p-1" role="alert">
-                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores para asignar en la categoria @ViewData["CatName"]
-                                        </div>
-                                        </td>
-                                    </tr>
-                                }
+                             
                               
                             </tbody>
                         </table>
+                           }else{
+                                <div class="card-body">
+                                    <div class="alert alert-warning p-1" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores para asignar en la categoria @ViewData["CatName"]
+                                     </div>
+                                </div>   
+                                }
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="card-body">
                         <h3> Jugadores en Torneo</h3>
-
-                        <table class="table">
+                          @if(Model.PlayersTorneo.Count > 0){
+                        <table class="table table-hover table-striped" id="tblJet">
                             <thead>
                                 <tr>
-                                    <th scope="col">Acción:</th>
                                     <th scope="col">Dorsal</th>
                                     <th scope="col">Nombres</th>
                                     <th scope="col">Posición</th>
+                                    <th scope="col">Acción:</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(Model.PlayersTorneo.Count > 0){
+                              
                                     @foreach (var player in Model.PlayersTorneo)
                                     {
                                         <tr>
-                                            <td>
+                                           
+                                            <td>@player.Player_Dorsal</td>
+                                            <td>@player.Player_FullName</td>
+                                            <td>@player.Position.Position_Name</td>
+                                             <td>
                                                 <form id="form2" action="@Url.Action("RemovePlayer", "Torneos")" method="post">
                                                     <input type="hidden" name="playerId" value="@player.Player_ID" />
                                                     <input type="hidden" name="newTorneoId" value="@Model.torneoid" />
                                                     <button type="submit" class="btn btn-outline-danger"><i class="fa-solid fa-circle-arrow-left me-2"></i> Remover</button>
                                                 </form>
                                             </td>
-                                            <td>@player.Player_Dorsal</td>
-                                            <td>@player.Player_FullName</td>
-                                            <td>@player.Position.Position_Name</td>
                                         </tr>
                                     }
-                                }else{
-                                    <tr>
-                                        <td colspan="4">
-                                        <div class="alert alert-warning p-1" role="alert">
-                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores agregados
-                                        </div>
-                                        </td>
-                                      </tr>
-                                }
+                              
                                 
                             </tbody>
                         </table>
+                          }else{
+                                    <div class="card-body">
+                                        <div class="alert alert-warning p-1" role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay jugadores agregados
+                                        </div>
+                                   </div>
+                                }
                     </div>
                 </div>
 
@@ -196,10 +195,36 @@
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      
 
-        <script>
-            $(document).ready(function () {
+         <script type="text/javascript">
+    $(document).ready(function () {
+
+
+              $('#tblJac').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [10, 25, 50, 100, 200, -1],
+                    [10, 25, 50, 100, 200, "Todos"]
+                ],
+                   
+            });
+
+             $('#tblJet').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/es-MX.json"
+                },
+                "aLengthMenu": [
+                    [10, 25, 50, 100, 200, -1],
+                    [10, 25, 50, 100, 200, "Todos"]
+                ],
+                   
+            });
+
+
+        
                 // AJAX para agregar jugador
                 $("#form1").submit(function (e) {
                     e.preventDefault();

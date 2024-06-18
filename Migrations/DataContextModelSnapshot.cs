@@ -393,6 +393,9 @@ namespace xilopro2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("groupId")
+                        .HasColumnType("int");
+
                     b.HasKey("CorrectionAction_ID");
 
                     b.HasIndex("PlayerId");

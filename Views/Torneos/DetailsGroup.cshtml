@@ -18,7 +18,7 @@
 
         <div class="card border-dark row" style="width: 100%;margin:0 auto;">
             <div class="card-body row align-items-center">
-                <div class="col-md-3 text-center">
+                <div class="col text-center">
                     <div class="form-group mb-2">
                         <div class="d-flex justify-content-between">
                             <div class="estadoplayer">
@@ -34,24 +34,24 @@
                             </div>
                         </div>
 
-                        <img src="@(!string.IsNullOrEmpty(Model.Torneo.Torneo_Image) ? Url.Content(path+Model.Torneo.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded imgsized " alt="Image" />
+                       
                     </div>
 
                 </div>
 
-                <div class="col-md-3">
+                <div class="col">
                     <div class="form-group mb-2">
                         <label class="control-label">Nombre de Torneo:</label>
-                        <h2 class="text-primary text-uppercase"> @Model.Torneo.Torneo_Name</h2>
+                        <h2 class="text-primary text-uppercase">  <img src="@(!string.IsNullOrEmpty(Model.Torneo.Torneo_Image) ? Url.Content(path+Model.Torneo.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" style="width:30px;" alt="Image" /> @Model.Torneo.Torneo_Name</h2>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <div class="form-group mb-2">
                         <label class="control-label">Número de Equipos:</label>
                         <h3 class="text-primary">@Model.GroupDetails.Count</h3>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <div class="form-group mb-2">
                         <label class="control-label">Número de Partidos:</label>
                         <h3 class="text-primary">@Model.Matches.Count</h3>
@@ -252,10 +252,37 @@
                                                             @Html.DisplayFor(modelItem => item.TeamLocal.Team_Name)
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:center;">
-                                                            @Html.DisplayFor(modelItem => item.GoalsLocal)
+                                                            <span class="badge
+                                                                @if (item.GoalsLocal == item.GoalsVisitor)
+                                                                {
+                                                                    @Html.Raw("text-bg-secondary")
+                                                                }
+                                                                else if (item.GoalsLocal > item.GoalsVisitor)
+                                                                {
+                                                                    @Html.Raw("text-bg-success")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.Raw("text-bg-danger")
+                                                                }
+                                                                    " style="font-size:1.5rem;">@item.GoalsLocal</span>
+
                                                         </td>
                                                         <td style="vertical-align:middle;text-align:center;">
-                                                            @Html.DisplayFor(modelItem => item.GoalsVisitor)
+                                                            <span class="badge
+                                                                    @if (item.GoalsLocal == item.GoalsVisitor)
+                                                                    {
+                                                                        @Html.Raw("text-bg-secondary")
+                                                                    }
+                                                                    else if (item.GoalsVisitor > item.GoalsLocal)
+                                                                    {
+                                                                        @Html.Raw("text-bg-success")
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.Raw("text-bg-danger")
+                                                                    }
+                                                                        " style="font-size:1.5rem;">@item.GoalsVisitor</span>
                                                         </td>
                                                         <td class="imgZoom">
                                                             <img src="@(!string.IsNullOrEmpty(item.TeamVisitor.Team_Image) ? Url.Content(path2+item.TeamVisitor.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />

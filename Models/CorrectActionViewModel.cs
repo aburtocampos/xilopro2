@@ -30,9 +30,12 @@ namespace xilopro2.Models
         [Display(Name = "Jornadas a Suspender:")]
         public List<string>? Jornadasasancionar { get; set; }
 
-       // public IEnumerable<SelectListItem>? Matche { get; set; }
+        public int? groupId { get; set; }
 
-        public IEnumerable<IGrouping<string, SelectListItem>>? Matche { get; set; }
+        public string? groupName { get; set; }
+
+
+        public List<GroupedMatchViewModel>? Matche { get; set; }
 
         public int PlayerId { get; set; }
 
@@ -40,7 +43,7 @@ namespace xilopro2.Models
         [Display(Name = "Jugador:")]
         public virtual string PlayerName { get; set; }
 
-
+        public Player? Player { get; set; }
 
 
     }

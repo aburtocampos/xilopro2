@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using xilopro2.Models;
 
 namespace xilopro2.Data.Entities
 {
@@ -26,6 +28,8 @@ namespace xilopro2.Data.Entities
 
         [Display(Name = "Jornadas a Suspender:")]
         public List<string>? Jornadasasancionar { get; set; }
+
+        public int? groupId { get; set; }
 
         public int PlayerId { get; set; } = 0;
 
