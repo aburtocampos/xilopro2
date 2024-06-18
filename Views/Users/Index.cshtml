@@ -67,7 +67,17 @@
                                                     @Html.DisplayFor(modelItem => item.User_FullName)
                                                 </td>
                                                 <td style="vertical-align: middle;text-transform:uppercase;">
-                                                    @Html.DisplayFor(modelItem => item.UserTypeofRole)
+                                                    @{
+                                                        var roleClassMap = new Dictionary<string, string>
+                                                        {
+                                                            { "Editor", "text-bg-warning" },
+                                                            { "Dt", "text-bg-primary" },
+                                                            { "Admin", "text-bg-danger" }
+                                                        };
+
+                                                        string badgeClass = roleClassMap.ContainsKey(item.UserTypeofRole) ? roleClassMap[item.UserTypeofRole] : string.Empty;
+                                                    }
+                                                    <span class="badge rounded-pill @badgeClass" style="font-size:1rem;">@item.UserTypeofRole</span>
                                                 </td>
                                                 <td style="vertical-align: middle;">
                                                     @Html.DisplayFor(modelItem => item.User_CreatedTime)

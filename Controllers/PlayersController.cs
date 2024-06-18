@@ -1249,7 +1249,7 @@ namespace xilopro2.Controllers
                             CorrectionAction_Status = model.CorrectionAction_Status,
                             PlayerName = model.PlayerName,
                             Jornadasasancionar = model.Jornadasasancionar,
-                            groupId = match.GroupsrId,
+                            groupId = match != null ? match.GroupsrId : null,
                             //Matche = model.Matche,
                         };
                        // ca.groupId = idgrupo;

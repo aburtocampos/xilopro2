@@ -40,15 +40,15 @@ namespace xilopro2.Controllers
 
         public async Task<IActionResult> Index()
         {
-            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
-            List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());//Se obtiene el usuario actual en sesión mediante su correo electrónico.
+            List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;//Obtener las categorías asignadas al usuario
 
             if (User.IsInRole("Editor") || User.IsInRole("Dt"))
             {
                 List<Torneo> filteredTorneos = _context.Torneos
                       .Include(t => t.Groups)
                     .AsEnumerable()
-                   .Where(t => t.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
+                   .Where(t => t.SelectedCategoryIds.All(id => filtroIdsCategories.Contains(id)))
                   .ToList();
                 if (filteredTorneos == null)
                 {
@@ -75,7 +75,7 @@ namespace xilopro2.Controllers
 
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Create()
         {
             usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
@@ -1219,9 +1219,15 @@ namespace xilopro2.Controllers
                .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
               .Where(player => player.Team != null && player.Team.Team_Name == "XILOTEPELT FC")
                .ToList();*/
-            var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); // suponiendo que tienes el Id de la entidad Match
 
+
+            var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); // suponiendo que tienes el Id de la entidad Match
+            if (match == null)
+            {
+                throw new Exception("Match no encontrado");
+            }
             var crra = _context.CorrectionActions.Where(m => m.groupId == match.GroupsrId).ToList();
+
             var playerIdsInCrra = crra.Select(ca => ca.PlayerId).ToList();
 
             List<Player> filteredPlayers = _context.Players
@@ -1231,25 +1237,18 @@ namespace xilopro2.Controllers
                  .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) // filtra por equipos cargados en el partido
                  .Where(player => player.torneoid == Torneo_ID)
                  .Where(player => player.Player_Status == true)
-             .Where(player =>
-             {
-                 if (player.CorrectionActions == null) return true; // Si no tiene acciones correctivas, se incluye
+                 .Where(player => !playerIdsInCrra.Contains(player.Player_ID) // Incluye jugadores que no están en la lista playerIdsInCrra
+                    || player.CorrectionActions == null // o que no tienen acciones correctivas
+                    || !player.CorrectionActions.Any(ca => ca.Jornadasasancionar != null && ca.Jornadasasancionar.Contains(match.Jornada.ToString()) && ca.groupId == match.GroupsrId)) // o que no tienen acciones correctivas que coincidan con la jornada actual
+                  .ToList();
 
-                 // Si tiene acciones correctivas, verificar si alguna contiene la jornada
-                  return !player.CorrectionActions.Any(ca => ca.Jornadasasancionar != null && ca.Jornadasasancionar.Contains(match.Jornada.ToString()));
-             })
-                 .ToList();
-            var filteredPlayersAfterExclusion = filteredPlayers.Where(player => !playerIdsInCrra.Contains(player.Player_ID)).ToList();
-
-            /* */
             var model = new PlayerStatisticViewModel
             {
                 MatchId = Match_ID,
                 DetailsGroupId = DetailsGroup_ID,
-                Players = filteredPlayersAfterExclusion,
+                Players = filteredPlayers,
                 TorneoId = Torneo_ID,
                 Jornada = match.Jornada,
-
             };
            
             return View(model);
