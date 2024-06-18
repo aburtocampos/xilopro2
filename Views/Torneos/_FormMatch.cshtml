@@ -70,7 +70,7 @@
     <div class="form-group mb-2">
         <div class="form-check p-0">
             <label asp-for="IsClosed" class="d-block mb-1">Estado de la Jornada:</label>
-            <input asp-for="IsClosed" checked type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
+            <input asp-for="IsClosed" data-reverse checked type="checkbox" id="chckStaus" data-group-cls="btn-group-sm" data-off-active-cls="btn-success" data-on-active-cls="btn-danger" data-off-cls="btn-outline-success" data-on-cls="btn-outline-danger" data-off-title="Inactiva" data-on-title="Activa" />
             <span asp-validation-for="IsClosed" class="text-danger"></span>
         </div>
     </div>
@@ -85,8 +85,8 @@
     var ruta = '@Url.Content("/Content/Teams/")';
     $('#chckStaus').checkboxpicker({
         html: true,
-        offLabel: '<i class="fa-regular fa-thumbs-down"/> Finalizado',
-        onLabel: '<i class="fa-regular fa-thumbs-up"/> Proximo'
+        onLabel: 'Finalizado',
+        offLabel: 'Proximo'
     });
 
     document.addEventListener("DOMContentLoaded", function () {

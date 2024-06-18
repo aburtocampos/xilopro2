@@ -289,7 +289,7 @@
                                                             @Html.DisplayFor(modelItem => item.TeamVisitor.Team_Name)
                                                         </td>
                                                         <td style="vertical-align: middle;" class="d-none d-md-table-cell">
-                                                            @if (!item.IsClosed)
+                                                            @if (item.IsClosed)
                                                             {
 
                                                                 <i class="fa-solid fa-lock text-danger"></i>
@@ -307,7 +307,7 @@
                                                                 <a asp-action="ListStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@item.Match_ID" asp-route-Torneo_ID="@Model.torneoId" class="btn btn-dark">
                                                                     <i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Estadisticas</span>
                                                                 </a>
-                                                                @if (item.IsClosed || User.IsInRole("Admin"))
+                                                                @if (!item.IsClosed || User.IsInRole("Admin"))
                                                                 {
                                                                 <a asp-action="EditMatch" asp-route-id="@item.Match_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
                                                                     
