@@ -80,7 +80,6 @@ namespace xilopro2.Controllers
 
 
             var filteredPlayersWithTorneos = playerStatisticsGrouped
-            //.GroupBy(ps => new { ps.PlayerId, TorneoSeason = torneos.FirstOrDefault(t => t.Torneo_ID == ps.TorneoId).Torneo_Season })
                 .Select(g => new PlayerStatisticReportViewModel
             {
                     PlayerStatistics = new PlayerStatistics

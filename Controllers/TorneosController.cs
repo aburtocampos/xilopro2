@@ -1421,7 +1421,7 @@ namespace xilopro2.Controllers
             var statEntity = await _context.PlayerStatistics
              .Include(m => m.Player)
              .FirstOrDefaultAsync(m => m.PlayerStatistic_ID == id);
-
+            var partido = _context.Matches.Where(m => m.Match_ID == statEntity.MatchId);
             PlayerStatisticViewModel model = new()
             {
                 CornerKicks = statEntity.CornerKicks,
@@ -1441,6 +1441,7 @@ namespace xilopro2.Controllers
                 DetailsGroupId = DetailsGroup_ID,
               //  Players = filteredPlayers,
                 TorneoId = statEntity.TorneoId,
+                 Jornada = partido.FirstOrDefault().Jornada
             };
 
             if (model == null)
