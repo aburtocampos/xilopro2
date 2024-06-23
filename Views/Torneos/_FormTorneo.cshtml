@@ -13,41 +13,39 @@
 <input type="hidden" asp-for="Torneo_Image" />
 <input type="hidden" asp-for="Torneo_ID" />
 
-<div class="col-md-6">
-    <div class="row" >
-        <div class="col-md-6">
+    <div class="col-md-4">
             <div class="form-group mb-2">
                 <label asp-for="Torneo_Name" class="control-label fw-bold"></label>
-                <input asp-for="Torneo_Name" class="form-control lowerinput" placeholder="Ingrese Torneo..." />
+                <input asp-for="Torneo_Name" class="form-control lowerinput" placeholder="Ingrese Torneo..." id="Torneo_Name" />
                 <span asp-validation-for="Torneo_Name" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label class="control-label fw-bold">Tipo de Torneo:</label>
+                <select id="tipo_torneo_select" class="form-select"  >
+                    <option value="0" selected>Seleccione un tipo...</option>
+                    <option value="CORTO">CORTO</option>
+                    <option value="LARGO">LARGO</option>
+                    <option value="COPA">COPA</option>
+                </select>
+            
+            </div>
             <div class="form-group mb-2">
                 <label asp-for="Torneo_Season" class="control-label fw-bold"></label>
-                <input asp-for="Torneo_Season" class="form-control lowerinput" placeholder="Ingrese Temporada..." />
-                <span asp-validation-for="Torneo_Season" class="text-danger"></span>
+                    <div class="input-group">
+                     
+                           <select class="form-select" id="selectAperturaClausura" style="display:none;" asp-for="Torneo_SeasonType">
+                                <option value="0" selected>Escoger...</option>
+                                <option value="APERTURA">APERTURA</option>
+                                <option value="CLAUSURA">CLAUSURA</option>
+                            </select>
+                          <span asp-validation-for="Torneo_SeasonType" class="text-danger"></span>
+                       
+                      
+                         <input asp-for="Torneo_Season" class="form-control lowerinput" placeholder="Ingrese Temporada..." id="seasoninput" />
+                    </div>
+                  <span asp-validation-for="Torneo_Season" class="text-danger"></span>
+
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group mb-2">
-                <label asp-for="Torneo_StartDate" class="control-label fw-bold"></label>
-                <input asp-for="Torneo_StartDate" class="form-control" pattern="\d{4}-\d{2}-\d{2}" />
-                <span asp-validation-for="Torneo_StartDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group mb-2">
-                <label asp-for="Torneo_EndDate" class="control-label fw-bold"></label>
-                <input asp-for="Torneo_EndDate" class="form-control" pattern="\d{4}-\d{2}-\d{2}" />
-                <span asp-validation-for="Torneo_EndDate" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
             <div class="form-group my-1">
                 <label asp-for="SelectedCategoryIds" class="control-label fw-bold mb-2"></label>
                 @foreach (var category in Model.Categories)
@@ -61,29 +59,42 @@
                 }
                 <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-6">
+     </div>
+
+     <div class="col-md-4">
+            <div class="form-group mb-2">
+                <label asp-for="Torneo_StartDate" class="control-label fw-bold"></label>
+                <input asp-for="Torneo_StartDate" class="form-control" pattern="\d{4}-\d{2}-\d{2}" />
+                <span asp-validation-for="Torneo_StartDate" class="text-danger"></span>
+            </div>
+     
+    
+            <div class="form-group mb-2">
+                <label asp-for="Torneo_EndDate" class="control-label fw-bold"></label>
+                <input asp-for="Torneo_EndDate" class="form-control" pattern="\d{4}-\d{2}-\d{2}" />
+                <span asp-validation-for="Torneo_EndDate" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Torneo_Status" class="form-check-label d-block mb-2 fw-bold"></label>
                 <input asp-for="Torneo_Status" type="checkbox" id="chckStaus" class="text-uppercase" data-group-cls="btn-group-sm" data-off-active-cls="btn-danger" data-on-active-cls="btn-success" data-off-cls="btn-outline-danger" data-on-cls="btn-outline-success" data-off-title="Inactiva" data-on-title="Activa" />
                 <span asp-validation-for="Torneo_Status" class="text-danger"></span>
             </div>
-        </div>
     </div>
-  
-</div>
 
-<div class="col-md-6">
-    <div class="form-group mb-2 text-center">
-        <label asp-for="LogoFile" class="control-label d-block text-start fw-bold"></label>
-        <img src="@(!string.IsNullOrEmpty(Model.Torneo_Image) ? Url.Content(path+Model.Torneo_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="my-4" style="width:200px;height:200px;max-width: 100%; height: auto;" />
+    <div class="col-md-4">
+        <div class="form-group mb-2 text-center">
+            <label asp-for="LogoFile" class="control-label d-block text-start fw-bold"></label>
+            <img src="@(!string.IsNullOrEmpty(Model.Torneo_Image) ? Url.Content(path+Model.Torneo_Image) : Url.Content("~/images/noimage.png"))" alt="Image" id="inputProfileImg" class="my-4" style="width:200px;height:200px;max-width: 100%; height: auto;" />
+        </div>
+        <div class="input-group">
+            <input asp-for="LogoFile" class="form-control" type="file" id="inputGroupFile04" onchange="showimagepreview(this)" />
+            <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04" onclick="clearInput()">Limpiar</button>
+        </div>
+        <span asp-validation-for="LogoFile" class="text-danger"></span>
     </div>
-    <div class="input-group">
-        <input asp-for="LogoFile" class="form-control" type="file" id="inputGroupFile04" onchange="showimagepreview(this)" />
-        <button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon04" onclick="clearInput()">Limpiar</button>
-    </div>
-    <span asp-validation-for="LogoFile" class="text-danger"></span>
-</div>
+
+
+
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js" ></script>
@@ -127,6 +138,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIds"]');
         var selectedRadio = null;
+        var select = document.getElementById('tipo_torneo_select');
+        var seasoninput = document.getElementById('seasoninput');
+        var elemento = document.getElementById('selectAperturaClausura'); 
+        var Torneo_Name = document.getElementById('Torneo_Name'); 
 
         radios.forEach(function (radio) {
             if (radio.checked) {
@@ -148,6 +163,46 @@
                 }
             });
         });
+
+
+        //ocultar input torneos temporas apertura y clausura
+        seasoninput.style.borderTopLeftRadius = '0.375rem';
+        seasoninput.style.borderBottomLeftRadius = '0.375rem';
+        console.log("seasoninput",seasoninput.value)
+        console.log("Torneo_Name.value.includes(COPA)",Torneo_Name.value.includes("COPA"))
+          console.log("elemento.value",elemento.value)
+          if(Torneo_Name.value != ""){
+              if(elemento.value == 0){
+                    if(Torneo_Name.value.includes("COPA")){
+                         select.value = "COPA";
+                         elemento.style.display = 'none';
+                    }else{
+                        select.value = "LARGO"
+                        elemento.style.display = 'none';
+                    }
+                }else{
+                    console.log("elemento.value",elemento.value)
+                      elemento.style.display = 'block';
+                      select.value = "CORTO";
+                      seasoninput.style.borderTopLeftRadius = '0rem';
+                      seasoninput.style.borderBottomLeftRadius = '0rem';
+                }
+          }
+                
+
+        document.getElementById('tipo_torneo_select').addEventListener('change', function () {
+           
+            if (select.value === 'CORTO') {
+                elemento.style.display = 'block';
+                seasoninput.style.borderTopLeftRadius = '0rem';
+                seasoninput.style.borderBottomLeftRadius = '0rem';
+            } else {
+                elemento.style.display = 'none';
+                seasoninput.style.borderTopLeftRadius = '0.375rem';
+                seasoninput.style.borderBottomLeftRadius = '0.375rem';
+            }
+        });
+
     });
 
    /* document.addEventListener('DOMContentLoaded', function () {

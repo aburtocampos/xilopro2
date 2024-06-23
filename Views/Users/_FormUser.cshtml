@@ -21,7 +21,7 @@
 			</div>
 
 			<div class="input-group">
-        <input asp-for="FotoFile" class="form-control fw-bold" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
+                <input asp-for="FotoFile" class="form-control fw-bold" type="file" id="inputGroupFile03" onchange="showimagepreview(this)" />
 				<button class="btn btn-outline-danger" type="button" id="inputGroupFileAddon03" onclick="clearInput()">Limpiar</button>
 			</div>
             <span asp-validation-for="FotoFile" class="text-danger"></span>
@@ -162,6 +162,7 @@
     function clearInput() {
         document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
         document.getElementById("inputGroupFile03").value = "";
+       
     }
 
     $('#chckStaus').checkboxpicker({
@@ -191,8 +192,8 @@
     window.addEventListener("load", function () {
         calcularEdad()
     });
-       
 
+   
     document.addEventListener('DOMContentLoaded', function () {
  
         var valorSeleccionadoCountry = $('#countrySelect').val();

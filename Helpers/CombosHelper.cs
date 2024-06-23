@@ -180,22 +180,26 @@ namespace xilopro2.Helpers
             return list;
         }
 
-        public IEnumerable<SelectListItem> GetCombosEquipos()
+        public List<Team> GetCombosEquipos()
         {
-            List<SelectListItem> list = _dataContext.Teams.Select(x => new SelectListItem
+            List<Team> list = new List<Team>();
+            try
             {
-                Text = x.Team_Name,
-                 Value = $"{x.Team_ID}",
-                
-            })
-                .OrderBy(x => x.Text)
-                .ToList();
-            list.Insert(0, new SelectListItem
+                list = _dataContext.Teams
+                    .Select(t => new Team
+                    {
+                        Team_ID = t.Team_ID,
+                        Team_Name = t.Team_Name,
+                        Team_Image = t.Team_Image,
+                    })
+                    .OrderBy(t => t.Team_Name)
+                    .ToList();
+            }
+            catch (Exception)
             {
-                Text = "Seleccione un equipo...",
-                Value = "0",
-               
-            });
+                throw;
+            }
+
             return list;
         }
 

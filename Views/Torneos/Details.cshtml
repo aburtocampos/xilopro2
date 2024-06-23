@@ -9,13 +9,13 @@
     <div class="container pt-3">
         <div class="d-flex justify-content-between align-items-center gap-2">
             <a asp-action="Index" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
-            <h3 class="m-0 text-end">Torneo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Torneo_Name</span></h3>
+            <h3 class="m-0 text-end">Torneo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Torneo_Name - @Model.Torneo_SeasonType @Model.Torneo_Season</span></h3>
         </div>
         <hr />
         <div class="card border-dark row" style="width: 100%;margin:0 auto;">
 
             <div class="card-body row">
-                <div class="col-md-6 text-center">
+                <div class="col-md-3 text-center">
                     <div class="form-group mb-2">
                         <div class="d-flex justify-content-between">
                             <div class="estadoplayer">
@@ -36,41 +36,43 @@
 
                 </div>
 
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group mb-2">
                         <label class="control-label">Nombre de Torneo:</label>
                         <p class="text-primary text-uppercase fw-bold"> @Model.Torneo_Name</p>
                     </div>
                     <div class="form-group mb-2">
+                        <label class="control-label ">Categoria:</label>
+                        <p class="text-primary fw-bold">@ViewData["CatName"]</p>
+                    </div>
+                  
+              
+                 </div>
+
+                <div class="col-md-3">
+                    <div class="form-group mb-2">
+                        <label class="control-label ">Temporada:</label>
+                        <p class="text-primary fw-bold">@Model.Torneo_Season</p>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="control-label">Número de Grupos:</label>
+                        <p class="text-primary fw-bold">@Model.Groups.Count</p>
+                    </div>
+                </div>
+
+                 <div class="col-md-3">
+                    <div class="form-group mb-2">
                         <label class="control-label">Fecha de Inicio:</label>
-                                <p class="text-primary text-uppercase fw-bold"> @Model.Torneo_StartDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
+                        <p class="text-primary text-uppercase fw-bold"> @Model.Torneo_StartDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
                     </div>
                     <div class="form-group mb-2">
                         <label asp-for="Torneo_EndDateLocal" class="control-label">Fecha de Finalizacion:</label>
-                                <p class="text-primary text-uppercase fw-bold">@Model.Torneo_EndDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
+                        <p class="text-primary text-uppercase fw-bold">@Model.Torneo_EndDateLocal.ToString("D", CultureInfo.CreateSpecificCulture("es-ES"))</p>
                     </div>
-              
+                            
                         </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-2">
-                                        <label class="control-label ">Categoria:</label>
-                                <p class="text-primary fw-bold">@ViewData["CatName"]</p>
-                                </div>
-                            <div class="form-group mb-2">
-                                <label class="control-label ">Temporada:</label>
-                                <p class="text-primary fw-bold">@Model.Torneo_Season</p>
-                            </div>
-                            <div class="form-group mb-2">
-                                <label class="control-label">Número de Grupos:</label>
-                                <p class="text-primary fw-bold">@Model.Groups.Count</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+             </div>
+        
             <div class="card-footer card-footer-dark">
                 <div class="form-group my-2 d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> <span class="d-none d-sm-inline-block">Cancelar</span></a>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using xilopro2.Data;
 
@@ -11,9 +12,11 @@ using xilopro2.Data;
 namespace xilopro2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240623005507_fixselects")]
+    partial class fixselects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -730,8 +733,8 @@ namespace xilopro2.Migrations
 
                     b.Property<string>("Player_Address")
                         .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Player_Cedula")
                         .HasMaxLength(14)
@@ -742,7 +745,7 @@ namespace xilopro2.Migrations
 
                     b.Property<string>("Player_Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Player_FNC")
                         .HasColumnType("datetime2");
@@ -797,13 +800,6 @@ namespace xilopro2.Migrations
                     b.HasKey("Player_ID");
 
                     b.HasIndex("Countryid");
-
-                    b.HasIndex("Player_Cedula")
-                        .IsUnique()
-                        .HasFilter("[Player_Cedula] IS NOT NULL");
-
-                    b.HasIndex("Player_Email")
-                        .IsUnique();
 
                     b.HasIndex("Positionid");
 
@@ -1002,9 +998,6 @@ namespace xilopro2.Migrations
                     b.Property<string>("Torneo_Season")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Torneo_SeasonType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Torneo_StartDate")
                         .HasColumnType("datetime2");

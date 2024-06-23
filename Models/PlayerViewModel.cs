@@ -12,42 +12,14 @@ namespace xilopro2.Models
         [Display(Name = "Escoger Imagen:")]
         public IFormFile? FotoFile { get; set; }
 
-
-        //drops
-
-
-        /*  [Display(Name = "Pais:")]
-          [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un pais.")]
-          [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-          public int CountryID { get; set; } = 0;
-
-
-
-          [Display(Name = "Departamento:")]
-          [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un departamento.")]
-          [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-          public int StateID { get; set; } = 0;
-
-
-
-          [Display(Name = "Municipio:")]
-          [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un departamento.")]
-          [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-          public int CityID { get; set; } = 0;*/
-     
+        [NotMapped]
+        public bool isUserImgErased { get; set; }
+  
 
         public IEnumerable<SelectListItem>? Countries { get; set; }
 
         public IEnumerable<SelectListItem> States { get; set; }
         public IEnumerable<SelectListItem> Cities { get; set; }
-
-
-        /*    [Display(Name = "Categoria:")]
-            [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar una categoria.")]
-            [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-            public int Categoryid { get; set; } = 0;
-
-            public IEnumerable<SelectListItem> Categories { get; set; }*/
 
         public IEnumerable<SelectListItem>? Categories { get; set; }
 
@@ -59,7 +31,7 @@ namespace xilopro2.Models
         [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un equipo.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public int Teamid { get; set; } = 0;
-        public IEnumerable<SelectListItem>? Teams { get; set; }
+        public List<Team>? Teams { get; set; }
 
 
         [Display(Name = "Posición:")]

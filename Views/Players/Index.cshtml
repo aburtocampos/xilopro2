@@ -128,7 +128,7 @@
                                                         }
                                                     </td>
                                                     <td style="vertical-align: middle;" class="">
-                                                        <img src="@(!string.IsNullOrEmpty(item.Team.Team_Image) ? Url.Content(path3+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:45px" />
+                                                        <img src="@(!string.IsNullOrEmpty(item?.Team.Team_Image) ? Url.Content(path3+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="rounded" style="width:45px" />
                                                        @item.Team.Team_Name
                                                     </td>
                                                     <td style="vertical-align: middle;" class="text-end">

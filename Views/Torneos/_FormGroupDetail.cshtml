@@ -1,4 +1,8 @@
 ﻿@model xilopro2.Models.GroupDetailViewModel
+@{
+
+    var path = "/Content/Teams/";
+}
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
 <input type="hidden" asp-for="GroupId" />
@@ -11,9 +15,17 @@
  
         @if (Model.GroupDetailID != 0)
         {
-         <div class="form-group">
-            <label asp-for="TeamId" class="control-label"></label>
-            <select asp-for="TeamId" asp-items="Model.Teams" class="form-select"></select>
+        <div class="form-group">
+            <label class="control-label">Equipo:</label>
+            <div class=" mb-2 d-flex align-items-center">
+                <select id="team_select" class="form-select" asp-for="TeamId">
+                    <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un equipo...</option>
+                    @foreach (var equipo in Model.Teams)
+                    {
+                        <option value="@equipo.Team_ID" data-img="@(!string.IsNullOrEmpty(equipo.Team_Image) ? Url.Content(path+equipo.Team_Image) : Url.Content("~/images/noimage.png"))">@equipo.Team_Name</option>
+                    }
+                </select>
+            </div>
             <span asp-validation-for="TeamId" class="text-danger"></span>
         </div>
         }
@@ -22,10 +34,19 @@
         <div class="row">
             <div class="col-9">
                 <div class="form-group">
-                    <label asp-for="TeamId" class="control-label"></label>
-                    <select asp-for="TeamId" asp-items="Model.Teams" class="form-select"></select>
+                    <label class="control-label">Equipo:</label>
+                    <div class=" mb-2 d-flex align-items-center">
+                        <select id="team_select" class="form-select" asp-for="TeamId">
+                            <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un equipo...</option>
+                            @foreach (var equipo in Model.Teams)
+                            {
+                                <option value="@equipo.Team_ID" data-img="@(!string.IsNullOrEmpty(equipo.Team_Image) ? Url.Content(path+equipo.Team_Image) : Url.Content("~/images/noimage.png"))">@equipo.Team_Name</option>
+                            }
+                        </select>
+                    </div>
                     <span asp-validation-for="TeamId" class="text-danger"></span>
                 </div>
+
             </div>
             <div class="col-3">
                 <div class="form-group">
@@ -82,3 +103,29 @@
 </div>
 
 }
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" defer />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js " defer></script>
+
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function formatEquipo1(equipo) {
+            if (!equipo.id) { return equipo.text; }
+            //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+            var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+            return $equipo;
+        };
+
+        $("#team_select").select2({
+            templateResult: formatEquipo1,
+            templateSelection: formatEquipo1
+        });
+    
+    });
+
+   
+
+</script>

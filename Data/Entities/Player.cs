@@ -60,7 +60,8 @@ namespace xilopro2.Data.Entities
         public string Player_PhoneNumber { get; set; }
 
         [Display(Name = "Dirección:")]
-        [MaxLength(200, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [MaxLength(400, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+        [Column(TypeName = "nvarchar(400)")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Player_Address { get; set; }
 

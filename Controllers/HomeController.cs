@@ -110,15 +110,17 @@ namespace xilopro2.Controllers
           //  var temporadas = _dataContext.Torneos.ToDictionary(c => c.Torneo_ID, c => c.Torneo_Season);
             var playerStatistics = _dataContext.PlayerStatistics.ToList();
             var categoryNames = _dataContext.Categories.ToDictionary(c => c.Category_ID, c => c.Category_Name);
+            var torneos = _dataContext.Torneos.ToDictionary(t => t.Torneo_ID, t => t.SelectedCategoryIds);
 
             var Lista = playerStatistics
                 .GroupBy(stat => stat.TorneoId)
-                .Select(g => new GolesxtorneoViewModel
-                {
-                   
-                    Categorias = categoryNames[g.Key],
-                    CantidadGoles = g.Sum(stat => stat.Goals)
-                })
+                .SelectMany(g =>
+                    torneos[g.Key].Select(categoryId => new GolesxtorneoViewModel
+                    {
+                        Categorias = categoryNames[categoryId],
+                        CantidadGoles = g.Sum(stat => stat.Goals)
+                    })
+                )
                 .ToList();
 
             return StatusCode(StatusCodes.Status200OK, Lista);

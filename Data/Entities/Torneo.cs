@@ -40,6 +40,9 @@ namespace xilopro2.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Torneo_Season { get; set; }
 
+        [Display(Name = "A/C:")]
+        public string? Torneo_SeasonType { get; set; }
+
         [Display(Name = "Imagen:")]
         public string? Torneo_Image { get; set; }
 

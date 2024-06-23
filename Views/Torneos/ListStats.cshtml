@@ -16,8 +16,8 @@
                 if (ViewData["statusmach"] != null) 
                 {
                     bool status = (bool)ViewData["statusmach"];
-                    if (status || User.IsInRole("Admin"))
-                    {
+                    if (status == false /*|| User.IsInRole("Admin")*/)
+                        {
                         <a asp-action="AddStats" asp-route-DetailsGroup_ID="@ViewData["idgroupdetails"]" asp-route-Match_ID="@ViewData["idmach"]" asp-route-Torneo_ID="@ViewData["idtorneo"]" class="btn btn-dark">
                             <i class="fa-regular fa-pen-to-square"></i> Agregar Estadistica
                         </a>

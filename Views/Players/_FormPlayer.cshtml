@@ -1,5 +1,8 @@
 ﻿@model xilopro2.Models.PlayerViewModel
-@{var path = "/Content/Players/";}
+@{
+    var path = "/Content/Players/";
+    var path2 = "/Content/Teams/";
+}
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show"></div>
 <input type="hidden" asp-for="Player_ID" />
@@ -10,6 +13,7 @@
 <input type="hidden" asp-for="Teams" />
 <input type="hidden" asp-for="PlayerFiles" />
 <input type="hidden" asp-for="SelectedCategoryIds" />
+<input type="hidden" asp-for="isUserImgErased" id="isUserImgErased" />
 
 <div class="col-md-3">
     <div class="form-group mb-2 text-center">
@@ -81,13 +85,20 @@
 
 
 <div class="col-md-3">
-    <div class="form-group mb-2">
-        <label asp-for="Teamid" class="control-label fw-bold"></label>
-        <select asp-for="Teamid" asp-items="Model.Teams" class="form-select"></select>
+    <div class="form-group">
+        <label class="control-label">Equipo:</label>
+        <div class=" mb-2 d-flex align-items-center">
+            <select id="team_player_select" class="form-select" asp-for="Teamid">
+                <option value="0" selected data-img="@(Url.Content("~/images/noimage.png"))">Seleccione un equipo...</option>
+                @foreach (var equipo in Model.Teams)
+                {
+                    <option value="@equipo.Team_ID" data-img="@(!string.IsNullOrEmpty(equipo.Team_Image) ? Url.Content(path2+equipo.Team_Image) : Url.Content("~/images/noimage.png"))">@equipo.Team_Name</option>
+                }
+            </select>
+        </div>
         <span asp-validation-for="Teamid" class="text-danger"></span>
     </div>
 
-  
 
     <div class="form-group mb-2">
         <label asp-for="Positionid" class="control-label fw-bold"></label>
@@ -132,7 +143,6 @@
             
     <div class="form-group my-3">
         <label asp-for="SelectedCategoryIds" class="control-label fw-bold"></label>
-        <!--<select asp-for="Categoryid" asp-items="Model.Categories" class="form-select"></select>-->
         @foreach (var category in Model.Categories)
         {
             <div class="form-check form-switch ms-4">
@@ -170,8 +180,9 @@
 
 
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
-       
+<script src="https://unpkg.com/bootstrap-checkbox@2.0.0/dist/js/bootstrap-checkbox.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" defer />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js " defer></script>
         <script type="text/javascript">
 
 
@@ -192,6 +203,9 @@
             function clearInput() {
                 document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
                 document.getElementById("inputGroupFile03").value = "";
+                  var isUserImgErased = document.getElementById('isUserImgErased');
+                    isUserImgErased.value = true;
+                    consoled.log('cual es su valor: ', isUserImgErased)
             }
 
             $('#chckStaus').checkboxpicker({
@@ -199,6 +213,9 @@
                 offLabel: '<i class="fa-regular fa-thumbs-down"/> Inactiva',
                 onLabel: '<i class="fa-regular fa-thumbs-up"/> Activa'
             });
+
+
+        
 
             //evento change para el drop decida si muestra cedula y fifaid segun la categoria
             document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
@@ -301,6 +318,20 @@
 
             document.addEventListener('DOMContentLoaded', function () {
 
+                //select2
+             function formatEquipo1(equipo) {
+                if (!equipo.id) { return equipo.text; }
+                //  var $equipo = $( '<span><img src="' + $(equipo.element).data('img') + '" class="img-flag" /> ' + equipo.text + '</span>' );
+                var $equipo = $(`<span  ><img src="${$(equipo.element).data('img')}" class="img-flag" /> ${equipo.text}</span>`);
+                return $equipo;
+            };
+
+            $("#team_player_select").select2({
+                templateResult: formatEquipo1,
+                templateSelection: formatEquipo1
+            });
+
+
              calcularEdad()
        
                 var radios = document.querySelectorAll('input[type="checkbox"][name="SelectedCategoryIdss"]');
@@ -335,10 +366,6 @@
         var valorSeleccionadoCity = $('#citySelect').val();
         var valorModelState = @Model.Stateid;
         var valorModelCity = @Model.Cityid;
-
-      //  console.log('El valor seleccionado Stateid es ', valorModelState);
-      //  console.log('El valor seleccionado Cityid es ', valorModelCity);
-     //   console.log('El valor seleccionado valorSeleccionadoCountry es ', valorSeleccionadoCountry);
 
         if (valorSeleccionadoCountry !== '0') {
             $('#stateSelect').attr('disabled', false);
@@ -412,10 +439,6 @@
         });
         
                 //cascadas fin
-
-
-
-
 
 
 

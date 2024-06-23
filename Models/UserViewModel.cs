@@ -108,6 +108,9 @@ namespace xilopro2.Models
           [Required(ErrorMessage = "El campo {0} es obligatorio.")]
           public int? Categoryid { get; set; } = 0;*/
 
+        [NotMapped]
+        public bool isUserImgErased { get; set; }
+
         public IEnumerable<SelectListItem> Categories { get; set; }
 
         [Display(Name = "Categorias:")]

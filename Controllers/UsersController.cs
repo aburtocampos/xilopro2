@@ -430,27 +430,41 @@ namespace xilopro2.Controllers
             {
                 var userOnDB = await _userHelper.GetUserAsyncbyGuid(Guid.Parse(model.Id));
 
-                if (model.FotoFile != null)//revisamos si se cargo foto nueva
-                {
-                    if (!string.IsNullOrEmpty(userOnDB.User_Image))//si se cargo foto nueva se procede a identificar la foto antigua para borrarla
+                    if (!string.IsNullOrEmpty(userOnDB.User_Image))//revisa si existe foto en base de datos
                     {
-                        if (_imageHelper.DeleteImage(userOnDB.User_Image, "Users"))//se borra la foto antigua
+                        // si existe foto en base de datos
+                        if (model.FotoFile != null)//revisamos si se cargo foto nueva
                         {
-                            model.User_Image = _imageHelper.UploadImage(model.FotoFile, "Users");//se sube la foto nuevay se almacena a la entidad
-                        }
+                            if (_imageHelper.DeleteImage(userOnDB.User_Image, "Users"))//se borra la foto antigua
+                            {
+                                model.User_Image = _imageHelper.UploadImage(model.FotoFile, "Users");//se sube la foto nuevay se almacena a la entidad
+                            }
+                         }
                         else
                         {
-                            return RedirectToAction("Profile", "Users");
-                        }
+                            if (model.isUserImgErased)
+                            {
+                                if (_imageHelper.DeleteImage(userOnDB.User_Image, "Users"))//se borra la foto antigua
+                                {
+                                    model.User_Image = null;
+                                    model.isUserImgErased = false;
+                                }
+                            }
+                            else
+                            {
+                                model.User_Image = userOnDB.User_Image; // asigna al model la imagen en base de datos existente
+                            }
+                         }
                     }
                     else
                     {
                         model.User_Image = _imageHelper.UploadImage(model.FotoFile, "Users");
                     }
-                }
+                
                
                 string newRoleNAME = _userHelper.GetRoleNameByID(model.UserTypeof);
                 var currentUser = await _swithUsers.ToUserAsync(model, false);
+                currentUser.User_Image = model.User_Image;
                 currentUser.SelectedCategoryIds = userOnDB.SelectedCategoryIds;
 
                 if (userOnDB.UserTypeofRole != newRoleNAME)

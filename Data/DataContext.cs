@@ -120,10 +120,8 @@ namespace xilopro2.Data
             builder.Entity<Category>().HasIndex(x => x.Category_Name).IsUnique();
 
             /****************************************************PLAYERS*******************************************/
-          //  builder.Entity<Player>().HasIndex(gd => new { gd.SelectedCategoryIds, gd.Player_Dorsal }).IsUnique();
-
-         //   builder.Entity<Player>().HasIndex(gd => new { gd.Teamid, gd.Player_Dorsal }).IsUnique();
-
+            builder.Entity<Player>().HasIndex(gd => new { gd.Player_Email }).IsUnique();
+            builder.Entity<Player>().HasIndex(gd => new { gd.Player_Cedula }).IsUnique();
             builder.Entity<Player>().HasIndex(gd => new { gd.SelectedCategoryIds, gd.Player_Dorsal, gd.Teamid }).IsUnique();
 
             builder.Entity<Player>(b =>

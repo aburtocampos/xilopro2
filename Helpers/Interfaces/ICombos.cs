@@ -22,7 +22,7 @@ namespace xilopro2.Helpers.Interfaces
 
         IEnumerable<SelectListItem> GetCombosPosiciones();
 
-        IEnumerable<SelectListItem> GetCombosEquipos();
+        List<Team> GetCombosEquipos();
 
         List<Team> GetCombosEquiposPorIds(int id);
 

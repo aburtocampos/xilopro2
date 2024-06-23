@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using xilopro2.Data.Entities;
 using xilopro2.Helpers.Interfaces;
 
@@ -23,16 +24,46 @@ namespace xilopro2.Data
             await checkPositionsAsync();
             await checkTeamsAsync();
             await checkRolesAsync();
+            await checkPlayers();
             //creacion de usuarios con roles
-            await checkUserAsync("super", "man", "eabucam@gmail.com", "eabucam@gmail.com", "88503574", "calle luna", "Admin");
-            await checkUserAsync("Editor1", "Editor1", "pekiabu@gmail.com", "pekiabu@gmail.com", "76092930", "calle sol", "Editor");
+            await checkUserAsync("super", "man", "eabucam@gmail.com", "eabucam@gmail.com", "88503574", "calle luna", "Admin", "0411206860007T");
+            await checkUserAsync("Editor1", "Editor1", "pekiabu@gmail.com", "pekiabu@gmail.com", "76092930", "calle sol", "Editor", "0411206860007T");
             await feedTorneo();
-            //  await checkUserAsync( "jugador1", "primer jugador", "raburto1510@gmail.com", "88503574", "calle luna", UserType.User);
-            //  await checkUserAsync( "Eduardo",  "Correa",         "pekiabu@gmail.com",     "88503574", "calle luna", UserType.Editor);
-            // await checkUserAsync( "Tecnico",  "Tecnico",        "pruetesjuan@gmail.com", "88503574", "calle luna", UserType.Dt);
         }
 
-   
+        //generador de texto
+        static string GenerateLoremIpsum(int numberOfWords)
+        {
+            string[] loremIpsumWords = new string[]
+            {
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "sed", "do",
+            "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua", "ut",
+            "enim", "ad", "minim", "veniam", "quis", "nostrud", "exercitation", "ullamco", "laboris",
+            "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat", "duis", "aute", "irure",
+            "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore",
+            "eu", "fugiat", "nulla", "pariatur", "excepteur", "sint", "occaecat", "cupidatat",
+            "non", "proident", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim",
+            "id", "est", "laborum"
+            };
+
+            Random random = new Random();
+            string loremIpsum = string.Join(" ", Enumerable.Range(0, numberOfWords).Select(_ => loremIpsumWords[random.Next(loremIpsumWords.Length)]));
+            return loremIpsum;
+        }
+
+        static string GenerateRandomNumbersandLetter(Random random, int length, bool includeLetter)
+        {
+            string numberorletter = string.Concat(Enumerable.Range(0, length)
+                                      .Select(_ => random.Next(0, 10).ToString()));
+
+            if (includeLetter)
+            {
+                char randomLetter = (char)random.Next(65, 91);
+                 numberorletter += randomLetter;
+            }
+
+            return numberorletter;
+        }
 
         private async Task checkPositionsAsync()
         {
@@ -115,31 +146,39 @@ namespace xilopro2.Data
         {
             if (!_context.Teams.Any())
             {
-                _context.Teams.Add(new Team
-                {
-                    Team_Name = "XILOTEPELT FC",
-                    Team_Estadio = "JUAN JOSE RODRIGUEZ",
-                    Team_Image = "",
-
-                });
-                _context.Teams.Add(new Team
-                {
-                    Team_Name = "ATLETICO NACIONAL",
-                    Team_Estadio = "RIVAS",
-                    Team_Image = "",
-
-                });
-                _context.Teams.Add(new Team
-                {
-                    Team_Name = "SAN MARCOS FC",
-                    Team_Estadio = "EL COMAL",
-                    Team_Image = "",
-
-                });
+                //C
                 _context.Teams.Add(new Team
                 {
                     Team_Name = "REAL GRANADA FC",
                     Team_Estadio = "LAS COCECHAS",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "MASAYA FC",
+                    Team_Estadio = "",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "COFRADIA FC",
+                    Team_Estadio = "",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "CD NANDASMO",
+                    Team_Estadio = "NINDIRI",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "XILOTEPELT FC",
+                    Team_Estadio = "JUAN JOSE RODRIGUEZ",
                     Team_Image = "",
 
                 });
@@ -152,67 +191,194 @@ namespace xilopro2.Data
                 });
                 _context.Teams.Add(new Team
                 {
-                    Team_Name = "DEPORTIVO AMERICA FC",
-                    Team_Estadio = "GRANADA",
+                    Team_Name = "SAN MARCOS FC",
+                    Team_Estadio = "EL COMAL",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "ATLETICO NACIONAL",
+                    Team_Estadio = "RIVAS",
+                    Team_Image = "",
+
+                });
+
+                //B
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "MINA FC",
+                    Team_Estadio = "CAMPO SANTA LUCIA LARREYNAGA",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
                     Team_Name = "EL SAUCE FC",
-                    Team_Estadio = "GRANADA",
+                    Team_Estadio = "SAUCE",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
-                    Team_Name = "FRENTE SUR RIVAS FC",
-                    Team_Estadio = "GRANADA",
-                    Team_Image = "",
-
-                });
-                _context.Teams.Add(new Team
-                {
-                    Team_Name = "PUMAS FC",
-                    Team_Estadio = "CAMPO SANTA LUCIA",
-                    Team_Image = "",
-
-                });
-                _context.Teams.Add(new Team
-                {
-                    Team_Name = "FC YALI",
-                    Team_Estadio = "CAMPO MUNICIPAL",
+                    Team_Name = "CD CHINANDEGA",
+                    Team_Estadio = "",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
                     Team_Name = "CHICHIGALPA FC",
-                    Team_Estadio = "CAMPO SANTA LUCIA",
+                    Team_Estadio = "CHICHIGALPA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "CD SANTO TOMAS",
+                    Team_Estadio = "SANTO TOMAS DEL NORTE",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "PUMAS FC",
+                    Team_Estadio = "CIUDAD DARIO",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "DM SEBACO",
+                    Team_Estadio = "SEBACO",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "AQMERICA OAR",
+                    Team_Estadio = "ESTELI",
+                    Team_Image = "",
+
+                });
+
+
+                //A
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "DEPORTIVO LAS SABANAS FC",
+                    Team_Estadio = "MADRIZ",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "MUNICIPAL SAN LUCAS FC",
+                    Team_Estadio = "SANTA LUCAS",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
                     Team_Name = "ATLETICO PIOLIN",
-                    Team_Estadio = "ESTADIO SOLIDADIDAD",
+                    Team_Estadio = "SOMOTO",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
-                    Team_Name = "MINA FC",
-                    Team_Estadio = "CAMPO SANTA LUCIA",
+                    Team_Name = "SAN BARTOLO FC",
+                    Team_Estadio = "QUILALI",
                     Team_Image = "",
 
                 });
                 _context.Teams.Add(new Team
                 {
-                    Team_Name = "LOS CAPITANES",
-                    Team_Estadio = "CAMPO SANTA LUCIA",
+                    Team_Name = "FC BRUMAS",
+                    Team_Estadio = "JINOTEGA",
                     Team_Image = "",
 
                 });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "FC YALI",
+                    Team_Estadio = "SAN SEBASTIAN DE YALI",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "DEPORTIVO EL CUA",
+                    Team_Estadio = "EL CUA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "FC BOCAY",
+                    Team_Estadio = "SAN JOSE DE BOCAY",
+                    Team_Image = "",
+
+                });
+
+                //D
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "AMERICA FC",
+                    Team_Estadio = "MANAGUA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "FC BAMBINOS",
+                    Team_Estadio = "MANAGUA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "DEPORTIVO VILLA",
+                    Team_Estadio = "MANAGUA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "CIUDAD SANDINO SLIDER FC",
+                    Team_Estadio = "CIUDAD SANDINO",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "ACD REAL XOLOTLAN",
+                    Team_Estadio = "SAN RAFAEL DEL SUR",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "FC TIPITAPA",
+                    Team_Estadio = "TIPITAPA",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "BLUEFIELDS FC",
+                    Team_Estadio = "BLUEFIELDS",
+                    Team_Image = "",
+
+                });
+                _context.Teams.Add(new Team
+                {
+                    Team_Name = "RIO SAN JUAN FC",
+                    Team_Estadio = "SAN CARLOS",
+                    Team_Image = "",
+
+                });
+
 
                 await _context.SaveChangesAsync();
             }
@@ -220,7 +386,7 @@ namespace xilopro2.Data
         }
 
 
-        private async Task checkUserAsync(string firstName, string lastName, string username, string email, string phone, string address, string userType)
+        private async Task checkUserAsync(string firstName, string lastName, string username, string email, string phone, string address, string userType, string cedula)
         {
             AppUser user = await _userHelper.GetUserAsyncbyEmail(email);
             if (user == null)
@@ -237,7 +403,7 @@ namespace xilopro2.Data
                     User_Address = address,
                     PhoneNumber = phone,
                     UserTypeofRole = userType,
-                    User_Cedula = "041120686007T",
+                    User_Cedula = cedula,
                     UserName = username,
                     User_Status = true,
                     User_CreatedTime = DateTime.Now,
@@ -578,46 +744,350 @@ namespace xilopro2.Data
             if (!_context.Torneos.Any())
             {
                 List<int> lsCatids = new List<int>() { 1, 2, 3, 4, 5, 6 };
+
                 _context.Torneos.Add(new Torneo
                 {
                     Torneo_Name = "Liga 2",
                     Torneo_Season = "2024",
+                    Torneo_SeasonType = "APERTURA",
                     SelectedCategoryIds = new List<int> { lsCatids[0] },
                     Torneo_Status = true,
+                    Torneo_StartDate = DateTime.Now,
+                    Torneo_EndDate = DateTime.Now,
                     Groups = new List<Groups>()
                      {
                          new Groups()
                          {
                              Group_Name = "A",
+                             torneoId = 1,
                          },
                           new Groups()
                          {
                              Group_Name = "B",
+                              torneoId = 1,
                          },
                      }
-
                 });
 
-                _context.Torneos.Add(new Torneo
+              _context.Torneos.Add(new Torneo
                 {
-                    Torneo_Name = "campeonato ligas menores",
+                    Torneo_Name = "COPA PRIMERA",
                     Torneo_Season = "2024",
-                    SelectedCategoryIds = new List<int> { lsCatids[1] },
+                    Torneo_SeasonType = null,
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
                     Torneo_Status = true,
+                    Torneo_StartDate = DateTime.Now,
+                    Torneo_EndDate = DateTime.Now,
                     Groups = new List<Groups>()
                      {
                          new Groups()
                          {
-                             Group_Name = "FASE DE GRUPOS",
+                             Group_Name = "DIECISEISAVOS DE FINAL",
+                              torneoId = 2,
                          },
                           new Groups()
                          {
-                             Group_Name = "OCTAVOS",
+                             Group_Name = "OCTAVOS DE FINAL",
+                              torneoId = 2,
+                         },
+                          new Groups()
+                         {
+                             Group_Name = "CUARTOS DE FINAL",
+                              torneoId = 2,
+                         },
+                           new Groups()
+                         {
+                             Group_Name = "SEMIFINAL",
+                              torneoId = 2,
+                         },
+                            new Groups()
+                         {
+                             Group_Name = "FINAL",
+                              torneoId = 2,
                          },
                      }
-
                 });
 
+                  _context.Torneos.Add(new Torneo
+                  {
+                      Torneo_Name = "campeonato ligas menores",
+                      Torneo_Season = "2024",
+                      Torneo_SeasonType = null,
+                      SelectedCategoryIds = new List<int> { lsCatids[1] },
+                      Torneo_Status = true,
+                      Torneo_StartDate = DateTime.Now,
+                      Torneo_EndDate = DateTime.Now,
+                      Groups = new List<Groups>()
+                       {
+                           new Groups()
+                           {
+                               Group_Name = "FASE DE GRUPOS",
+                                torneoId = 3,
+                           },
+                            new Groups()
+                           {
+                               Group_Name = "CUARTOS DE FINAL",
+                                torneoId = 3,
+                           },
+                             new Groups()
+                           {
+                               Group_Name = "SEMIFINAL",
+                                torneoId = 3,
+                           },
+                              new Groups()
+                           {
+                               Group_Name = "FINAL",
+                                torneoId = 3,
+                           },
+                       }
+                  });
+
+                  _context.Torneos.Add(new Torneo
+                   {
+                       Torneo_Name = "campeonato ligas menores",
+                       Torneo_Season = "2024",
+                       Torneo_SeasonType = null,
+                       SelectedCategoryIds = new List<int> { lsCatids[2] },
+                       Torneo_Status = true,
+                       Torneo_StartDate = DateTime.Now,
+                       Torneo_EndDate = DateTime.Now,
+                       Groups = new List<Groups>()
+                        {
+                            new Groups()
+                            {
+                                Group_Name = "FASE DE GRUPOS",
+                                 torneoId = 4,
+                            },
+                             new Groups()
+                            {
+                                Group_Name = "CUARTOS DE FINAL",
+                                 torneoId = 4,
+                            },
+                              new Groups()
+                            {
+                                Group_Name = "SEMIFINAL",
+                                 torneoId = 4,
+                            },
+                               new Groups()
+                            {
+                                Group_Name = "FINAL",
+                                 torneoId = 4,
+                            },
+                        }
+                   });
+
+                  _context.Torneos.Add(new Torneo
+                   {
+                       Torneo_Name = "campeonato ligas menores",
+                       Torneo_Season = "2024",
+                       Torneo_SeasonType = null,
+                       SelectedCategoryIds = new List<int> { lsCatids[3] },
+                       Torneo_Status = true,
+                       Torneo_StartDate = DateTime.Now,
+                       Torneo_EndDate = DateTime.Now,
+                       Groups = new List<Groups>()
+                        {
+                            new Groups()
+                            {
+                                Group_Name = "FASE DE GRUPOS",
+                                 torneoId = 5,
+                            },
+                             new Groups()
+                            {
+                                Group_Name = "CUARTOS DE FINAL",
+                                  torneoId = 5,
+                            },
+                              new Groups()
+                            {
+                                Group_Name = "SEMIFINAL",
+                                  torneoId = 5,
+                            },
+                               new Groups()
+                            {
+                                Group_Name = "FINAL",
+                                  torneoId = 5,
+                            },
+                        }
+                   });
+
+                   _context.Torneos.Add(new Torneo
+                   {
+                       Torneo_Name = "campeonato ligas menores",
+                       Torneo_Season = "2024",
+                       Torneo_SeasonType = null,
+                       SelectedCategoryIds = new List<int> { lsCatids[4] },
+                       Torneo_Status = true,
+                       Torneo_StartDate = DateTime.Now,
+                       Torneo_EndDate = DateTime.Now,
+                       Groups = new List<Groups>()
+                        {
+                            new Groups()
+                            {
+                                Group_Name = "FASE DE GRUPOS",
+                                  torneoId = 6,
+                            },
+                             new Groups()
+                            {
+                                Group_Name = "CUARTOS DE FINAL",
+                                 torneoId = 6,
+                            },
+                              new Groups()
+                            {
+                                Group_Name = "SEMIFINAL",
+                                 torneoId = 6,
+                            },
+                               new Groups()
+                            {
+                                Group_Name = "FINAL",
+                                 torneoId = 6,
+                            },
+                        }
+                   });
+
+                   _context.Torneos.Add(new Torneo
+                   {
+                       Torneo_Name = "campeonato ligas menores",
+                       Torneo_Season = "2024",
+                       Torneo_SeasonType = null,
+                       SelectedCategoryIds = new List<int> { lsCatids[5] },
+                       Torneo_Status = true,
+                       Torneo_StartDate = DateTime.Now,
+                       Torneo_EndDate = DateTime.Now,
+                       Groups = new List<Groups>()
+                        {
+                            new Groups()
+                            {
+                                Group_Name = "FASE DE GRUPOS",
+                                 torneoId = 7,
+                            },
+                             new Groups()
+                            {
+                                Group_Name = "CUARTOS DE FINAL",
+                                 torneoId = 7,
+                            },
+                              new Groups()
+                            {
+                                Group_Name = "SEMIFINAL",
+                                 torneoId = 7,
+                            },
+                               new Groups()
+                            {
+                                Group_Name = "FINAL",
+                                 torneoId = 7,
+                            },
+                        }
+                   });      
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task checkPlayers()
+        {
+            if (!_context.Players.Any())
+            {
+                Random random = new Random();
+                List<int> lsCatids = new List<int>() { 1, 2, 3, 4, 5, 6 };
+                _context.Players.Add(new Player
+                {
+                    Player_FirstName = "PRIMER",
+                    Player_LastName = "JUGADOR",
+                    Player_Email = "primerjugador@gmail.com",
+                    Player_Dorsal = 1,
+                    Player_PhoneNumber = GenerateRandomNumbersandLetter(random, 8,false),
+                    Player_Address = GenerateLoremIpsum(20),
+                    Player_Genero = "Masculino",
+                    Player_fifaid = GenerateRandomNumbersandLetter(random, 5,false),
+                    Player_Cedula = GenerateRandomNumbersandLetter(random, 13, true),
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
+                    Teamid = 5,
+                    Positionid = 1,
+                    Countryid = 2,
+                    Stateid = 4,
+                    Cityid = 17,
+                    Player_Status = true,
+                    Player_FNC = new DateTime(1990, 5, 15),
+                });
+                _context.Players.Add(new Player
+                {
+                    Player_FirstName = "SEGUNDO",
+                    Player_LastName = "JUGADOR",
+                    Player_Email = "segundojugador@gmail.com",
+                    Player_Dorsal = 2,
+                    Player_PhoneNumber = GenerateRandomNumbersandLetter(random, 8, false),
+                    Player_Address = GenerateLoremIpsum(20),
+                    Player_Genero = "Masculino",
+                    Player_fifaid = GenerateRandomNumbersandLetter(random, 5, false),
+                    Player_Cedula = GenerateRandomNumbersandLetter(random, 13, true),
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
+                    Teamid = 5,
+                    Positionid = 1,
+                    Countryid = 2,
+                    Stateid = 4,
+                    Cityid = 17,
+                    Player_Status = true,
+                    Player_FNC = new DateTime(1990, 5, 15),
+                });
+                _context.Players.Add(new Player
+                {
+                    Player_FirstName = "TERCER",
+                    Player_LastName = "JUGADOR",
+                    Player_Email = "tercerjugador@gmail.com",
+                    Player_Dorsal = 3,
+                    Player_PhoneNumber = GenerateRandomNumbersandLetter(random, 8, false),
+                    Player_Address = GenerateLoremIpsum(20),
+                    Player_Genero = "Masculino",
+                    Player_fifaid = GenerateRandomNumbersandLetter(random, 5, false),
+                    Player_Cedula = GenerateRandomNumbersandLetter(random, 13, true),
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
+                    Teamid = 5,
+                    Positionid = 1,
+                    Countryid = 2,
+                    Stateid = 4,
+                    Cityid = 17,
+                    Player_Status = true,
+                    Player_FNC = new DateTime(1990, 5, 15),
+                });
+                _context.Players.Add(new Player
+                {
+                    Player_FirstName = "CUARTO",
+                    Player_LastName = "JUGADOR",
+                    Player_Email = "cuartojugador@gmail.com",
+                    Player_Dorsal = 4,
+                    Player_PhoneNumber = GenerateRandomNumbersandLetter(random, 8, false),
+                    Player_Address = GenerateLoremIpsum(20),
+                    Player_Genero = "Masculino",
+                    Player_fifaid = GenerateRandomNumbersandLetter(random, 5, false),
+                    Player_Cedula = GenerateRandomNumbersandLetter(random, 13, true),
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
+                    Teamid = 5,
+                    Positionid = 1,
+                    Countryid = 2,
+                    Stateid = 4,
+                    Cityid = 17,
+                    Player_Status = true,
+                    Player_FNC = new DateTime(1990, 5, 15),
+                });
+                _context.Players.Add(new Player
+                {
+                    Player_FirstName = "QUINTO",
+                    Player_LastName = "JUGADOR",
+                    Player_Email = "quintojugador@gmail.com",
+                    Player_Dorsal = 5,
+                    Player_PhoneNumber = GenerateRandomNumbersandLetter(random, 8, false),
+                    Player_Address = GenerateLoremIpsum(20),
+                    Player_Genero = "Masculino",
+                    Player_fifaid = GenerateRandomNumbersandLetter(random, 5, false),
+                    Player_Cedula = GenerateRandomNumbersandLetter(random, 13, true),
+                    SelectedCategoryIds = new List<int> { lsCatids[0] },
+                    Teamid = 5,
+                    Positionid = 1,
+                    Countryid = 2,
+                    Stateid = 4,
+                    Cityid = 17,
+                    Player_Status = true,
+                    Player_FNC = new DateTime(1990, 5, 15),
+                });
                 await _context.SaveChangesAsync();
             }
         }

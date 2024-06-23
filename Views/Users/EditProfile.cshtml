@@ -36,7 +36,8 @@
             <input type="hidden" asp-for="Stateid" />
             <input type="hidden" asp-for="User_Genero" />
             <input type="hidden" asp-for="Status" />
-     
+            <input type="hidden" asp-for="isUserImgErased" id="isUserImgErased" />
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -134,6 +135,9 @@
     function clearInput() {
         document.getElementById("inputProfileImg").setAttribute("src", "../../images/noimage.png");
         document.getElementById("inputGroupFile03").value = "";
+        var isUserImgErased = document.getElementById('isUserImgErased');
+        isUserImgErased.value = true;
+        consoled.log('cual es su valor: ', isUserImgErased)
     }
 
 

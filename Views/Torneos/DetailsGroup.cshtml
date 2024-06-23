@@ -11,7 +11,7 @@
     <div class="container-fluid pt-3">
         <div class="d-flex justify-content-between align-items-center gap-2">
             <a asp-action="Details" asp-route-id="@Model?.torneoId" asp-controller="Torneos" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
-            <h3 class="m-0 text-end">Grupo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Group_Name</span> del Torneo: <span class="badge bg-dark text-white text-uppercase">@Model?.Torneo.Torneo_Name</span></h3>
+            <h3 class="m-0 text-end">Grupo: <span class="badge bg-dark fs-4 text-uppercase"> @Model.Group_Name</span> del Torneo: <span class="badge bg-dark text-white text-uppercase">@Model?.Torneo.Torneo_Name - @Model.Torneo.Torneo_SeasonType @Model.Torneo.Torneo_Season</span></h3>
         </div>
 
         <hr />
@@ -41,8 +41,8 @@
 
                 <div class="col">
                     <div class="form-group mb-2">
-                        <label class="control-label">Nombre de Torneo:</label>
-                        <h2 class="text-primary text-uppercase">  <img src="@(!string.IsNullOrEmpty(Model.Torneo.Torneo_Image) ? Url.Content(path+Model.Torneo.Torneo_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" style="width:30px;" alt="Image" /> @Model.Torneo.Torneo_Name</h2>
+                        <label class="control-label">Nombre de Grupo:</label>
+                        <h2 class="text-primary text-uppercase"> @Model.Group_Name</h2>
                     </div>
                 </div>
                 <div class="col">
@@ -85,7 +85,7 @@
                             <div class="card-body">
                                 <div class="heading">
                                     <h4 class="m-0 card-title">Equipos en Ranking</h4>
-                                    <a asp-action="AddGroupDetail" asp-route-id="@Model.Group_ID" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Asignar Equipos</span></a>
+                                    <a asp-action="AddGroupDetail" asp-route-id="@Model.Group_ID" class="btn btn-purple"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Asignar Equipos</span></a>
                                 </div>
                                 <hr />
                                 @if (Model.GroupDetails.Count > 0)
@@ -113,9 +113,6 @@
                                                         @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().MatchesLost)
                                                     </th>
                                                     <th>
-                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().Points)
-                                                    </th>
-                                                    <th>
                                                         @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().GoalsFor)
                                                     </th>
                                                     <th>
@@ -123,6 +120,9 @@
                                                     </th>
                                                     <th>
                                                         @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().GoalDifference)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.GroupDetails.FirstOrDefault().Points)
                                                     </th>
                                                     <th>Acciones</th>
                                                 </tr>
@@ -153,9 +153,6 @@
                                                             @Html.DisplayFor(modelItem => item.MatchesLost)
                                                         </td>
                                                         <td style="vertical-align:middle" class="text-center">
-                                                            @Html.DisplayFor(modelItem => item.Points)
-                                                        </td>
-                                                        <td style="vertical-align:middle" class="text-center">
                                                             @Html.DisplayFor(modelItem => item.GoalsFor)
                                                         </td>
                                                         <td style="vertical-align:middle" class="text-center">
@@ -163,6 +160,9 @@
                                                         </td>
                                                         <td style="vertical-align:middle" class="text-center">
                                                             @Html.DisplayFor(modelItem => item.GoalDifference)
+                                                        </td>
+                                                        <td style="vertical-align:middle" class="text-center fw-bold">
+                                                            @Html.DisplayFor(modelItem => item.Points)
                                                         </td>
                                                         <td style="vertical-align:middle" class="text-center">
                                                             <div class="btn-group">

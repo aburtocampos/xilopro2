@@ -42,11 +42,13 @@ namespace xilopro2.Models
         public string? TeamName { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Display(Name = "Equipo")]
+        [Display(Name = "Equipo:")]
         [Range(1, int.MaxValue, ErrorMessage = "You must select a team.")]
         public int TeamId { get; set; }
 
-        public IEnumerable<SelectListItem>? Teams { get; set; }
+        public List<Team>? Teams { get; set; }
+
+        //public List<Team>? TeamsforSelect { get; set; }
 
     }
 

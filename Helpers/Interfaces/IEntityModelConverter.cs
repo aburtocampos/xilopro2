@@ -76,6 +76,7 @@ namespace xilopro2.Helpers.Interfaces
                 Torneo_StartDate = entity.Torneo_StartDate,
                 Torneo_Season = entity.Torneo_Season,
                 SelectedCategoryIds = entity.SelectedCategoryIds,
+                Torneo_SeasonType = entity.Torneo_SeasonType,
               //  Categories = _combos.GetCategorias(),
             };
         }
@@ -93,6 +94,7 @@ namespace xilopro2.Helpers.Interfaces
                 Torneo_StartDate = model.Torneo_StartDate.ToUniversalTime(),
                 Torneo_Season = model.Torneo_Season,
                 SelectedCategoryIds = model.SelectedCategoryIds,
+                Torneo_SeasonType = model.Torneo_SeasonType,
             };
         }
 

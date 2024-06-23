@@ -223,9 +223,15 @@ namespace xilopro2.Controllers
                 Torneo_Season = torneo.Torneo_Season,
                 Torneo_Image = torneo.Torneo_Image,
                 Torneo_Status = torneo.Torneo_Status,
+                Torneo_SeasonType = torneo.Torneo_SeasonType,
+                
             };
+            if (torneo.Torneo_Status == true)
+            {
+                ModelState.AddModelError(string.Empty, $"El torneo debe ser previamente desactivado para poder eliminarse.");
+            }
 
-            if (model == null)
+           if (model == null)
             {
                 return NotFound();
             }
@@ -250,14 +256,19 @@ namespace xilopro2.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
-                _imageHelper.DeleteImage(torneo.Torneo_Image, "Tournaments");
-                TempData["successTorneo"] = "Torneo " + torneo.Torneo_Name + " Eliminado!!";
+
+                    await _context.SaveChangesAsync();
+                    _imageHelper.DeleteImage(torneo.Torneo_Image, "Tournaments");
+                    TempData["successTorneo"] = "Torneo " + torneo.Torneo_Name + " Eliminado!!";
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+
+                    ModelState.AddModelError(string.Empty, ex.Message);
+               
             }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -618,8 +629,9 @@ namespace xilopro2.Controllers
                 //Groups = groupEntity,
                 GroupId = groupEntity.Group_ID,
                 Teams = _combos.GetCombosEquipos(),
-                GroupName = groupEntity.Group_Name,
-                
+                GroupName = groupEntity.Group_Name
+
+
             };
 
             return View(model);

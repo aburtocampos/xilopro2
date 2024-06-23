@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NuGet.Packaging.Signing;
+using System.Drawing;
+using System.Globalization;
 using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
@@ -19,7 +23,6 @@ namespace xilopro2.Controllers
         private readonly ICombos _combos;
         private readonly ISwithUsers _swithUsers;
         private readonly IImageHelper _imageHelper;
-       
 
         AppUser usuarioensesion = null;
 
@@ -37,45 +40,19 @@ namespace xilopro2.Controllers
         // GET: Players
         public async Task<IActionResult> Index()
         {
-
-           // var usuarioLogueado = _userHelper.GetUserAsync(User.Identity.Name);
-           // ViewBag.ProfileImage = usuarioActual.Result.User_Image;
-
             usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
-           
-            // var catId = Convert.ToInt32(usuarioensesion.SelectedCategoryIds);
-            //Debug.WriteLine($"sesion de: {filtroIds}");
+
 
             if (User.IsInRole("Editor") || User.IsInRole("Dt"))
             {
-                /* IActionResult usuariosFiltrados = await _context.Players
-                 .Include(c => c.Country)
-                 .Include(c => c.Parents)
-                 .Include(c => c.Position)
-                 .Include(c => c.Team)
-                // .Where(p => p.SelectedCategoryIds.Any(id => filtroIds.Contains(id)))
-                // .Where(p => p.SelectedCategoryIds.Intersect(filtroIds).Any())
-                  .Where(p => filtroIds.Any() && p.SelectedCategoryIds.Intersect(filtroIds).Any())
-                 .ToListAsync();*/
 
-               /* IActionResult usuariosFiltrados = _context.Players != null ?
-                      View(  await _context.Players.ToListAsync())
-                         
-                       // .Where(p => p.SelectedCategoryIds.Intersect(filtroIds).Any())
-                      //  .ToList().Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any()) 
-                        :
-                        Problem("Entity set 'DataContext.Players'  is null.");
-
-
-                return usuariosFiltrados;*/
                 List<Player> filteredPlayers =  _context.Players
                      .Include(cp => cp.Position)
                       .Include(cp => cp.Team)
                       .Include(cp => cp.PlayerFiles)
                       .Include(cp => cp.Parents)
                     .AsEnumerable()
-                   // .Where(player => player.SelectedCategoryIds.Intersect(filtroIds).Any())
                    .Where(player => player.SelectedCategoryIds.Any(id => filtroIdsCategories.Contains(id)))
                   .ToList();
 
@@ -95,9 +72,9 @@ namespace xilopro2.Controllers
 
             ViewBag.Cats = _combos.GetCategoriasPorIds(filtroIdsCategories);
 
-
             IActionResult response = View(await _context.Players
                      .Include(cp => cp.Position)
+                       .Include(cp => cp.Team)
                      .Include(cp => cp.PlayerFiles)
                      .Include(cp => cp.Parents)
                     .ToListAsync());
@@ -122,19 +99,6 @@ namespace xilopro2.Controllers
                  .Include(c => c.Parents)
                  .Include(c => c.PlayerFiles)
                  .FirstOrDefaultAsync(m => m.Player_ID == id);
-
-            //consulta que devuelve las etadsiticas registradas en un partido de jugador
-            /*   var listplayerStats = _context.PlayerStatistics
-               .Where(ps => ps.PlayerId == id)
-               .Join(_context.Matches, 
-                   ps => ps.MatchId, 
-                   m => m.Match_ID, 
-                   (ps, m) => new 
-                   {
-                       PlayerStatistic = ps,
-                       Match = m
-                   })
-               .ToList();*/
 
             var listplayerStats = _context.PlayerStatistics
             .Where(ps => ps.PlayerId == id)
@@ -175,8 +139,6 @@ namespace xilopro2.Controllers
 
             // string teamjornadas = _context.Matches.Where(c => c.Match_ID == listplayerStats.FirstOrDefault().Match.Match_ID).FirstOrDefault();
              ViewBag.teamnames = _context.Teams.ToList();
-      
-
 
             ViewData["team"] = team;
             ViewData["Pos"] = pos;
@@ -210,48 +172,20 @@ namespace xilopro2.Controllers
             return View(player);
         }
 
-        // GET: Players/Create
+       
         public async Task<IActionResult> Create()
         {
             usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
            List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
 
-            //  List<string> miListaDeStrings = new List<string> { "Seleccionar", "Masculino", "Femenino" };
-           /*  var depas = new List<State>();
-            var munis = new List<City>();
-
-            depas.Add(new State()
-            {
-                State_ID = 0,
-                State_Name = "Seleccionar Departamento.."
-            });
-            munis.Add(new City()
-            {
-                City_ID = 0,
-                City_Name = "Seleccionar Municipio..."
-            });*/
-
             PlayerViewModel model = new PlayerViewModel
             {
-                //Teamid = 1,
-                //  UserType = _combos.GetCombosRoles(),
                 Countries = _combos.GetCombosCountries(),
-
-              //  States = _combos.GetCombosStates(),
-             //   Cities = _combos.GetCombosCities(),
-
                 Categories = _combos.GetCategoriasPorIds(filtroIdsCateg),
                 Teams = _combos.GetCombosEquipos(),
                 Positions = _combos.GetCombosPosiciones(),
-               // Player_Cedula = @$"${1++}XXXXXXXXXXXXX",
-
-               // Player_ID = "null",
-              //  Player_GenerosEnum =  _combos.GetComboGenerosEnum(),
-               // Player_ID = Guid.NewGuid().ToString(),
             };
             ViewBag.Genero = _combos.GetComboGeneros();
-         //   ViewBag.State = new SelectList(depas, "State_ID", "State_Name");
-           // ViewBag.City = new SelectList(munis, "City_ID", "City_Name");
             return View(model); ;
         }
 
@@ -265,85 +199,69 @@ namespace xilopro2.Controllers
             ModelState.Remove("SelectedCategoryIds");
             if (ModelState.IsValid)
             {
-                    try
+                try
+                {
+
+                    if (model.SelectedCategoryIdss.Contains(1) && _context.Players.Any(p => p.Player_Cedula == model.Player_Cedula))
                     {
-                    
-                        if (model.SelectedCategoryIdss.Contains(1) && _context.Players.Any(p => p.Player_Cedula == model.Player_Cedula))
-                        {
-                            var nombrecat = _context.Categories
-                               .Where(c => model.SelectedCategoryIds.Contains(c.Category_ID))
-                               .Select(c => c.Category_Name)
-                               .ToList();
-                            throw new InvalidOperationException(@$"Ya existe un jugador con número de cedula {model.Player_Cedula} en esta categoría {string.Join(", ", nombrecat)}");
-                        }
-                     newuserobj = new Player
-                        {
-                            // Player_ID = isNew ? Guid.NewGuid().ToString() : model.Player_ID,
-                            Player_FirstName = model.Player_FirstName?.Trim().ToUpper(),
-                            Player_Address = model.Player_Address,
-                            Player_LastName = model.Player_LastName?.Trim().ToUpper(),
-                            Player_Status = model.Player_Status,
-                            Player_Dorsal = model.Player_Dorsal,
-                            Player_FNC = model.Player_FNC,
-                            Player_PhoneNumber = model.Player_PhoneNumber,
-                            Player_Email = model.Player_Email,
-                            Player_Cedula = model.Player_Cedula,
-                            Player_fifaid = model.Player_fifaid,
-                            Player_Genero = model.Player_Genero,
-                            Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players"),
-                            SelectedCategoryIds = model.SelectedCategoryIdss,
-
-                            Countryid = model.Countryid,
-                            Stateid = model.Stateid,
-                            Cityid = model.Cityid,
-
-                            Positionid = model.Positionid,
-                            Teamid = model.Teamid,
-
-                           // ID de cat agregado para test
-                          //  CategoryId = model.SelectedCategoryIds != null && model.SelectedCategoryIds.Any() ? model.SelectedCategoryIds.First() : 0,
-
-
-                         //  Country = await _context.Countries.FindAsync(model.CountryID),
-                         //  Position = await _context.Positions.FindAsync(model.Positionid),
-                         //  Team = await _context.Teams.FindAsync(model.Teamid),
-
-                     };
-
-                        _context.Players.Add(newuserobj);
-                        await _context.SaveChangesAsync();
-
-                        TempData["successUser"] = "Jugador " + newuserobj.Player_FullName + " creado!!";
-                        return RedirectToAction("Index", "Players");
+                        var nombrecat = _context.Categories
+                           .Where(c => model.SelectedCategoryIds.Contains(c.Category_ID))
+                           .Select(c => c.Category_Name)
+                           .ToList();
+                        throw new InvalidOperationException(@$"Ya existe un jugador con número de cedula {model.Player_Cedula} en esta categoría {string.Join(", ", nombrecat)}");
                     }
-                    catch (DbUpdateException ex)
+                    newuserobj = new Player
                     {
-                    /* if (ex.InnerException.Message.Contains("duplicate"))
-                     {
-                         ModelState.AddModelError(string.Empty, "Jugador Ya existe");
-                     }*/
-                   
-                          if (ex.InnerException.Message.Contains("Players_SelectedCategoryIds_Player_Dorsal"))
-                        {
+                        Player_FirstName = model.Player_FirstName?.Trim().ToUpper(),
+                        Player_Address = model.Player_Address,
+                        Player_LastName = model.Player_LastName?.Trim().ToUpper(),
+                        Player_Status = model.Player_Status,
+                        Player_Dorsal = model.Player_Dorsal,
+                        Player_FNC = model.Player_FNC,
+                        Player_PhoneNumber = model.Player_PhoneNumber,
+                        Player_Email = model.Player_Email,
+                        Player_Cedula = model.Player_Cedula,
+                        Player_fifaid = model.Player_fifaid,
+                        Player_Genero = model.Player_Genero,
+                        Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players"),
+                        SelectedCategoryIds = model.SelectedCategoryIdss,
+
+                        Countryid = model.Countryid,
+                        Stateid = model.Stateid,
+                        Cityid = model.Cityid,
+
+                        Positionid = model.Positionid,
+                        Teamid = model.Teamid,
+                    };
+
+                    _context.Players.Add(newuserobj);
+                    await _context.SaveChangesAsync();
+
+                    TempData["successUser"] = "Jugador " + newuserobj.Player_FullName + " creado!!";
+                    return RedirectToAction("Index", "Players");
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException.Message.Contains("Players_SelectedCategoryIds_Player_Dorsal"))
+                    {
                         var nombrecat = _context.Categories
                         .Where(c => model.SelectedCategoryIdss.Contains(c.Category_ID))
                         .Select(c => c.Category_Name)
                         .ToList();
                         ModelState.AddModelError(string.Empty, $"El dorsal {model.Player_Dorsal} ya existe en la categoria {string.Join(", ", nombrecat)}");
-                        }
-                        else
-                            {
-                                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
-                            }
                     }
-                    catch(Exception ex)
+                    if (ex.InnerException.Message.Contains("Player_Email"))
                     {
-                        ModelState.AddModelError(string.Empty, ex.Message);
+                        ModelState.AddModelError(string.Empty, $"El email {model.Player_Email} Ya existe");
                     }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
 
-            _imageHelper.DeleteImage(newuserobj.Player_Image, "Players");
-
+            _imageHelper.DeleteImage(newuserobj.Player_Image, "Players");//se borra del servidor ya que de todos modos al cambiar la vista el inputfile la borra
             usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
             model.Teams = _combos.GetCombosEquipos();
@@ -369,8 +287,6 @@ namespace xilopro2.Controllers
             usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
             List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
 
-           // List<string> miListaDeStrings = new List<string> {   "Seleccionar",   "Masculino",  "Femenino"  };
-
             Player player = await _context.Players.FindAsync(id);
             if (player == null)
             {
@@ -378,23 +294,9 @@ namespace xilopro2.Controllers
             }
             PlayerViewModel model =  _swithUsers.ToPlayerViewModel(player);
             ViewBag.Genero = _combos.GetComboGeneros();
-            //  PlayerViewModel model = new PlayerViewModel
-            //   {
-            //Teamid = 1,
-            //  UserType = _combos.GetCombosRoles(),
-          //  model.Teams = _combos.GetCombosEquipos();
-         //   model.States = _combos.GetCombosStates();
-         //   model.Countries = _combos.GetCombosCountries();
-          //  model.Cities = _combos.GetCombosCities();
 
             model.Categories = _combos.GetCategoriasPorIds(filtroIdsCateg);
-          //  model.Positions = _combos.GetCombosPosiciones();
 
-
-                // Player_ID = "null",
-                //Player_Genero =  _combos.GetComboGeneros(),
-                // Player_ID = Guid.NewGuid().ToString(),
-          //  };
             return View(model);
         }
 
@@ -406,44 +308,48 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
+            List<int> filtroIdsCateg = usuarioensesion.SelectedCategoryIds;
             ModelState.Remove("SelectedCategoryIds");
             if (ModelState.IsValid)
             {
                 try
                 {
-
-                 //   Player playerondb = new Player();
                     Player playerondb = await _context.Players.FindAsync(model.Player_ID);
-                    var player = (dynamic)null; 
+                    var player = (dynamic)null;
+                    if (!string.IsNullOrEmpty(playerondb.Player_Image)){//si carga archivo
 
-                    if (model.FotoFile != null)
-                    {//si carga archivo
-                        
-                        if (!string.IsNullOrEmpty(playerondb.Player_Image))
+                        if (model.FotoFile != null)
                         {
                             if (_imageHelper.DeleteImage(playerondb.Player_Image, "Players"))
                             {
                                 model.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
                                 player = await _swithUsers.ModelToPlayer(model, false);
                             }
-                            else
-                            {
-                                return RedirectToAction("Index", "Players");
-                            }
                         }
                         else
                         {
-                            model.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
-                            player = await _swithUsers.ModelToPlayer(model, false);
+                            if (model.isUserImgErased)
+                            {
+                                if (_imageHelper.DeleteImage(playerondb.Player_Image, "Players"))
+                                {
+                                    model.Player_Image = null;
+                                    player = await _swithUsers.ModelToPlayer(model, false);
+                                }
+                            }
+                            else
+                            {
+                                model.Player_Image = playerondb.Player_Image;
+                                player = await _swithUsers.ModelToPlayer(model, false);
+                            }
+                           
                         }
                     }
                     else
                     {
                         player = await _swithUsers.ModelToPlayer(model, false);
-                        player.Player_Image = playerondb.Player_Image;
+                        player.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
                     }
-
-                    //      
 
                     _context.Update(player);
                     await _context.SaveChangesAsync();
@@ -453,10 +359,19 @@ namespace xilopro2.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    /* if (ex.InnerException.Message.Contains("duplicate"))
+                    if (ex.InnerException.Message.Contains("Player_Cedula"))
                      {
-                         ModelState.AddModelError(string.Empty, "Jugador Ya existe");
-                     }*/
+                       
+                        var nombrecat = _context.Categories
+                            .Where(c => model.SelectedCategoryIds.Contains(c.Category_ID))
+                            .Select(c => c.Category_Name)
+                            .ToList();
+                        ModelState.AddModelError(string.Empty, @$"Ya existe un jugador con número de cedula {model.Player_Cedula} en esta categoría {string.Join(", ", nombrecat)}");
+                    }
+                    if (ex.InnerException.Message.Contains("Player_Email"))
+                    {
+                        ModelState.AddModelError(string.Empty, $"El email ${model.Player_Email} Ya existe");
+                    }
                     if (ex.InnerException.Message.Contains("SelectedCategoryIds"))
                     {
                         var nombrecat = _context.Categories
@@ -465,18 +380,20 @@ namespace xilopro2.Controllers
                             .ToList();
                         ModelState.AddModelError(string.Empty, $"El dorsal {model.Player_Dorsal} ya existe en la categoria {string.Join(", ", nombrecat)}");
                     }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
-                    }
+                   
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
-                // return RedirectToAction(nameof(Index));
             }
-           // ViewBag.Genero = _combos.GetComboGeneros();
+            model.Categories = _combos.GetCategoriasPorIds(filtroIdsCateg);
+            model.Countries = _combos.GetCombosCountries();
+            model.States = _combos.GetCombosStates();
+            model.Cities = _combos.GetCombosCities();
+            model.Teams = _combos.GetCombosEquipos();
+            model.Positions = _combos.GetCombosPosiciones();
+            ViewBag.Genero = _combos.GetComboGeneros();
             return View(model);
         }
 
