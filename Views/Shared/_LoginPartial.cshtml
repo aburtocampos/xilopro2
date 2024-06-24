@@ -1,11 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using xilopro2.Data
 @using xilopro2.Data.Entities
 @inject SignInManager<AppUser> SignInManager
+@inject DataContext DbContext
+
 @{
     var user = SignInManager.Context.User;
     var currentUser = await SignInManager.UserManager.GetUserAsync(User);
     var isAuthenticated = currentUser != null;
-
+    var userDetails = await DbContext.Users.FindAsync(currentUser.Id);
 }
 
 <header>
@@ -103,10 +106,22 @@
 
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Dt"))
                     {
-
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reportes
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PlayerStatistics" asp-action="Index">Estadisticas</a></li>
+                                <li><a class="nav-link text-dark" asp-controller="CorrectionActions" asp-action="Index">Sanciones</a></li>
+                                @if (!userDetails.SelectedCategoryIds.Contains(1))
+                                {
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="IndexParents">Tutores</a></li>
+                                }
+                            </ul>
+                        </li>
                                 <li><a class="nav-link text-light" asp-area="" asp-controller="Teams" asp-action="Index">Equipos</a></li>
                                 <li><a class="nav-link text-light" asp-area="" asp-controller="Torneos" asp-action="Index">Torneos</a></li>
-                                <li><a class="nav-link text-light" asp-area="" asp-controller="Players" asp-action="Index">Jugadores</a></li>
+                        <li><a class="nav-link text-light" asp-area="" asp-controller="Players" asp-action="Index">Jugadores</a></li>
 
                     }
                 </ul>

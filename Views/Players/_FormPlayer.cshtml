@@ -218,7 +218,7 @@
         
 
             //evento change para el drop decida si muestra cedula y fifaid segun la categoria
-            document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+        /*    document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
                 checkbox.addEventListener('change', function () {
                     var checkboxCategoria = checkbox;
                     var campoCedula = document.getElementById("campoCedula");
@@ -250,16 +250,13 @@
                                 checkboxCategoria.checked = false;
                             }
                         }
-
-
-
                     } else {
                         campoCedula.style.display = "block";
                         campoFifaid.style.display = "block";
                     }
 
                 });
-            });
+            });*/
 
 
             //validar genero con categorias
@@ -330,6 +327,101 @@
                 templateResult: formatEquipo1,
                 templateSelection: formatEquipo1
             });
+            /*
+            //ch/ecboxes manejo
+                function verificarCheckbox(checkbox) {
+                    var checkboxCategoria = checkbox;
+                    var campoCedula = document.getElementById("campoCedula");
+                    var campoFifaid = document.getElementById("campoFifaid");
+            console.log("checkboxCategoria.checked", checkboxCategoria.checked); 
+            console.log("checkboxCategoria.value", checkboxCategoria.value);
+                    if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
+                        campoCedula.style.display = "none";
+                        campoFifaid.style.display = "none";
+
+                        var edad = parseInt(document.getElementById('labelEDAD').innerText, 10);
+
+                        if (checkboxCategoria.value == 2 && edad > 13) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U13");
+                            checkboxCategoria.checked = false;
+                        }
+                        if ((checkboxCategoria.value == 5 || checkboxCategoria.value == 3) && edad > 15) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U15");
+                            checkboxCategoria.checked = false;
+                        }
+                        if ((checkboxCategoria.value == 4 || checkboxCategoria.value == 6) && edad > 17) {
+                            alert("La Edad de este Jugador no es aceptada en la Categoria U17");
+                            checkboxCategoria.checked = false;
+                        }
+                    } else {
+                        campoCedula.style.display = "block";
+                        campoFifaid.style.display = "block";
+                    }
+                }
+
+                //verificar checboex al clickearlos
+                    document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                        // Verificar el estado del checkbox al cargar la página
+                        verificarCheckbox(checkbox);
+
+                        // Agregar el evento change para verificar el estado cuando cambia
+                        checkbox.addEventListener('change', function () {
+                            verificarCheckbox(checkbox);
+                        });
+                    });
+                    */
+
+
+
+        function verificarCheckboxes() {
+            var campoCedula = document.getElementById("campoCedula");
+            var campoFifaid = document.getElementById("campoFifaid");
+            var ocultarCampos = false;
+
+            document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                var checkboxCategoria = checkbox;
+
+                if (checkboxCategoria.checked && checkboxCategoria.value != 1) {
+                    var edad = parseInt(document.getElementById('labelEDAD').innerText, 10);
+
+                    if (checkboxCategoria.value == 2 && edad > 13) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U13");
+                        checkboxCategoria.checked = false;
+                    }
+                    if ((checkboxCategoria.value == 5 || checkboxCategoria.value == 3) && edad > 15) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U15");
+                        checkboxCategoria.checked = false;
+                    }
+                    if ((checkboxCategoria.value == 4 || checkboxCategoria.value == 6) && edad > 17) {
+                        alert("La Edad de este Jugador no es aceptada en la Categoria U17");
+                        checkboxCategoria.checked = false;
+                    }
+
+                    ocultarCampos = true;
+                }
+            });
+
+            if (ocultarCampos) {
+                campoCedula.style.display = "none";
+                campoFifaid.style.display = "none";
+            } else {
+                campoCedula.style.display = "block";
+                campoFifaid.style.display = "block";
+            }
+        }
+
+        function addChangeListener() {
+            document.querySelectorAll('#flexSwitchCheckDefault').forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    verificarCheckboxes();
+                });
+            });
+        }
+
+        // Verificar el estado de los checkboxes al cargar la página
+        verificarCheckboxes();
+        // Agregar los event listeners para los checkboxes
+        addChangeListener();
 
 
              calcularEdad()

@@ -10,6 +10,7 @@
     --darkblue: #011c42;
     --morado: #720EBC;
     --morado2:#9426E6;
+    --black:#000;
 }
 
 .w-20 {
@@ -101,10 +102,18 @@ footer div.container {
     object-fit: cover;
     object-position: 50% 10%;
 }
-
+.teamlogo {
+    width: 40px;
+    max-width: 100%;
+    height: auto;
+}
+.playerimg {
+    width: 70px;
+    max-width: 100%;
+    height: auto;
+}
 .imgsized {
     width: 30%;
-   
 }
 .imgsized0 {
     width: 20%;

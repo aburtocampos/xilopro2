@@ -17,6 +17,9 @@ namespace xilopro2.Models
         public int Torneoid { get; set; }
 
         public virtual string TorneoName { get; set; }
+
+        public Torneo? Torneo { get; set; }
+
     }
 
 

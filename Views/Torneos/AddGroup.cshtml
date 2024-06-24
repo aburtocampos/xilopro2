@@ -7,7 +7,7 @@
 <div class="container pt-3">
     <div class="d-flex justify-content-between align-items-center gap-2">
         <a asp-action="Details" asp-route-id="@Model.Torneoid" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
-        <h3 class="m-0 text-end">Creando Nuevo Grupo para Torneo: <span class="badge bg-dark fs-4 text-uppercase">@Model.TorneoName</span></h3>
+        <h3 class="m-0 text-end">Creando Nuevo Grupo para Torneo: <span class="badge bg-dark fs-4 text-uppercase">@Model.TorneoName - @Model.Torneo.Torneo_SeasonType @Model.Torneo.Torneo_Season</span></h3>
     </div>
     <hr />
     <div class="card border-success" style="width: 100%;margin:0 auto;">

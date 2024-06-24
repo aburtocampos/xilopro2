@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
 using xilopro2.Helpers;
@@ -425,6 +427,7 @@ namespace xilopro2.Controllers
             {
                 TorneoName = tournamentEntity.Torneo_Name,
                 Torneoid = tournamentEntity.Torneo_ID,
+                Torneo = tournamentEntity,
             };
 
             return View(model);
@@ -1497,10 +1500,57 @@ namespace xilopro2.Controllers
 
         #endregion
 
+        #region TablasTotales
+
+        public IActionResult TopGolesxTorneo(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+             var playersWithGoals =  _context.PlayerStatistics
+              .Where(ps => ps.TorneoId == id)
+              .Include(ps => ps.Player) // Incluimos la navegación a Player
+                 .ThenInclude(p => p.Team)
+                  .GroupBy(ps => new { 
+                      ps.PlayerId, 
+                      ps.Player.Teamid, 
+                      ps.Player.Player_FirstName, 
+                      ps.Player.Player_LastName, 
+                      ps.Player.Player_Image, 
+                      ps.Player.Player_Dorsal, 
+                      ps.Player.Team.Team_Name, 
+                      ps.Player.Team.Team_Image
+                  })
+                .Select(g => new PlayersGoals
+                {
+                    PlayerId = g.Key.PlayerId,
+                    Player_FullName = g.Key.Player_FirstName + " " + g.Key.Player_LastName,
+                    Player_Dorsal = g.Key.Player_Dorsal,
+                    Player_Image = g.Key.Player_Image,
+                    Team_Name = g.Key.Team_Name,
+                    Team_Image = g.Key.Team_Image,
+                    Goals = g.Sum(ps => ps.Goals),
+                    torneoid = id
+                })
+              .OrderByDescending(p => p.Goals)
+               .Take(10) // Tomar solo los primeros 10 jugadores según la cantidad de goles
+              .ToList();
+            //  if (playersWithGoals == null || !playersWithGoals.Any())  {  return NotFound();  }
+            if (playersWithGoals.Count() == 0)
+            {
+                ViewData["idtorneo"] = id;
+            }
+
+            return View(playersWithGoals);
+        }
+
+        #endregion
+
 
         #region Metodos
 
-         public bool guardarDatosdeTablaRanking(GroupDetailViewModel model)
+        public bool guardarDatosdeTablaRanking(GroupDetailViewModel model)
         {
             //AddGroupDetail
             try
