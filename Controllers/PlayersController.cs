@@ -1234,6 +1234,7 @@ namespace xilopro2.Controllers
                 PlayerName = ca.PlayerName,
                 Jornadasasancionar = ca.Jornadasasancionar,
                 Matche = _combos.GetJornadas(ca.Player.torneoid),
+                groupId = ca.groupId,
             };
 
             return View(model);
@@ -1252,7 +1253,8 @@ namespace xilopro2.Controllers
             {
                 try
                 {
-                    var match = _context.Matches.FirstOrDefault(x => x.Match_ID == model.groupId);
+                    var match = _context.Matches.FirstOrDefault(x => x.GroupsrId == model.groupId);
+
                     CorrectionAction ca = new()
                         {
                         CorrectionAction_ID = model.CorrectionAction_ID,
@@ -1352,6 +1354,7 @@ namespace xilopro2.Controllers
 
             var viewModel = new CorrectActionViewModel
             {
+                CorrectionAction_ID = ca.CorrectionAction_ID,
                 PlayerId = ca.PlayerId,
                 PlayerName = ca.PlayerName,
                 Jornadasasancionar = namesMatch, // _combos.GetJornadas(player.torneoid), 

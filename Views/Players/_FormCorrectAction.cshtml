@@ -111,6 +111,10 @@
         }
 
         // Al cargar la página, verificar la opción seleccionada inicialmente
+
+    var hiddenInput = document.getElementById('inputhiddengid');
+    console.log("al cargar", hiddenInput.value)
+
         var selectedOption = $('#tipo_select').val();
         toggleSelectsJornadas(selectedOption);
 
@@ -120,7 +124,7 @@
             toggleSelectsJornadas(selectedOption);
         });
 
-    function updateHiddenInput(matValue, isChecked) {
+   /* function updateHiddenInput(matValue, isChecked) {
         var hiddenInput = document.getElementById('inputhiddengid');
         if (isChecked) {
             hiddenInput.value = matValue;
@@ -128,6 +132,35 @@
             // Clear the value if checkbox is unchecked (if needed)
             hiddenInput.value = '';
         }
+        console.log("al cargar", hiddenInput.value)
+    }*/
+
+    function updateHiddenInput(matValue, isChecked) {
+        var hiddenInput = document.getElementById('inputhiddengid');
+        var anyCheckboxChecked = false;
+
+        // Check if at least one checkbox is checked
+        var checkboxes = document.querySelectorAll('.jornada-checkbox');
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                anyCheckboxChecked = true;
+                return; // Exit forEach early if we found a checked checkbox
+            }
+        });
+
+        if (anyCheckboxChecked) {
+            // Keep the original value in hiddenInput
+            console.log("Original value:", hiddenInput.defaultValue);
+            hiddenInput.value = hiddenInput.defaultValue;
+        } else {
+            // Set hiddenInput value based on current checkbox state
+            if (isChecked) {
+                hiddenInput.value = matValue;
+            } else {
+                hiddenInput.value = '';
+            }
+        }
+        console.log("Current value:", hiddenInput.value);
     }
   
 </script>

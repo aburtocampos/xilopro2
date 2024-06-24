@@ -299,6 +299,7 @@ namespace xilopro2.Controllers
                 .Include(t=>t.Position)
                 .AsEnumerable()
                 .Where(player => player.SelectedCategoryIds.Contains(cateID))
+                .Where(player => player.Player_Status == true)
                 .Where(player => player.torneoid == null)
                 .ToList();
 
@@ -1236,7 +1237,7 @@ namespace xilopro2.Controllers
                .ToList();*/
 
 
-            var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); // suponiendo que tienes el Id de la entidad Match
+            var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); 
             if (match == null)
             {
                 throw new Exception("Match no encontrado");
@@ -1245,17 +1246,20 @@ namespace xilopro2.Controllers
 
             var playerIdsInCrra = crra.Select(ca => ca.PlayerId).ToList();
 
-            List<Player> filteredPlayers = _context.Players
-                 .Include(t => t.CorrectionActions)
-                 .AsEnumerable()
-                 .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
-                 .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) // filtra por equipos cargados en el partido
-                 .Where(player => player.torneoid == Torneo_ID)
-                 .Where(player => player.Player_Status == true)
-                 .Where(player => !playerIdsInCrra.Contains(player.Player_ID) // Incluye jugadores que no están en la lista playerIdsInCrra
-                    || player.CorrectionActions == null // o que no tienen acciones correctivas
-                    || !player.CorrectionActions.Any(ca => ca.Jornadasasancionar != null && ca.Jornadasasancionar.Contains(match.Jornada.ToString()) && ca.groupId == match.GroupsrId)) // o que no tienen acciones correctivas que coincidan con la jornada actual
-                  .ToList();
+            var filteredPlayers = _context.Players
+               .Include(t => t.CorrectionActions)
+               .AsEnumerable()
+               .Where(player =>
+                    player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)) &&
+                    (player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) &&
+                    player.torneoid == Torneo_ID &&
+                   !player.CorrectionActions.Any(ca =>
+                        ca.Jornadasasancionar != null &&
+                        ca.Jornadasasancionar.Contains(match.Match_ID.ToString()) &&
+                        playerIdsInCrra.Contains(ca.PlayerId)
+                    )
+                )
+               .ToList();
 
             var model = new PlayerStatisticViewModel
             {
@@ -1543,6 +1547,12 @@ namespace xilopro2.Controllers
             }
 
             return View(playersWithGoals);
+        }
+
+
+        public IActionResult TablaGeneraldeTorneo()
+        {
+            return View();
         }
 
         #endregion

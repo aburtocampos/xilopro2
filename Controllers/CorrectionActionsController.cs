@@ -8,33 +8,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
+using xilopro2.Helpers.Interfaces;
 
 namespace xilopro2.Controllers
 {
     public class CorrectionActionsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
+        AppUser usuarioensesion = null;
 
-        public CorrectionActionsController(DataContext context)
+        public CorrectionActionsController(DataContext context, IUserHelper userHelper)
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         // GET: CorrectionActions
         public async Task<IActionResult> Index()
         {
+            usuarioensesion = await _userHelper.GetUserAsyncbyEmail(User.Identity.Name.ToString());
+            List<int> filtroIdsCategories = usuarioensesion.SelectedCategoryIds;
             IActionResult response = null;
-            if (_context.CorrectionActions != null)
+
+
+            if (User.IsInRole("Admin") || User.IsInRole("Editor"))
             {
-                // Fetch the list of CorrectionActions and include related entities
-                var correctionActions = await _context.CorrectionActions.Include(cp => cp.Player).ToListAsync();
-                response = View(correctionActions); // Assuming you have a corresponding view for CorrectionActions
+                if (_context.CorrectionActions != null)
+                {
+                    var correctionActions = await _context.CorrectionActions.Include(cp => cp.Player).ToListAsync();
+                    response = View(correctionActions); 
+                }
+                else
+                {
+                    response = Problem("Entity set 'DataContext.CorrectionActions' is null.", statusCode: 500);
+                }
             }
-            else
+            if (User.IsInRole("Dt"))
             {
-                // Return a problem detail if _context.CorrectionActions is null
-                response = Problem("Entity set 'DataContext.CorrectionActions' is null.", statusCode: 500);
+                if (_context.CorrectionActions != null)
+                {
+                    var correctionActions = await _context.CorrectionActions.Include(cp => cp.Player).ToListAsync();
+                    var filteredCorrectionActions = correctionActions
+                   .Where(ca => ca.Player.SelectedCategoryIds.Any(cid => filtroIdsCategories.Contains(cid)))
+                   .ToList();
+                    response = View(filteredCorrectionActions); 
+                }
+                else
+                {
+                    response = Problem("Entity set 'DataContext.CorrectionActions' is null.", statusCode: 500);
+                }
             }
+           
+          
             return response;
         }
 
