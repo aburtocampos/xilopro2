@@ -25,8 +25,11 @@
             <div class="card-body row">
                 <div class="col-md-4 text-center">
                     <div class="form-group mb-2">
+                       
                         <div class="d-flex justify-content-between">
+
                             <span class="mb-2 d-block">FIFA ID: <span class="text-primary fw-bold" >@Model.Player_fifaid</span></span>
+                            <p class="mb-2">Dorsal: <span class="text-primary fw-bold fs-5">@Model.Player_Dorsal</span></p>
                             <div class="estadoplayer">
                                 <label class="form-check-label d-inline">Estado:</label>
                                 @if (Model.Player_Status)
@@ -39,8 +42,8 @@
                                 }
                             </div>
                         </div>
-                         
-                          <img src="@(!string.IsNullOrEmpty(Model.Player_Image) ? Url.Content(path+Model.Player_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded" alt="Image" />
+                        <img src="@(!string.IsNullOrEmpty(Model.Player_Image) ? Url.Content(path+Model.Player_Image) : Url.Content("~/images/noimage.png"))" class="img-fluid rounded playerimgdetail  " alt="Image" />
+                       
                     </div>
                  
                 </div>
@@ -112,41 +115,40 @@
                                 <label class="control-label">Posición:</label>
                                 <p class="text-primary">@ViewData["Pos"]</p>
                             </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Fecha de Nacimiento:</label>
+                                <div class="d-flex align-items-end gap-3">
+                                    <p class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</p>
+                                    <p id="labelEDAD" class="d-inline text-primary ">-</p>
+                                </div>
+
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group mb-2 d-flex justify-content-end align-items-center gap-1">
-                                <label class="control-label d-inline">Dorsal:</label>
-                                <p class="numerito">@Model.Player_Dorsal</p>
-                            </div>
+                           
                             <div class="form-group mb-2">
                                 <label class="control-label">Equipo:</label>
                                 <p class="text-primary">@ViewData["team"]</p>
                             </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Pais:</label>
+                                <p class="text-primary">@ViewData["PaisName"]</p>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Departamento:</label>
+                                <p class="text-primary">@ViewData["DepartamentoName"]</p>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="control-label">Municipio:</label>
+                                <p class="text-primary">@ViewData["MunicipioName"]</p>
+                            </div>
                         </div>
                     </div>
 
 
-                    <div class="form-group mb-2">
-                        <label class="control-label">Fecha de Nacimiento:</label>
-                        <div class="d-flex align-items-end gap-3">
-                            <p class="text-primary" id="inputFNC">@Model.Player_FNC.ToShortDateString()</p>
-                            <p id="labelEDAD" class="d-inline text-primary ">-</p>
-                        </div>
-                        
-                    </div>
+              
                     
-                    <div class="form-group mb-2">
-                        <label class="control-label">Pais:</label>
-                        <p class="text-primary">@ViewData["PaisName"]</p>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label class="control-label">Departamento:</label>
-                        <p class="text-primary">@ViewData["DepartamentoName"]</p>
-                    </div>
-                    <div class="form-group mb-2">
-                        <label class="control-label">Municipio:</label>
-                        <p class="text-primary">@ViewData["MunicipioName"]</p>
-                    </div>
+              
                 </div>
             </div>
 

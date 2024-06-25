@@ -1221,45 +1221,54 @@ namespace xilopro2.Controllers
         }
 
 
-        public async Task<IActionResult> AddStats(int DetailsGroup_ID, int Match_ID, int Torneo_ID)
+        public async Task<IActionResult> AddStats(int DetailsGroup_ID, int Match_ID, int Torneo_ID, int Group_ID)
         {
-            if (Match_ID == null)
+            if (Match_ID == 0)
             {
-                return NotFound();
+                throw new Exception("Match no encontrado");
             }
 
-            var torneo = _context.Torneos.Where(x => x.Torneo_ID == Torneo_ID).FirstOrDefault();
-
-            /* List<Player> filteredPlayers = _context.Players
-               .AsEnumerable()
-               .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
-              .Where(player => player.Team != null && player.Team.Team_Name == "XILOTEPELT FC")
-               .ToList();*/
-
-
+            var torneo = _context.Torneos.FirstOrDefault(x => x.Torneo_ID == Torneo_ID);
+            if (torneo == null)
+            {
+                throw new Exception("Torneos no encontrado");
+            }
             var match = _context.Matches.FirstOrDefault(m => m.Match_ID == Match_ID); 
+
+           
+
             if (match == null)
             {
                 throw new Exception("Match no encontrado");
             }
-            var crra = _context.CorrectionActions.Where(m => m.groupId == match.GroupsrId).ToList();
 
-            var playerIdsInCrra = crra.Select(ca => ca.PlayerId).ToList();
+            var playersTorneoList = await _context.Players.Include(c => c.CorrectionActions).Where(p => p.torneoid == Torneo_ID).ToListAsync();
 
-            var filteredPlayers = _context.Players
-               .Include(t => t.CorrectionActions)
-               .AsEnumerable()
-               .Where(player =>
-                    player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)) &&
-                    (player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId) &&
-                    player.torneoid == Torneo_ID &&
-                   !player.CorrectionActions.Any(ca =>
+            var crra = _context.CorrectionActions
+                 .AsEnumerable()
+                .Where(ca => ca.groupIdes.Contains(match.GroupsrId) && ca.CorrectionAction_Name == "DEPORTIVO")
+                .ToList();
+
+            var playerIdsInCrra = crra.Select(ca => ca.PlayerId).Distinct().ToList();
+
+
+            var playersInCategory = playersTorneoList
+              .Where(player => player.SelectedCategoryIds.Any(id => torneo.SelectedCategoryIds.Contains(id)))
+              .ToList();
+
+            var playersInTeams = playersInCategory
+                .Where(player => player.Teamid == match.TeamLocalId || player.Teamid == match.TeamVisitorId)
+                .ToList();
+
+            var filteredPlayers = playersInTeams
+                .Where(player =>
+                    !player.CorrectionActions.Any(ca =>
                         ca.Jornadasasancionar != null &&
                         ca.Jornadasasancionar.Contains(match.Match_ID.ToString()) &&
                         playerIdsInCrra.Contains(ca.PlayerId)
                     )
                 )
-               .ToList();
+                .ToList();
 
             var model = new PlayerStatisticViewModel
             {
@@ -1550,9 +1559,21 @@ namespace xilopro2.Controllers
         }
 
 
-        public IActionResult TablaGeneraldeTorneo()
+        public IActionResult TablaGeneralTorneo(int id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+      
+            var model = new TablaGeneralViewModel{
+                Groups = _context.Groups.Include(g => g.GroupDetails).ThenInclude(gd => gd.Team).Where(t=>t.torneoId == id).ToList(),
+                torneoid = id
+            }; 
+
+         
+            //  model.Matches =  _context.Matches.ToList();
+            return View(model);
         }
 
         #endregion

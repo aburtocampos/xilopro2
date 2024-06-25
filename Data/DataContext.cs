@@ -66,6 +66,8 @@ namespace xilopro2.Data
 
         public DbSet<Attendance> Attendances { get; set; }
 
+        public DbSet<ListaIdsGroup> ListaIdsGroups { get; set; }
+
 
         //  public DbSet<UserCategory> UserCategory { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -243,6 +245,21 @@ namespace xilopro2.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
             );
 
+            builder.Entity<CorrectionAction>()
+         .Property(u => u.groupIdes)
+         .HasConversion(
+             v => string.Join(',', v),
+             v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
+         );
+
+
+            /***************************************************LISTAIDSGROUPS**************************************************/
+            builder.Entity<ListaIdsGroup>()
+              .Property(u => u.Valores)
+              .HasConversion(
+                  v => string.Join(',', v),
+                  v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
+              );
 
         }
     }

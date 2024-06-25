@@ -32,6 +32,8 @@ namespace xilopro2.Models
 
         public int? groupId { get; set; }
 
+        public List<int>? groupIdes { get; set; }
+
         public string? groupName { get; set; }
 
 

@@ -31,6 +31,8 @@ namespace xilopro2.Data.Entities
 
         public int? groupId { get; set; }
 
+        public List<int>? groupIdes { get; set; }
+
         public int PlayerId { get; set; } = 0;
 
         [Display(Name = "Jugador:")]

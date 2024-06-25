@@ -12,7 +12,7 @@ namespace xilopro2.Helpers.Interfaces
 
         // IEnumerable<IGrouping<string, SelectListItem>> GetJornadas(int? torneoid);
 
-        List<GroupedMatchViewModel> GetJornadas(int? torneoid);
+       // List<GroupedMatchViewModel> GetJornadas(int? torneoid);
 
         IEnumerable<SelectListItem> GetCategorias();
         IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids);

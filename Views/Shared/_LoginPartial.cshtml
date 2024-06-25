@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using xilopro2.Data
 @using xilopro2.Data.Entities
 @inject SignInManager<AppUser> SignInManager
@@ -9,6 +10,11 @@
     var currentUser = await SignInManager.UserManager.GetUserAsync(User);
     var isAuthenticated = currentUser != null;
     var userDetails = await DbContext.Users.FindAsync(currentUser.Id);
+    var categoryNames = await DbContext.Categories
+              .Where(c => currentUser.SelectedCategoryIds.Contains(c.Category_ID))
+              .Select(c => c.Category_Name)
+              .ToListAsync();
+
 }
 
 <header>
@@ -26,6 +32,18 @@
 
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Documentación
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="ReglamentoClub">Reglamento del Club</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="SegundaDiv">Bases de Competencia 2da Div</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CLM">Bases de Competencia CLM</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CopaPrimera">Bases de Competencia Copa Primera</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="Manual">Manual de Usuario</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Configuración
@@ -74,6 +92,18 @@
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Documentación
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="ReglamentoClub">Reglamento del Club</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="SegundaDiv">Bases de Competencia 2da Div</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CLM">Bases de Competencia CLM</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CopaPrimera">Bases de Competencia Copa Primera</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="Manual">Manual de Usuario</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Reportes
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -108,6 +138,18 @@
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Documentación
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="ReglamentoClub">Reglamento del Club</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="SegundaDiv">Bases de Competencia 2da Div</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CLM">Bases de Competencia CLM</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="CopaPrimera">Bases de Competencia Copa Primera</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Doc" asp-action="Manual">Manual de Usuario</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Reportes
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -135,6 +177,29 @@
                                 }
                                 else
                                 {
+                                    @if (@currentUser?.UserTypeofRole == "Dt")
+                                    {
+                                        @foreach (var category in categoryNames)
+                                        {
+                                            <span class="rolepo @GetBadgeByClass(category)">@string.Join(", ", category)</span>
+                                        }
+
+                                        @functions {
+                                        private string GetBadgeByClass(string categoryName)
+                                        {
+                                            return categoryName switch
+                                            {
+                                                "MAYOR" => "badge text-bg-secondary",
+                                                "U13 MASCULINO" => "badge text-bg-green",
+                                                "U15 MASCULINO" => "badge text-bg-yellow",
+                                                "U15 FEMENINO" => "badge text-bg-pink",
+                                                "U17 MASCULINO" => "badge text-bg-blue",
+                                                "U17 FEMENINO" => "badge text-bg-purple",
+                                                _ => "badge" // Caso por defecto
+                                            };
+                                        }
+                                    }
+                                    }
                                     <img src="@(!string.IsNullOrEmpty(currentUser.User_Image) ? Url.Content($"/Content/Users/{currentUser.User_Image}") : Url.Content("~/images/noimage.png"))" class="rounded-circle colorcircle " alt="Image" style="width:50px;height:50px;max-width: 100%; object-fit: cover;" />
                                 }
 

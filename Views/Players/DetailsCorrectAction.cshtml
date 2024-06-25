@@ -76,29 +76,38 @@
             </div>
 
             <div class="col-md-6 ">
-                  @if (Model.Jornadasasancionar != null && Model.Jornadasasancionar.Count > 0) {
-                    <div class="form-group mb-3">
-                        <label asp-for="Jornadasasancionar" class="control-label fw-bold mb-2"></label>
-                  
+                   @if (Model.Matche.Count() > 0)
+                    {
+                        if (Model.CorrectionAction_Name == "DEPORTIVO")
+                        {
+                        
                    
-                            <div class="group">
-                                    <span>
-                                        Fase / Grupo: <span class="badge text-bg-secondary">@Model.groupName</span><i class="fa-solid fa-arrow-right ms-2"></i>
-                                    </span>
-                                    @foreach (var mat in Model.Jornadasasancionar)
-                                    {
-                                    <div class="mx-1 d-inline-block">
-                                        <span class="badge rounded-pill text-bg-danger">@mat</span> 
-                                        <input type="hidden" name="GroupNames" value="@Model.groupName" />
+                        <div class="form-group mb-3" >
+                             <label class="control-label fw-bold mb-2">Jornadas a Sancionar:</label>
+                                @foreach (var group in Model.Matche)
+                                {
+                                    <div class="group" data-groupid="@group.GroupId">
+                                        <span>
+                                            Fase / Grupo: <span class="badge text-bg-secondary">@group.GroupName</span><i class="fa-solid fa-arrow-right ms-2"></i>
+                                        </span>
+                                         @foreach (var mat in group.Matches.Where(mat => Model.Jornadasasancionar != null && Model.Jornadasasancionar.Contains(mat.MatchID.ToString())))
+                                        {
+                                            <div class="my-1 d-inline-block">
+                                                <span class="badge rounded-pill text-bg-danger fs-6">@mat.Jornada</span>
+                                                <input type="hidden" name="GroupNames" value="@group.GroupName" />
+                                            </div>
+                                        }
                                     </div>
-                                    }
-                                </div>
-                  
-                
-
-                        <span asp-validation-for="Jornadasasancionar" class="text-danger"></span>
-                    </div>
-                  }
+                                }
+                        </div>
+                      }
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning p-1" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> Aun no hay partidos creados para sancionar
+                        </div>
+                    }
 
                 <div class="form-group mb-3" >
                     <label class="control-label fw-bold mb-2">Descripción:</label>

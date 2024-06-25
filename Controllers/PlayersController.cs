@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Numerics;
 using xilopro2.Data;
 using xilopro2.Data.Entities;
+using xilopro2.Helpers;
 using xilopro2.Helpers.Interfaces;
 using xilopro2.Migrations;
 using xilopro2.Models;
@@ -23,16 +24,20 @@ namespace xilopro2.Controllers
         private readonly ICombos _combos;
         private readonly ISwithUsers _swithUsers;
         private readonly IImageHelper _imageHelper;
+        private readonly ServicioListaidsgroup servicioListaidsgroup;
+        private List<int> _groupIdes;
 
         AppUser usuarioensesion = null;
 
-        public PlayersController(DataContext context, ICombos _combosHelper, ISwithUsers _swithUsersHelper, IUserHelper userHelper, IImageHelper imageHelper)
+        public PlayersController(DataContext context, ICombos _combosHelper, ISwithUsers _swithUsersHelper, IUserHelper userHelper, IImageHelper imageHelper, ServicioListaidsgroup servicioListaidsgroup)
         {
             _context = context;
             _combos = _combosHelper;
             _swithUsers = _swithUsersHelper;
             _userHelper = userHelper;
             _imageHelper = imageHelper;
+            this.servicioListaidsgroup = servicioListaidsgroup;
+            _groupIdes = new List<int>();
         }
 
         #region PLAYERS
@@ -317,13 +322,14 @@ namespace xilopro2.Controllers
                 {
                     Player playerondb = await _context.Players.FindAsync(model.Player_ID);
                     var player = (dynamic)null;
-                    if (!string.IsNullOrEmpty(playerondb.Player_Image)){//si carga archivo
+                    if (!string.IsNullOrEmpty(playerondb.Player_Image)){//si hay archivo db
 
                         if (model.FotoFile != null)
                         {
                             if (_imageHelper.DeleteImage(playerondb.Player_Image, "Players"))
                             {
                                 model.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
+                                model.torneoid = playerondb.torneoid == null ? null : playerondb.torneoid;
                                 player = await _swithUsers.ModelToPlayer(model, false);
                             }
                         }
@@ -334,11 +340,13 @@ namespace xilopro2.Controllers
                                 if (_imageHelper.DeleteImage(playerondb.Player_Image, "Players"))
                                 {
                                     model.Player_Image = null;
+                                    model.torneoid = playerondb.torneoid == null ? null : playerondb.torneoid;
                                     player = await _swithUsers.ModelToPlayer(model, false);
                                 }
                             }
                             else
                             {
+                                model.torneoid = playerondb.torneoid == null ? null : playerondb.torneoid;
                                 model.Player_Image = playerondb.Player_Image;
                                 player = await _swithUsers.ModelToPlayer(model, false);
                             }
@@ -347,10 +355,25 @@ namespace xilopro2.Controllers
                     }
                     else
                     {
-                        player = await _swithUsers.ModelToPlayer(model, false);
-                        player.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
+                        if (model.FotoFile != null) // si cargo archivo
+                        {
+                           
+                                model.Player_Image = _imageHelper.UploadImage(model.FotoFile, "Players");
+                                model.torneoid = playerondb.torneoid == null ? null : playerondb.torneoid;
+                                player = await _swithUsers.ModelToPlayer(model, false);
+                           
+                        }
+                        else
+                        {
+                            model.torneoid = playerondb.torneoid == null ? null : playerondb.torneoid;
+                            model.Player_Image = playerondb.Player_Image;
+                            player = await _swithUsers.ModelToPlayer(model, false);
+
+                        }
+
                     }
 
+                    
                     _context.Update(player);
                     await _context.SaveChangesAsync();
                         
@@ -1109,31 +1132,15 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            // IEnumerable<IGrouping<string, SelectListItem>>? MatcheTemp;
-            // MatcheTemp = _combos.GetJornadas(player.torneoid);
-            
-
             CorrectActionViewModel model = new()
             {
                 PlayerId = player.Player_ID,
                 PlayerName = player.Player_FullName,
-                Matche = _combos.GetJornadas(player.torneoid), //_combos.GetJornadaas(),
-               
+                Matche = GetJornadas(player.torneoid), 
+                groupIdes = new List<int> { },
             };
 
-           // model.Countries = _combos.GetCombosCountries();
-            //  model.CountryID = oparent.Country.Country_ID;
-
-            //  model.States = _combos.GetCombosStates();
-            //  model.StateID = oparent.State.State_ID;
-
-            //   model.Cities = _combos.GetCombosCities();
-            //   model.CityID = oparent.City.City_ID;
-            //  model.PlayerId = id;
-            //  model.PlayerName = oparent.Player_FullName;
             ViewBag.EditFlag = "";
-
-           // ViewBag.Jornadas = _combos.GetJornadaas();
             return View(model);
 
         }
@@ -1147,6 +1154,7 @@ namespace xilopro2.Controllers
 
             ModelState.Remove("Matches");
             ModelState.Remove("GroupName");
+            ModelState.Remove("groupIdes");
             if (ModelState.IsValid)
             {
                 try
@@ -1167,10 +1175,8 @@ namespace xilopro2.Controllers
                             PlayerName = model.PlayerName,
                             Jornadasasancionar = model.Jornadasasancionar,
                             groupId = match != null ? match.GroupsrId : null,
-                            //Matche = model.Matche,
+                            groupIdes = servicioListaidsgroup.ObtenerLista(1),
                         };
-                       // ca.groupId = idgrupo;
-
                         _context.Add(ca);
                         await _context.SaveChangesAsync();
                         TempData["successPlayer"] = "Sanción agregada a " + ca.PlayerName + " !!";
@@ -1179,10 +1185,6 @@ namespace xilopro2.Controllers
                     {
                         throw;
                     }
-                    /* Player player = await _context.Players
-                         .Include(c => c.State)
-                         .ThenInclude(s => s.Cities)
-                         .FirstOrDefaultAsync(c => c. == model.CountryID);*/
                     return RedirectToAction(nameof(Details), new { Id = model.PlayerId });
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -1214,7 +1216,9 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            CorrectionAction ca = await _context.CorrectionActions.FindAsync(id);
+            CorrectionAction? ca = await _context.CorrectionActions
+                .Include(p=>p.Player).FirstOrDefaultAsync(ca => ca.CorrectionAction_ID == id); 
+
             ca.Player = _context.Players.FirstOrDefault(cp => cp.Player_ID == ca.PlayerId);
 
             if (ca == null)
@@ -1233,8 +1237,7 @@ namespace xilopro2.Controllers
                 CorrectionAction_Status = ca.CorrectionAction_Status,
                 PlayerName = ca.PlayerName,
                 Jornadasasancionar = ca.Jornadasasancionar,
-                Matche = _combos.GetJornadas(ca.Player.torneoid),
-                groupId = ca.groupId,
+                Matche = GetJornadas(ca.Player.torneoid),
             };
 
             return View(model);
@@ -1248,12 +1251,12 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("groupIdes");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var match = _context.Matches.FirstOrDefault(x => x.GroupsrId == model.groupId);
+                    //var match = _context.Matches.FirstOrDefault(x => x.GroupsrId == model.groupId);
 
                     CorrectionAction ca = new()
                         {
@@ -1265,7 +1268,8 @@ namespace xilopro2.Controllers
                           CorrectionAction_Status = model.CorrectionAction_Status,
                           PlayerName = model.PlayerName,
                           Jornadasasancionar = model.Jornadasasancionar,
-                          groupId = match.GroupsrId
+                         // groupId = match.GroupsrId,
+                          groupIdes = servicioListaidsgroup.ObtenerLista(1),
                       };
                         _context.Update(ca);
                         await _context.SaveChangesAsync();
@@ -1299,8 +1303,21 @@ namespace xilopro2.Controllers
             {
                 return NotFound();
             }
-
-            return View(ca);
+            CorrectActionViewModel model = new()
+            {
+                //  Parent_ID = Guid.NewGuid().ToString(),
+                // Player = await _context.Players.FindAsync(model.PlayerId),
+                CorrectionAction_ID = ca.CorrectionAction_ID,
+                PlayerId = ca.PlayerId,
+                CorrectionAction_Name = ca.CorrectionAction_Name,
+                Description = ca.Description,
+                Fecha = ca.Fecha,
+                CorrectionAction_Status = ca.CorrectionAction_Status,
+                PlayerName = ca.PlayerName,
+                Jornadasasancionar = ca.Jornadasasancionar,
+                Matche = GetJornadas(ca.Player.torneoid),
+            };
+            return View(model);
         }
 
 
@@ -1341,8 +1358,6 @@ namespace xilopro2.Controllers
                 return NotFound();
             }
 
-            Player player = await _context.Players.FindAsync(ca.PlayerId);
-
             var gname = _context.Groups.FirstOrDefault(m => m.Group_ID == ca.groupId);
 
             List<string> namesMatch = new List<string>();
@@ -1357,16 +1372,60 @@ namespace xilopro2.Controllers
                 CorrectionAction_ID = ca.CorrectionAction_ID,
                 PlayerId = ca.PlayerId,
                 PlayerName = ca.PlayerName,
-                Jornadasasancionar = namesMatch, // _combos.GetJornadas(player.torneoid), 
-                Player = player,
-                groupId = gname?.Group_ID,
+                Player = ca.Player,
                 groupName = gname?.Group_Name,
                 CorrectionAction_Name = ca.CorrectionAction_Name,
                 Description = ca.Description,
+                groupId = gname?.Group_ID,
+                Jornadasasancionar = ca.Jornadasasancionar, 
+                Matche = GetJornadas(ca.Player.torneoid),
             };
 
             ViewBag.Cats = _combos.GetCategorias();
             return View(viewModel);
+        }
+
+        public List<GroupedMatchViewModel> GetJornadas(int? torneoid)
+        {
+            var matches = _context.Matches
+                .Include(m => m.Groups)
+                .AsEnumerable()
+                .Where(t => t.torneoid == torneoid)
+                .Select(x => new MatchViewModel
+                {
+                    Jornada = $"{x.Jornada}",
+                    MatchID = x.Match_ID,
+                    GroupName = x.Groups.Group_Name,
+                    GroupId = x.Groups.Group_ID // Asumiendo que hay una propiedad Group_ID en Groups
+                })
+                .OrderBy(x => x.GroupName) // Ordenar por grupo
+                .ThenBy(x => x.Jornada) // Luego ordenar por el texto del item
+                .ToList();
+
+              var groupedMatches = matches.GroupBy(x => x.GroupName)
+                .Select(group => new GroupedMatchViewModel
+                {
+                    GroupName = group.Key,
+                    GroupId = group.First().GroupId, // Asumimos que todos los elementos en el grupo tienen el mismo GroupId
+                    Matches = group.ToList()
+                })
+                .OrderBy(x => x.GroupName)
+                .ToList();
+
+                return groupedMatches;
+            
+
+          
+        }
+
+        [HttpPost]
+        public IActionResult AsignarGroupIdes([FromBody] List<int> groupIdes)
+        {
+
+            _groupIdes = groupIdes;
+            servicioListaidsgroup.GuardarLista(groupIdes,1);
+
+            return Ok("Datos recibidos correctamente");
         }
 
         #endregion

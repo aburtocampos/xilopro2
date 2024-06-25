@@ -109,16 +109,16 @@ namespace xilopro2.Helpers
             return list.GroupBy(x => x.Group.Name);
         }*/
 
-        public List<GroupedMatchViewModel> GetJornadas(int? torneoid)
+      /*  public List<GroupedMatchViewModel> GetJornadas(int? torneoid)
         {
             var list = _dataContext.Matches
                 .Include(m => m.Groups)
                 .Where(t => t.torneoid == torneoid)
                 .Select(x => new SelectListItem
                 {
-                    Text = x.Jornada,
+                    Text = $"{x.Jornada}",
                     Value = $"{x.Match_ID}",
-                    Group = new SelectListGroup { Name =  x.Groups.Group_Name } // Suponiendo que hay una propiedad Name en Groups
+                    Group = new SelectListGroup { Name =  x.Groups.Group_Name} // Suponiendo que hay una propiedad Name en Groups
                 })
                 .OrderBy(x => x.Group.Name) // Ordenar por grupo
                 .ThenBy(x => x.Text) // Luego ordenar por el texto del item
@@ -129,13 +129,12 @@ namespace xilopro2.Helpers
                 {
                     GroupName = group.Key,
                     Matches = group.ToList(),
-                    
                 })
                 .OrderBy(x => x.GroupName)
                 .ToList();
-
+     
             return groupedMatches;
-        }
+        }*/
 
         public IEnumerable<SelectListItem> GetCategoriasPorIds(List<int> ids)
         {

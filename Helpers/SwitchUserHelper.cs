@@ -125,7 +125,7 @@ namespace xilopro2.Helpers
 
                 Positionid = model.Positionid,
                 Teamid = model.Teamid,
-
+                torneoid = model.torneoid,
                 
 
               //  Country = await _context.Countries.FindAsync(model.Countryid),

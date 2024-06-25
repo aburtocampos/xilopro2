@@ -77,10 +77,11 @@
                 <div class="form-group my-2 d-flex justify-content-between">
                     <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-ban"></i> <span class="d-none d-sm-inline-block">Cancelar</span></a>
                       <div class="btn-group">
-                        <a asp-action="topGolesxTorneo" asp-route-id="@Model?.Torneo_ID" class="btn btn-secondary"><i class="fa-solid fa-futbol"></i> <span class="d-none d-sm-inline-block">Goleadores</span></a>
+                        <a asp-action="TablaGeneralTorneo" asp-route-id="@Model?.Torneo_ID" class="btn btn-outline-dark"><i class="fa-solid fa-ranking-star"></i> <span class="d-none d-sm-inline-block">Tabla General</span></a>
+                        <a asp-action="topGolesxTorneo" asp-route-id="@Model?.Torneo_ID" class="btn btn-outline-dark"><i class="fa-solid fa-futbol"></i> <span class="d-none d-sm-inline-block">Goleadores</span></a>
                         <a asp-action="Edit" asp-route-id="@Model?.Torneo_ID" class="btn btn-warning"><i class="fa-regular fa-pen-to-square"></i> <span class="d-none d-sm-inline-block">Editar</span></a>
-                        <a asp-action="AddGroup" asp-route-id="@Model.Torneo_ID" class="btn btn-outline-primary"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Agregar Grupo</span></a>
-                        <a asp-action="AddPlayersToTorneo" asp-route-id="@Model.Torneo_ID" class="btn btn-outline-dark"><i class="fa-solid fa-users-line"></i> <span class="d-none d-sm-inline-block">Agregar Jugadores al Torneo</span></a>
+                        <a asp-action="AddGroup" asp-route-id="@Model.Torneo_ID" class="btn btn-primary"><i class="fa-solid fa-file-circle-plus"></i> <span class="d-none d-sm-inline-block">Agregar Grupo</span></a>
+                        <a asp-action="AddPlayersToTorneo" asp-route-id="@Model.Torneo_ID" class="btn btn-purple"><i class="fa-solid fa-users-line"></i> <span class="d-none d-sm-inline-block">Agregar Jugadores al Torneo</span></a>
                     </div>
                 </div>
             </div>

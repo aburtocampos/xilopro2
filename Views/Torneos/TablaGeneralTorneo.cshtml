@@ -1,0 +1,112 @@
+﻿@model xilopro2.Models.TablaGeneralViewModel
+
+@{
+    ViewData["Title"] = "Tabla General";
+    var path = "/Content/Teams/";
+}
+
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center gap-2">
+        <a asp-action="Details" asp-route-id="@(Model?.torneoid == null ? ViewData["idtorneo"] : Model.torneoid)" class="btn btn-outline-dark"><i class="fa-solid fa-arrow-left"></i> Atras</a>
+        <h2 class="m-0 text-end">Tabla General</h2>
+    </div>
+    <hr />
+    <div class="col-md-12 mx-auto">
+        <div class="card ">
+            <div class="card-body">
+                @if (Model.Groups.Count() > 0)
+                {
+                    <div class="table-responsive">
+                            <table class="table table-hover  table-striped" id="tblGeneral">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().Team.Team_Image)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().Team.Team_Name)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().MatchesPlayed)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().MatchesWon)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().MatchesTied)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().MatchesLost)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().GoalsFor)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().GoalsAgainst)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().GoalDifference)
+                                        </th>
+                                        <th>
+                                        @Html.DisplayNameFor(model => model.Groups.FirstOrDefault().GroupDetails.FirstOrDefault().Points)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var group in Model.Groups)
+                                    @foreach (var item in group.GroupDetails
+                                   .OrderByDescending(g => g.Points)
+                                   .ThenByDescending(g => g.GoalDifference)
+                                   .ThenByDescending(g => g.GoalsFor))
+                                    {
+                                        <tr>
+                                            <td class="imgZoom">
+                                                <img src="@(!string.IsNullOrEmpty(item.Team.Team_Image) ? Url.Content(path+item.Team.Team_Image) : Url.Content("~/images/noimage.png"))" alt="Image" class="" />
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-start">
+                                                @Html.DisplayFor(modelItem => item.Team.Team_Name)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.MatchesPlayed)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.MatchesWon)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.MatchesTied)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.MatchesLost)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.GoalsFor)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.GoalsAgainst)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center">
+                                                @Html.DisplayFor(modelItem => item.GoalDifference)
+                                            </td>
+                                            <td style="vertical-align:middle" class="text-center fw-bold">
+                                                @Html.DisplayFor(modelItem => item.Points)
+                                            </td>
+                                        </tr>
+                                    }
+                                 
+                                </tbody>
+                            </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i> No hay goles registrados
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

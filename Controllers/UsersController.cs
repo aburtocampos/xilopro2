@@ -283,7 +283,7 @@ namespace xilopro2.Controllers
                                  
 
                // var userOnDB = await _userHelper.GetUserAsync(Guid.Parse(model.Id));
-                currentUser.User_Image = userondb.User_Image;
+                currentUser.User_Image = model.User_Image;
              //   currentUser.Category = await _dataContext.Categories.FindAsync(model.Categoryid);
                 string newRoleNAME = _userHelper.GetRoleNameByID(model.UserTypeof);
                 //  currentUser.User_CreatedTime = currentUser.User_CreatedTime;

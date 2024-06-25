@@ -30,6 +30,7 @@ builder.Services.AddTransient<IEmailSender, MailJetSenderService>();
 builder.Services.AddTransient<IMailService, EmailSenderService>();
 builder.Services.AddScoped<IEntityModelConverter, EntityModelConverter>();
 builder.Services.AddScoped<SeederDB>();
+builder.Services.AddScoped<ServicioListaidsgroup>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(cfg =>
 {
